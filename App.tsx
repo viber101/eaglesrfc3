@@ -561,9 +561,10 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
+      </main>
 
-        {/* Creative Footer */}
-        <footer className={`bg-black text-white mt-20 ${currentPage === 'history' ? 'px-6 lg:px-32' : ''}`}>
+      {/* Creative Footer - Full Width */}
+      <footer className="bg-black text-white mt-20 w-full">
           {/* Top Wave */}
           <div className="h-4 bg-[#F5A623]" style={{
             clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 0%)'
@@ -624,7 +625,6 @@ const App: React.FC = () => {
             </div>
           </div>
         </footer>
-      </main>
     </div>
   );
 };
