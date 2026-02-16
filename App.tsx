@@ -84,8 +84,7 @@ const StandingsWidget: React.FC = () => (
             }`}
           >
             <div className={`col-span-2 ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-gray-400 opacity-60'}`}>{s.pos}</div>
-            <div className="col-span-6 flex items-center space-x-3">
-              <img src={s.logo} className="h-5 w-5 object-contain grayscale-0" alt={s.team} />
+            <div className="col-span-6 flex items-center">
               <span className={`truncate tracking-tight ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-gray-300'}`}>{s.team}</span>
             </div>
             <div className={`col-span-2 text-center ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-gray-400'}`}>{s.gd}</div>
