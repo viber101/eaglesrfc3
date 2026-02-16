@@ -20,31 +20,15 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
   return (
     <header className="sticky top-0 z-50 w-full shadow-md">
-      {/* Top micro nav */}
-      <div className="bg-[#1a1a1a] text-white py-1">
-        <div className="max-w-[1700px] mx-auto px-4 lg:px-12 flex justify-between text-[11px] font-bold uppercase tracking-wider">
-          <div className="flex space-x-6">
-            <span className="hover:text-red-500 transition-colors cursor-pointer">Arsenal.com</span>
-            <span className="hover:text-red-500 transition-colors cursor-pointer">Shop</span>
-            <span className="hover:text-red-500 transition-colors cursor-pointer">Hospitality</span>
-          </div>
-          <div className="flex space-x-6">
-            <span className="hover:text-red-500 transition-colors cursor-pointer">Accessibility</span>
-            <span className="hover:text-red-500 transition-colors cursor-pointer">Login</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Nav */}
-      <div className="bg-[#db0007] text-white h-16 shadow-lg">
+      <div className="bg-black text-[#F5A623] h-16 shadow-lg">
         <div className="max-w-[1700px] mx-auto px-4 lg:px-12 flex items-center h-full relative">
           <div 
             className="flex items-center space-x-2 mr-10 cursor-pointer"
             onClick={() => onNavigate('home')}
           >
             <img 
-              src="https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/1200px-Arsenal_FC.svg.png" 
-              alt="Arsenal Logo" 
+              src="/KINTANTE FUN DAY FLYER.png" 
+              alt="Eagles RFC Logo" 
               className="h-14 py-1 filter drop-shadow-md"
             />
           </div>
@@ -53,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             <button
               onClick={() => onNavigate('home')}
               className={`h-full flex items-center px-1 transition-all border-b-4 ${
-                currentPage === 'home' ? 'border-white' : 'border-transparent hover:opacity-80'
+                currentPage === 'home' ? 'border-[#F5A623]' : 'border-transparent hover:opacity-80'
               }`}
             >
               Home
@@ -68,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               <button
                 onClick={() => onNavigate('about')}
                 className={`h-full flex items-center px-1 transition-all border-b-4 ${
-                  currentPage === 'about' || currentPage === 'history' ? 'border-white' : 'border-transparent hover:opacity-80'
+                  currentPage === 'about' || currentPage === 'history' ? 'border-[#F5A623]' : 'border-transparent hover:opacity-80'
                 }`}
               >
                 About
@@ -100,7 +84,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
                 className={`h-full flex items-center px-1 transition-all border-b-4 ${
-                  currentPage === item.id ? 'border-white' : 'border-transparent hover:opacity-80'
+                  currentPage === item.id ? 'border-[#F5A623]' : 'border-transparent hover:opacity-80'
                 }`}
               >
                 {item.name}
@@ -108,16 +92,20 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             ))}
           </nav>
 
-          <div className="ml-auto flex items-center space-x-6">
-             <div className="hidden xl:flex items-center space-x-4 opacity-90">
-                <span className="text-[10px] uppercase font-bold text-white/70">Partners</span>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg" alt="Adidas" className="h-4 invert" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Emirates_Logo.svg/2560px-Emirates_Logo.svg.png" alt="Emirates" className="h-6 invert" />
+          <div className="ml-auto flex items-center space-x-4">
+             {/* Mobile Sponsor - Creative Badge */}
+             <div className="xl:hidden flex items-center bg-[#F5A623]/10 rounded-full px-2 py-1 border border-[#F5A623]/30">
+                <span className="text-[8px] uppercase font-bold text-[#F5A623] mr-1">Sponsor</span>
+                <img src="/kampanis.png" alt="Kampanis" className="h-5 object-contain" />
              </div>
-             <button className="text-white hover:bg-white/10 p-2 rounded-full transition-colors">
+             <div className="hidden xl:flex items-center space-x-3 opacity-90">
+                <span className="text-[10px] uppercase font-bold text-[#F5A623]/70 hidden lg:inline">Sponsor</span>
+                <img src="/kampanis.png" alt="Kampanis" className="h-8 object-contain" />
+             </div>
+             <button className="text-[#F5A623] hover:bg-[#F5A623]/10 p-2 rounded-full transition-colors">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
              </button>
-             <button className="lg:hidden text-white">
+             <button className="lg:hidden text-[#F5A623]">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
              </button>
           </div>

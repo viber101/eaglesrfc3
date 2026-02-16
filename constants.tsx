@@ -2,7 +2,7 @@
 import { NewsItem, Player, Standing, TVItem, Product, Athlete } from './types';
 
 export const COLORS = {
-  primaryRed: '#db0007',
+  primaryOrange: '#F5A623',
   darkBlue: '#023474',
   arsenalGold: '#9c824a',
   lightGray: '#f4f4f4',
@@ -61,11 +61,11 @@ export const MOCK_TRENDING_VIDEOS: NewsItem[] = [
 ];
 
 export const MOCK_SHOP_PRODUCTS: Product[] = [
-  { id: 'p1', name: 'Arsenal Classics Varsity Jacket', price: '£170.00', imageUrl: 'https://picsum.photos/seed/kit1/400/500' },
-  { id: 'p2', name: 'Arsenal adidas 25/26 Third Shirt', price: '£85.00', imageUrl: 'https://picsum.photos/seed/kit2/400/500' },
-  { id: 'p3', name: 'Arsenal Classics Field Jacket', price: '£105.00', imageUrl: 'https://picsum.photos/seed/kit3/400/500' },
-  { id: 'p4', name: 'Pre-Match Warm Up Top', price: '£55.00', imageUrl: 'https://picsum.photos/seed/kit4/400/500' },
-  { id: 'p5', name: 'Arsenal Away Kit 24/25', price: '£80.00', imageUrl: 'https://picsum.photos/seed/kit5/400/500' }
+  { id: 'p1', name: 'Eagles Home Kit 2025', price: 'UGX 75,000', imageUrl: '/kit.jpeg' },
+  { id: 'p2', name: 'Eagles Away Kit 2025', price: 'UGX 75,000', imageUrl: '/kit.jpeg' },
+  { id: 'p3', name: 'Eagles Training Jersey', price: 'UGX 55,000', imageUrl: '/kit.jpeg' },
+  { id: 'p4', name: 'Eagles Fan Jersey', price: 'UGX 45,000', imageUrl: '/kit.jpeg' },
+  { id: 'p5', name: 'Eagles Limited Edition', price: 'UGX 95,000', imageUrl: '/kit.jpeg' }
 ];
 
 export const MOCK_NEWS: NewsItem[] = [

@@ -18,7 +18,7 @@ const Card: React.FC<CardProps> = ({ item, overlayTitle }) => {
         />
         {item.type === 'video' && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-12 h-12 bg-[#db0007]/90 rounded-full flex items-center justify-center text-white">
+            <div className="w-12 h-12 bg-[#F5A623]/90 rounded-full flex items-center justify-center text-white">
               <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
