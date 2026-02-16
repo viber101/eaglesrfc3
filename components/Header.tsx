@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             <img 
               src="/KINTANTE FUN DAY FLYER.png" 
               alt="Eagles RFC Logo" 
-              className="h-14 py-1 filter drop-shadow-md"
+              className="h-10 sm:h-14 w-auto object-contain filter drop-shadow-md"
             />
           </div>
           
@@ -92,19 +92,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             ))}
           </nav>
 
-          <div className="ml-auto flex items-center space-x-4">
-             {/* Mobile Sponsor - Creative Badge */}
-             <div className="xl:hidden flex items-center bg-[#F5A623]/10 rounded-full px-2 py-1 border border-[#F5A623]/30">
-                <span className="text-[8px] uppercase font-bold text-[#F5A623] mr-1">Sponsor</span>
-                <img src="/kampanis.png" alt="Kampanis" className="h-5 object-contain" />
+          <div className="ml-auto flex items-center space-x-3">
+             {/* Sponsor Logo - Visible on all screens */}
+             <div className="flex items-center">
+                <img src="/kampanis.png" alt="Kampanis" className="h-6 sm:h-8 w-auto object-contain" />
              </div>
-             <div className="hidden xl:flex items-center space-x-3 opacity-90">
-                <span className="text-[10px] uppercase font-bold text-[#F5A623]/70 hidden lg:inline">Sponsor</span>
-                <img src="/kampanis.png" alt="Kampanis" className="h-8 object-contain" />
-             </div>
-             <button className="text-[#F5A623] hover:bg-[#F5A623]/10 p-2 rounded-full transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-             </button>
              <button className="lg:hidden text-[#F5A623]">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
              </button>
