@@ -45,11 +45,30 @@ const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-to
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
 const PLAYER_SPONSORS = [
-  { id: 'sponsor-1', name: 'Otim Chirs', imageUrl: '/partners/Otim Chirs.jpeg' },
-  { id: 'sponsor-2', name: 'Strategic Sponsor', imageUrl: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM.jpeg' },
-  { id: 'sponsor-3', name: 'Community Sponsor', imageUrl: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM (1).jpeg' },
-  { id: 'sponsor-4', name: 'Performance Sponsor', imageUrl: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM (2).jpeg' }
+  { id: 'sponsor-1', name: 'Kampanis', role: 'Club Sponsor', imageUrl: '/partners/kampanis.png' },
+  { id: 'sponsor-2', name: 'Vacker', role: 'Kit Sponsor', imageUrl: '/partners/Vacker.jpeg' },
+  { id: 'sponsor-3', name: 'Wina Classic', role: 'Supporting Sponsor', imageUrl: '/partners/Wina Classic.jpeg' },
+  { id: 'sponsor-4', name: 'CHINT', role: 'Supporting Sponsor', imageUrl: '/partners/CHINT.jpeg' },
+  { id: 'sponsor-5', name: 'Caramec', role: 'Official Sponsor', imageUrl: '/partners/caramec.png' }
 ];
+const PAGE_IMAGES = {
+  aboutHero: '/gallery/Eagles (10).jpeg',
+  aboutStory: ['/gallery/Eagles (3).jpeg', '/gallery/Eagles (8).jpeg', '/gallery/Eagles (14).jpeg'],
+  historyHero: '/gallery/Eagles (17).jpeg',
+  historyMoments: ['/gallery/Eagles (4).jpeg', '/gallery/Eagles (9).jpeg', '/gallery/Eagles (19).jpeg'],
+  fitnessHero: '/gallery/Education & sports/Education (6).jpeg',
+  fitnessSupport: '/gallery/Education & sports/Education (2).jpeg',
+  projectsHero: '/gallery/Stands/Stands (1).jpeg',
+  projectsGallery: ['/gallery/Stands/Stands (2).jpeg', '/gallery/Stands/Stands (3).jpeg', '/gallery/Stands/Stands (4).jpeg'],
+  foundationHero: '/gallery/Education & sports/Education (10).jpeg',
+  foundationGallery: ['/gallery/Education & sports/Education (8).jpeg', '/gallery/Education & sports/Education (11).jpeg', '/gallery/Education & sports/Education (14).jpeg'],
+  sponsorHero: '/gallery/Eagles (18).jpeg',
+  donateHero: '/gallery/Education & sports/Education (12).jpeg',
+  playerSponsorHero: '/gallery/Eagles (12).jpeg',
+  shopHero: '/gallery/Eagles (6).jpeg',
+  tvHero: '/gallery/Eagles (15).jpeg'
+};
+const toAssetUrl = (path: string) => encodeURI(path);
 
 const cleanCell = (value: string) => value.replace(/"/g, '').replace(/\s+/g, ' ').trim();
 const extractDateNumber = (value: string) => value.match(/\d+/)?.[0] ?? value;
@@ -247,26 +266,27 @@ const PlayerSponsorsSlider: React.FC = () => {
 
         <div ref={scrollContainerRef} onScroll={checkScroll} className="flex overflow-x-auto pb-2 space-x-3 snap-x snap-mandatory scrollbar-hide">
           {PLAYER_SPONSORS.map((sponsor) => (
-            <article key={sponsor.id} className="min-w-[270px] snap-start bg-[#e8ecf2] text-black border-t-4 border-[#F5A623] p-4 shadow-sm">
-              <div className="flex items-center justify-between mb-3">
-                <span className="bg-[#bdd0e1] text-[#081534] text-[10px] px-1.5 py-0.5 font-black uppercase">Official</span>
-                <span className="text-[10px] text-[#4f647a] font-black uppercase">Player Sponsor</span>
+            <article key={sponsor.id} className="min-w-[270px] snap-start rounded-sm bg-[#e8ecf2] text-black border-t-4 border-[#F5A623] p-4 shadow-sm">
+              <div className="mb-3">
+                <span className="inline-flex items-center rounded-full bg-[#bdd0e1] text-[#081534] text-[10px] px-2.5 py-1 font-black uppercase tracking-wide">{sponsor.role}</span>
               </div>
 
-              <div className="h-28 rounded-md overflow-hidden bg-white border border-[#d5dde8] flex items-center justify-center p-3">
+              <div className="h-28 rounded-md overflow-hidden bg-white border border-[#d5dde8] flex items-center justify-center p-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.75)]">
                 <img
-                  src={sponsor.imageUrl}
+                  src={toAssetUrl(sponsor.imageUrl)}
                   alt={sponsor.name}
                   className="max-h-full max-w-full object-contain"
                   loading="lazy"
                 />
               </div>
 
-              <p className="mt-4 text-lg font-black uppercase italic tracking-tight leading-none text-black">{sponsor.name}</p>
+              <p className="mt-4 text-2xl font-black uppercase italic tracking-tight leading-none text-black">{sponsor.name}</p>
 
               <button className="mt-4 w-full rounded-md border border-black bg-gradient-to-r from-[#F5A623] to-[#f8c75a] text-black py-2 text-[11px] font-black uppercase tracking-wider hover:from-black hover:to-black hover:text-[#F5A623] transition-colors flex items-center justify-center gap-2">
                 <span>Become a Sponsor</span>
-                <span aria-hidden="true">↗</span>
+                <svg aria-hidden="true" className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4" d="M7 17L17 7M9 7h8v8" />
+                </svg>
               </button>
             </article>
           ))}
@@ -447,7 +467,7 @@ const CalendarSection: React.FC = () => {
                       </div>
                       <div className="grid grid-cols-3 items-center gap-3">
                         <p className={`text-sm font-black uppercase leading-tight text-left ${isEaglesTeam(fixture.home) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.home}</p>
-                        <p className="text-4xl font-black text-center">
+                        <p className="text-3xl font-black text-center">
                           {formatScoreValue(score)}
                         </p>
                         <p className={`text-sm font-black uppercase leading-tight text-right ${isEaglesTeam(fixture.away) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.away}</p>
@@ -458,8 +478,8 @@ const CalendarSection: React.FC = () => {
                       <h3 className="text-[#0d245b] text-3xl font-black tracking-tight mb-1">Week {fixture.week}</h3>
                       <p className="text-[#0d245b] text-lg font-black mb-3">{fixture.month} {extractDateNumber(fixture.date)}</p>
                       <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
-                        <span className="text-[11px] font-black uppercase tracking-wide text-[#4d6185]">Score</span>
-                        <span className="text-[#0d245b] text-lg font-black">{formatScoreValue(score)}</span>
+                        <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Score</span>
+                        <span className="text-[#0d245b] text-base font-black">{formatScoreValue(score)}</span>
                       </div>
                       <div className="space-y-2 text-[#35507f] text-sm font-bold">
                         <p className="flex items-center gap-2">
@@ -920,6 +940,18 @@ const ContactCtaCard: React.FC<{ title: string; subtitle: string }> = ({ title, 
   </div>
 );
 
+const PhotoStrip: React.FC<{ images: string[]; label: string }> = ({ images, label }) => (
+  <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    {images.map((image, index) => (
+      <article key={`${label}-${index}`} className="relative rounded-xl overflow-hidden min-h-[200px] border border-[#d9e0ec]">
+        <img src={toAssetUrl(image)} alt={`${label} ${index + 1}`} className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+        <p className="absolute bottom-3 left-3 text-white text-[10px] font-black uppercase tracking-[0.2em]">{label}</p>
+      </article>
+    ))}
+  </section>
+);
+
 const TierCard: React.FC<{ tier: SponsorshipTier }> = ({ tier }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -1189,7 +1221,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
 const AboutPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 animate-in fade-in duration-700 px-4 space-y-8">
     <section className="relative rounded-2xl overflow-hidden border border-[#d9e0ec]">
-      <img src="/homehero.jpeg" className="w-full h-[420px] object-cover" alt="Eagles Rugby Club" />
+      <img src={toAssetUrl(PAGE_IMAGES.aboutHero)} className="w-full h-[420px] object-cover" alt="Eagles Rugby Club" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent p-8 sm:p-12 flex flex-col justify-end">
         <p className="text-[#F5A623] text-xs uppercase tracking-[0.3em] font-black mb-2">About Eagles Rugby Club</p>
         <h1 className="text-white text-4xl sm:text-6xl font-black uppercase italic tracking-tighter leading-none mb-3">Founded 2019</h1>
@@ -1202,6 +1234,8 @@ const AboutPage: React.FC = () => (
         <p key={paragraph}>{paragraph}</p>
       ))}
     </InfoSection>
+
+    <PhotoStrip images={PAGE_IMAGES.aboutStory} label="Club Story" />
 
     <section>
       <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Our Purpose</h2>
@@ -1236,10 +1270,14 @@ const AboutPage: React.FC = () => (
 
 const HistoryPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
-    <section className="bg-[#081534] text-white rounded-2xl p-8 sm:p-12 border-t-4 border-[#F5A623]">
-      <p className="text-[#F5A623] text-xs uppercase tracking-[0.3em] font-black mb-2">Our Journey</p>
-      <h1 className="text-5xl sm:text-6xl font-black uppercase italic tracking-tighter mb-4">History</h1>
-      <p className="text-[#d4deef] max-w-4xl leading-relaxed">{HISTORY_CONTENT.intro}</p>
+    <section className="relative text-white rounded-2xl p-8 sm:p-12 border-t-4 border-[#F5A623] overflow-hidden">
+      <img src={toAssetUrl(PAGE_IMAGES.historyHero)} alt="Eagles history" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-[#081534]/75" />
+      <div className="relative z-10">
+        <p className="text-[#F5A623] text-xs uppercase tracking-[0.3em] font-black mb-2">Our Journey</p>
+        <h1 className="text-5xl sm:text-6xl font-black uppercase italic tracking-tighter mb-4">History</h1>
+        <p className="text-[#d4deef] max-w-4xl leading-relaxed">{HISTORY_CONTENT.intro}</p>
+      </div>
     </section>
 
     <section className="space-y-4">
@@ -1257,6 +1295,8 @@ const HistoryPage: React.FC = () => (
     <InfoSection title="Legacy">
       <p>{HISTORY_CONTENT.closing}</p>
     </InfoSection>
+
+    <PhotoStrip images={PAGE_IMAGES.historyMoments} label="History Moments" />
   </div>
 );
 
@@ -1312,9 +1352,14 @@ const HallOfFamePage: React.FC = () => (
 
 const ShopPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6">
-      <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Official Shop</h1>
-      <p className="text-gray-600">{SHOP_CONTENT.intro}</p>
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+      <div>
+        <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Official Shop</h1>
+        <p className="text-gray-600">{SHOP_CONTENT.intro}</p>
+      </div>
+      <div className="h-48 rounded-lg overflow-hidden border border-[#d7deea]">
+        <img src={toAssetUrl(PAGE_IMAGES.shopHero)} alt="Shop hero" className="w-full h-full object-cover" />
+      </div>
     </section>
     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
       {MOCK_SHOP_PRODUCTS.map((product) => (
@@ -1332,9 +1377,12 @@ const ShopPage: React.FC = () => (
 
 const TvPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6">
-      <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Eagles TV</h1>
-      <p className="text-gray-600">{TV_CONTENT.intro}</p>
+    <section className="relative rounded-xl overflow-hidden border border-[#e2e7f0] min-h-[240px]">
+      <img src={toAssetUrl(PAGE_IMAGES.tvHero)} alt="Eagles TV hero" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/20 p-6 flex flex-col justify-end">
+        <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-2 text-white">Eagles TV</h1>
+        <p className="text-gray-200 max-w-2xl">{TV_CONTENT.intro}</p>
+      </div>
     </section>
     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
       {MOCK_TV.map((tv) => (
@@ -1357,21 +1405,41 @@ const TvPage: React.FC = () => (
 
 const DonatePage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="bg-[#081534] text-white rounded-xl p-8 border-t-4 border-[#F5A623]">
-      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Donate</h1>
-      <p className="text-[#d4deef] max-w-3xl">{DONATE_CONTENT.intro}</p>
+    <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
+      <img src={toAssetUrl(PAGE_IMAGES.donateHero)} alt="Donate hero" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-[#081534]/75" />
+      <div className="relative z-10">
+        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Donate</h1>
+        <p className="text-[#d4deef] max-w-3xl">{DONATE_CONTENT.intro}</p>
+      </div>
     </section>
 
     <BulletGrid items={DONATE_CONTENT.allocation} />
-    <ContactCtaCard title="Support a Child. Support a Player." subtitle="Make an Impact" />
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-8 text-center">
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4d6185] mb-2">Make an Impact</p>
+      <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Support a Child. Support a Player.</h2>
+      <a
+        href="https://tip.vanvaa.com/?q=MTcxMg=="
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center justify-center bg-[#F5A623] text-black px-7 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-black hover:text-[#F5A623] transition-colors"
+      >
+        Donate Now
+      </a>
+    </section>
   </div>
 );
 
 const PlayerSponsorPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="bg-white border border-[#e2e7f0] rounded-xl p-8">
-      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Player Sponsor</h1>
-      <p className="text-gray-700">{PLAYER_SPONSOR_CONTENT.offer}</p>
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-8 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+      <div>
+        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Player Sponsor</h1>
+        <p className="text-gray-700">{PLAYER_SPONSOR_CONTENT.offer}</p>
+      </div>
+      <div className="h-48 rounded-lg overflow-hidden border border-[#d7deea]">
+        <img src={toAssetUrl(PAGE_IMAGES.playerSponsorHero)} alt="Player sponsor" className="w-full h-full object-cover" />
+      </div>
     </section>
 
     <section>
@@ -1398,10 +1466,13 @@ const PlayerSponsorPage: React.FC = () => (
 
 const FitnessCenterPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="bg-white border border-[#e2e7f0] rounded-xl p-8">
-      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Fitness Center</h1>
-      <p className="text-gray-700 mb-3">{FITNESS_CONTENT.intro}</p>
-      <p className="text-sm font-black uppercase tracking-wider text-[#081534]">{FITNESS_CONTENT.schedule}</p>
+    <section className="relative rounded-xl overflow-hidden border border-[#e2e7f0] min-h-[300px]">
+      <img src={toAssetUrl(PAGE_IMAGES.fitnessHero)} alt="Fitness training" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/20 p-8 flex flex-col justify-end">
+        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-white">Fitness Center</h1>
+        <p className="text-gray-200 mb-2 max-w-3xl">{FITNESS_CONTENT.intro}</p>
+        <p className="text-sm font-black uppercase tracking-wider text-[#F5A623]">{FITNESS_CONTENT.schedule}</p>
+      </div>
     </section>
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1425,17 +1496,25 @@ const FitnessCenterPage: React.FC = () => (
       </div>
     </InfoSection>
 
+    <section className="rounded-xl overflow-hidden border border-[#e2e7f0]">
+      <img src={toAssetUrl(PAGE_IMAGES.fitnessSupport)} alt="Fitness community" className="w-full h-[250px] object-cover" />
+    </section>
+
     <ContactCtaCard title="Register for Fitness Sessions" subtitle="UGX 20,000 Per Session" />
   </div>
 );
 
 const ProjectsPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="bg-[#081534] text-white rounded-xl p-8 border-t-4 border-[#F5A623]">
-      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Our Projects</h1>
-      {PROJECTS_CONTENT.summary.map((line) => (
-        <p key={line} className="text-[#d4deef] max-w-4xl mb-2 last:mb-0">{line}</p>
-      ))}
+    <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
+      <img src={toAssetUrl(PAGE_IMAGES.projectsHero)} alt="Stands project" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-[#081534]/75" />
+      <div className="relative z-10">
+        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Our Projects</h1>
+        {PROJECTS_CONTENT.summary.map((line) => (
+          <p key={line} className="text-[#d4deef] max-w-4xl mb-2 last:mb-0">{line}</p>
+        ))}
+      </div>
     </section>
 
     <StatTiles stats={PROJECTS_CONTENT.stats} />
@@ -1453,15 +1532,20 @@ const ProjectsPage: React.FC = () => (
       </InfoSection>
     </div>
 
+    <PhotoStrip images={PAGE_IMAGES.projectsGallery} label="Stands Project" />
+
     <ContactCtaCard title="Pledge Support for Stand Construction" subtitle="Infrastructure Sponsorship" />
   </div>
 );
 
 const FoundationPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="bg-white border border-[#e2e7f0] rounded-xl p-8">
-      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Our Foundation</h1>
-      <p className="text-gray-700">{FOUNDATION_CONTENT.mission}</p>
+    <section className="relative rounded-xl overflow-hidden border border-[#e2e7f0] min-h-[300px]">
+      <img src={toAssetUrl(PAGE_IMAGES.foundationHero)} alt="Foundation hero" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/20 p-8 flex flex-col justify-end">
+        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-white">Our Foundation</h1>
+        <p className="text-gray-200 max-w-3xl">{FOUNDATION_CONTENT.mission}</p>
+      </div>
     </section>
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1476,17 +1560,22 @@ const FoundationPage: React.FC = () => (
     <InfoSection title="Partnership">
       <p>{FOUNDATION_CONTENT.partnership}</p>
     </InfoSection>
+    <PhotoStrip images={PAGE_IMAGES.foundationGallery} label="Foundation Impact" />
     <ContactCtaCard title="Partner With Eagles Foundation" subtitle="Education and Opportunity" />
   </div>
 );
 
 const SponsorUsPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
-    <section className="bg-[#081534] text-white rounded-xl p-8 border-t-4 border-[#F5A623]">
-      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Sponsor Us</h1>
-      <p className="text-[#d4deef] max-w-4xl">
-        Sponsoring Eagles Rugby Club is a strategic way to drive brand visibility while investing in youth development and community progress.
-      </p>
+    <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
+      <img src={toAssetUrl(PAGE_IMAGES.sponsorHero)} alt="Sponsor hero" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-[#081534]/70" />
+      <div className="relative z-10">
+        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Sponsor Us</h1>
+        <p className="text-[#d4deef] max-w-4xl">
+          Sponsoring Eagles Rugby Club is a strategic way to drive brand visibility while investing in youth development and community progress.
+        </p>
+      </div>
     </section>
 
     <section>
@@ -1518,17 +1607,133 @@ const SponsorUsPage: React.FC = () => (
   </div>
 );
 
+const MembershipPage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
+    <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
+      <img src={toAssetUrl(PAGE_IMAGES.sponsorHero)} alt="Eagles membership" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-[#081534]/80" />
+      <div className="relative z-10">
+        <p className="text-[#F5A623] text-xs uppercase tracking-[0.3em] font-black mb-2">Eagles Rugby Club</p>
+        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Investor Membership Card</h1>
+        <p className="text-[#d4deef] max-w-4xl">
+          The Eagles Rugby Club Annual Membership Card is a strategic investment in sport, youth development, and community progress.
+        </p>
+      </div>
+    </section>
+
+    <InfoSection title="Annual Membership">
+      <p>
+        For <strong>UGX 100,000 per year</strong>, members receive exclusive benefits while directly supporting
+        sustainable club growth and social impact programs.
+      </p>
+    </InfoSection>
+
+    <section>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Exclusive Member Benefits</h2>
+      <BulletGrid
+        items={[
+          { name: 'Program Discounts', description: 'Up to 20% discount on selected club programs and activities.' },
+          { name: 'Fitness Centre Savings', description: '20% discount every time you train at our Fitness Centre.' },
+          { name: 'Priority Access', description: 'Priority access to club events and initiatives.' },
+          { name: 'Official Recognition', description: 'Recognition as a valued club supporter and partner.' },
+          { name: 'Affordable Training', description: 'Every visit to our fitness centre becomes more affordable within a structured and professionally guided environment.' }
+        ]}
+      />
+    </section>
+
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 space-y-5">
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534]">Why This Membership Is a Valuable Investment</h2>
+      <article>
+        <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mb-2">1. Direct Financial Advantage</h3>
+        <p className="text-gray-700">
+          Frequent use of our fitness centre and programs allows members to recover significant value through the 20% discount benefit.
+        </p>
+      </article>
+      <article>
+        <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mb-2">2. Sustainable Club Operations</h3>
+        <p className="text-gray-700 mb-2">Membership contributions help cover:</p>
+        <BulletGrid
+          items={[
+            { name: 'Equipment', description: 'Equipment maintenance and upgrades.' },
+            { name: 'Facilities', description: 'Facility management and utilities.' },
+            { name: 'Coaching', description: 'Coaching and program development.' },
+            { name: 'Operations', description: 'Administrative and operational costs.' }
+          ]}
+        />
+        <p className="text-gray-700 mt-2">Your support ensures professionalism, safety, and continuous improvement.</p>
+      </article>
+      <article>
+        <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mb-2">3. Education and Community Impact</h3>
+        <p className="text-gray-700">
+          A portion of membership proceeds contributes to maintaining children in school and assisting families facing financial challenges.
+          Your membership supports both sport and long-term youth empowerment.
+        </p>
+      </article>
+    </section>
+
+    <InfoSection title="A Partnership with Purpose">
+      <BulletGrid
+        items={[
+          { name: 'Personal Fitness', description: 'Investing in your personal fitness.' },
+          { name: 'Youth Development', description: 'Supporting youth development.' },
+          { name: 'Education Access', description: 'Promoting education access.' },
+          { name: 'Community Strength', description: 'Strengthening a growing community institution.' }
+        ]}
+      />
+      <p className="mt-4">
+        The Eagles Rugby Club Membership Card represents value, responsibility, and meaningful impact.
+      </p>
+      <p className="mt-2 font-black uppercase tracking-wider text-[#081534]">Train Smarter. Support Stronger. Build the Future.</p>
+    </InfoSection>
+
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4d6185] mb-1">Registration and Partnership Inquiries</p>
+        <p className="text-xl font-black text-[#081534]">+256 773 207 919</p>
+      </div>
+      <a
+        href="https://wa.me/256773207919"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center justify-center gap-2 bg-[#25D366] text-white px-5 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-[#1fa855] transition-colors"
+      >
+        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19.05 4.91A9.82 9.82 0 0 0 12.03 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.74.45 3.44 1.3 4.94L2 22l5.33-1.39a9.85 9.85 0 0 0 4.7 1.2h.01c5.46 0 9.9-4.44 9.9-9.9a9.82 9.82 0 0 0-2.89-7zm-7.02 15.23h-.01a8.15 8.15 0 0 1-4.15-1.14l-.3-.18-3.16.82.84-3.08-.2-.31a8.16 8.16 0 0 1-1.25-4.34c0-4.5 3.66-8.17 8.17-8.17a8.1 8.1 0 0 1 5.78 2.4 8.12 8.12 0 0 1 2.4 5.77c0 4.5-3.66 8.17-8.16 8.17zm4.48-6.12c-.25-.12-1.48-.73-1.7-.82-.23-.08-.39-.12-.56.13-.16.25-.64.82-.78.99-.14.16-.28.18-.53.06-.25-.13-1.04-.38-1.98-1.22-.73-.65-1.22-1.45-1.36-1.69-.14-.25-.01-.38.11-.5.11-.11.25-.28.37-.42.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.44-.06-.12-.56-1.35-.76-1.84-.2-.49-.4-.42-.56-.43h-.48c-.16 0-.42.06-.64.31-.22.25-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.09 3.61.57.25 1.02.4 1.37.51.58.18 1.11.16 1.52.1.46-.07 1.48-.6 1.69-1.18.21-.59.21-1.09.15-1.19-.06-.1-.23-.16-.48-.28z" />
+        </svg>
+        <span>WhatsApp +256 773 207 919</span>
+      </a>
+    </section>
+  </div>
+);
+
 const GalleryPage: React.FC = () => {
   const galleryImages = [
-    { src: '/homehero.jpeg', title: 'Match Day Focus' },
-    { src: '/ceo.jpeg', title: 'Club Leadership' },
-    { src: '/kit.jpeg', title: '2026 Kit' },
-    { src: '/KINTANTE FUN DAY FLYER.png', title: 'Community Day' },
-    { src: '/partners/Otim Chirs.jpeg', title: 'Athletes in Business' },
-    { src: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM.jpeg', title: 'Partners' },
-    { src: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM (1).jpeg', title: 'Partners' },
-    { src: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM (2).jpeg', title: 'Partners' }
+    { src: '/gallery/Eagles (1).jpeg', title: 'Match Day Intensity', tag: 'Eagles' },
+    { src: '/gallery/Eagles (2).jpeg', title: 'Team Unity', tag: 'Eagles' },
+    { src: '/gallery/Eagles (3).jpeg', title: 'Game Focus', tag: 'Eagles' },
+    { src: '/gallery/Eagles (4).jpeg', title: 'Club Culture', tag: 'Eagles' },
+    { src: '/gallery/Eagles (5).jpeg', title: 'Supporter Energy', tag: 'Eagles' },
+    { src: '/gallery/Eagles (6).jpeg', title: 'Performance Drive', tag: 'Eagles' },
+    { src: '/gallery/Eagles (7).jpeg', title: 'Training Ground', tag: 'Eagles' },
+    { src: '/gallery/Eagles (8).jpeg', title: 'Player Focus', tag: 'Eagles' },
+    { src: '/gallery/Eagles (9).jpeg', title: 'Winning Mindset', tag: 'Eagles' },
+    { src: '/gallery/Stands/Stands (1).jpeg', title: 'Infrastructure Progress', tag: 'Stands' },
+    { src: '/gallery/Stands/Stands (2).jpeg', title: 'Stands Development', tag: 'Stands' },
+    { src: '/gallery/Stands/Stands (3).jpeg', title: 'Home Ground Growth', tag: 'Stands' },
+    { src: '/gallery/Education & sports/Education (8).jpeg', title: 'Education Through Sport', tag: 'Education' },
+    { src: '/gallery/Education & sports/Education (10).jpeg', title: 'Community Impact', tag: 'Education' },
+    { src: '/gallery/Education & sports/Education (14).jpeg', title: 'Future Leaders', tag: 'Education' }
   ];
+
+  const getCardClass = (index: number) => {
+    if (index === 0) {
+      return 'sm:col-span-2 lg:col-span-2 lg:row-span-2 min-h-[380px]';
+    }
+    if (index % 5 === 0) {
+      return 'sm:col-span-2 min-h-[260px]';
+    }
+    return 'min-h-[220px]';
+  };
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700">
@@ -1539,21 +1744,20 @@ const GalleryPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-[220px]">
         {galleryImages.map((image, index) => (
           <article
             key={`${image.src}-${index}`}
-            className={`group relative overflow-hidden rounded-xl bg-black shadow-sm ${
-              index === 0 ? 'sm:col-span-2 lg:col-span-2 lg:row-span-2 min-h-[360px]' : 'min-h-[220px]'
-            }`}
+            className={`group relative overflow-hidden rounded-xl bg-black shadow-sm ${getCardClass(index)}`}
           >
             <img
-              src={image.src}
+              src={toAssetUrl(image.src)}
               alt={image.title}
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
             <div className="absolute bottom-4 left-4 right-4">
+              <p className="text-[#F5A623] text-[10px] font-black uppercase tracking-[0.2em] mb-1">{image.tag}</p>
               <p className="text-white text-sm font-black uppercase tracking-wider">{image.title}</p>
             </div>
           </article>
@@ -1588,6 +1792,7 @@ const App: React.FC = () => {
         {currentPage === 'our-projects' ? <ProjectsPage /> : null}
         {currentPage === 'our-foundation' ? <FoundationPage /> : null}
         {currentPage === 'sponsor-us' ? <SponsorUsPage /> : null}
+        {currentPage === 'membership' ? <MembershipPage /> : null}
         {currentPage === 'gallery' ? <GalleryPage /> : null}
       </main>
 
@@ -1730,5 +1935,7 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+
 
 

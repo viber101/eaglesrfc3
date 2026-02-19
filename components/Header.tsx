@@ -71,6 +71,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
   const menuItems = [
     { name: 'Donate', id: 'donate' },
+    { name: 'Membership', id: 'membership' },
     { name: 'Player Sponsor', id: 'contact' }
   ];
 
