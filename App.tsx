@@ -3,8 +3,23 @@ import React, { useRef, useState, useEffect } from 'react';
 import Header from './components/Header';
 import SectionHeader from './components/SectionHeader';
 import Card from './components/Card';
-import { MOCK_TRENDING_VIDEOS, MOCK_SHOP_PRODUCTS, MOCK_NEWS, MOCK_STANDINGS, MOCK_PLAYERS, MOCK_TV, MOCK_ATHLETES, MOCK_X_PLAYERS, MOCK_HALL_OF_FAME, MOCK_BUSINESS_ATHLETES } from './constants';
+import { MOCK_TRENDING_VIDEOS, MOCK_SHOP_PRODUCTS, MOCK_NEWS, MOCK_STANDINGS, MOCK_PLAYERS, MOCK_TV, MOCK_X_PLAYERS, MOCK_HALL_OF_FAME, MOCK_BUSINESS_ATHLETES } from './constants';
 import { castVote as castPollVote, getPollCounts, PollApiConfigError, type PollChoice, type PollCounts } from './lib/pollApi';
+import {
+  ABOUT_CONTENT,
+  CONTACT_INFO,
+  DONATE_CONTENT,
+  FITNESS_CONTENT,
+  FOUNDATION_CONTENT,
+  HISTORY_CONTENT,
+  HOME_CONTENT,
+  PLAYER_SPONSOR_CONTENT,
+  PROJECTS_CONTENT,
+  SHOP_CONTENT,
+  SPONSOR_US_CONTENT,
+  TV_CONTENT
+} from './content/siteContent';
+import type { PurposeItem, SponsorshipTier, ValueItem } from './types';
 
 type FixtureItem = {
   id: string;
@@ -29,6 +44,12 @@ const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-vot
 const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-token-v1';
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
+const PLAYER_SPONSORS = [
+  { id: 'sponsor-1', name: 'Otim Chirs', imageUrl: '/partners/Otim Chirs.jpeg' },
+  { id: 'sponsor-2', name: 'Strategic Sponsor', imageUrl: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM.jpeg' },
+  { id: 'sponsor-3', name: 'Community Sponsor', imageUrl: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM (1).jpeg' },
+  { id: 'sponsor-4', name: 'Performance Sponsor', imageUrl: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM (2).jpeg' }
+];
 
 const cleanCell = (value: string) => value.replace(/"/g, '').replace(/\s+/g, ' ').trim();
 const extractDateNumber = (value: string) => value.match(/\d+/)?.[0] ?? value;
@@ -42,6 +63,10 @@ const toFixtureDateLabel = (fixture: FixtureItem) => {
   const day = fixture.day ? fixture.day.slice(0, 3).toUpperCase() : '';
   return `${day} ${month} ${dateNumber}`.trim();
 };
+
+const formatScoreValue = (score?: FixtureScore) => (
+  score ? `${score.home} - ${score.away}` : '-- : --'
+);
 
 const MONTH_ORDER = [
   'January',
@@ -172,41 +197,10 @@ const parseFixturesCsv = (csvText: string): FixtureItem[] => {
   return fixtures;
 };
 
-const FixturesSlider: React.FC = () => {
-  const [fixtures, setFixtures] = useState<FixtureItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+const PlayerSponsorsSlider: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-
-  useEffect(() => {
-    let isMounted = true;
-    fetch('/fixtures/2026-cura-championship-fixtures.csv')
-      .then((response) => response.text())
-      .then((csvText) => {
-        if (isMounted) {
-          const parsedFixtures = parseFixturesCsv(csvText);
-          const eaglesFixtures = parsedFixtures.filter(
-            (fixture) => isEaglesTeam(fixture.home) || isEaglesTeam(fixture.away)
-          );
-          setFixtures(eaglesFixtures);
-        }
-      })
-      .catch(() => {
-        if (isMounted) {
-          setFixtures([]);
-        }
-      })
-      .finally(() => {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -220,7 +214,7 @@ const FixturesSlider: React.FC = () => {
     checkScroll();
     window.addEventListener('resize', checkScroll);
     return () => window.removeEventListener('resize', checkScroll);
-  }, [fixtures.length, isLoading]);
+  }, []);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -235,7 +229,7 @@ const FixturesSlider: React.FC = () => {
   return (
     <div className="bg-[#081534] rounded-xl p-4 shadow-lg overflow-hidden">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-white text-[11px] font-black uppercase tracking-widest">2026 CURA Fixtures</h3>
+        <h3 className="text-white text-[11px] font-black uppercase tracking-widest">Player Sponsors</h3>
         <span className="text-[#9fb0c4] text-[10px] font-bold uppercase tracking-wide">Slide</span>
       </div>
 
@@ -252,51 +246,30 @@ const FixturesSlider: React.FC = () => {
         )}
 
         <div ref={scrollContainerRef} onScroll={checkScroll} className="flex overflow-x-auto pb-2 space-x-3 snap-x snap-mandatory scrollbar-hide">
-          {isLoading && (
-            <div className="min-w-[270px] bg-[#e8ecf2] p-4 border-t-4 border-[#F5A623]">
-              <p className="text-[#081534] text-sm font-black uppercase">Loading Fixtures...</p>
-            </div>
-          )}
+          {PLAYER_SPONSORS.map((sponsor) => (
+            <article key={sponsor.id} className="min-w-[270px] snap-start bg-[#e8ecf2] text-black border-t-4 border-[#F5A623] p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <span className="bg-[#bdd0e1] text-[#081534] text-[10px] px-1.5 py-0.5 font-black uppercase">Official</span>
+                <span className="text-[10px] text-[#4f647a] font-black uppercase">Player Sponsor</span>
+              </div>
 
-          {!isLoading && fixtures.map((fixture) => {
-            const score = FIXTURE_SCORE_OVERRIDES[toFixtureKey(fixture)];
-            return (
-              <article key={fixture.id} className="min-w-[270px] snap-start bg-[#e8ecf2] text-black border-t-4 border-[#F5A623] p-4 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="bg-[#bdd0e1] text-[#081534] text-[10px] px-1.5 py-0.5 font-black uppercase">{fixture.category}</span>
-                  <span className="text-[10px] text-[#4f647a] font-black uppercase">{toFixtureDateLabel(fixture)}</span>
-                  <span className="text-[10px] text-[#4f647a] font-black uppercase ml-auto">{fixture.time}</span>
-                </div>
-                <p className={`text-2xl font-black uppercase italic tracking-tight leading-none ${isEaglesTeam(fixture.home) ? 'text-[#F5A623]' : 'text-black'}`}>{fixture.home}</p>
-                <p className={`text-2xl font-black uppercase italic tracking-tight leading-none mt-2 ${isEaglesTeam(fixture.away) ? 'text-[#F5A623]' : 'text-black'}`}>{fixture.away}</p>
+              <div className="h-28 rounded-md overflow-hidden bg-white border border-[#d5dde8] flex items-center justify-center p-3">
+                <img
+                  src={sponsor.imageUrl}
+                  alt={sponsor.name}
+                  className="max-h-full max-w-full object-contain"
+                  loading="lazy"
+                />
+              </div>
 
-                <div className="mt-4 p-2.5 bg-white/70 rounded border border-[#d5dde8]">
-                  {score ? (
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-[#4f647a]">{score.status}</span>
-                      <span className="text-lg font-black text-[#081534]">{score.home} - {score.away}</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-[#4f647a]">Score</span>
-                      <span className="text-lg font-black text-[#081534]">-- : --</span>
-                    </div>
-                  )}
-                </div>
+              <p className="mt-4 text-lg font-black uppercase italic tracking-tight leading-none text-black">{sponsor.name}</p>
 
-                <div className="mt-4 pt-3 border-t border-[#cfd7e2] flex items-center justify-between">
-                  <span className="text-[11px] text-[#4f647a] font-black uppercase">Week {fixture.week}</span>
-                  <span className="text-[11px] text-[#081534] font-black uppercase">{fixture.venue}</span>
-                </div>
-              </article>
-            );
-          })}
-
-          {!isLoading && fixtures.length === 0 && (
-            <div className="min-w-[270px] bg-[#e8ecf2] p-4 border-t-4 border-[#F5A623]">
-              <p className="text-black text-sm font-black uppercase">No fixtures found in CSV.</p>
-            </div>
-          )}
+              <button className="mt-4 w-full rounded-md border border-black bg-gradient-to-r from-[#F5A623] to-[#f8c75a] text-black py-2 text-[11px] font-black uppercase tracking-wider hover:from-black hover:to-black hover:text-[#F5A623] transition-colors flex items-center justify-center gap-2">
+                <span>Become a Sponsor</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+            </article>
+          ))}
         </div>
       </div>
     </div>
@@ -322,7 +295,11 @@ const CalendarSection: React.FC = () => {
         }
 
         const parsedFixtures = parseFixturesCsv(csvText);
-        const sortedFixtures = [...parsedFixtures].sort((a, b) => {
+        const eaglesFixtures = parsedFixtures.filter(
+          (fixture) => isEaglesTeam(fixture.home) || isEaglesTeam(fixture.away)
+        );
+
+        const sortedFixtures = [...eaglesFixtures].sort((a, b) => {
           const monthDelta = (MONTH_INDEX[a.month.toLowerCase()] ?? 99) - (MONTH_INDEX[b.month.toLowerCase()] ?? 99);
           if (monthDelta !== 0) {
             return monthDelta;
@@ -471,7 +448,7 @@ const CalendarSection: React.FC = () => {
                       <div className="grid grid-cols-3 items-center gap-3">
                         <p className={`text-sm font-black uppercase leading-tight text-left ${isEaglesTeam(fixture.home) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.home}</p>
                         <p className="text-4xl font-black text-center">
-                          {score ? `${score.home} - ${score.away}` : 'V'}
+                          {formatScoreValue(score)}
                         </p>
                         <p className={`text-sm font-black uppercase leading-tight text-right ${isEaglesTeam(fixture.away) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.away}</p>
                       </div>
@@ -480,6 +457,10 @@ const CalendarSection: React.FC = () => {
                       <p className="text-[#1b2f5a] text-xs font-bold mb-2">CURA Championship</p>
                       <h3 className="text-[#0d245b] text-3xl font-black tracking-tight mb-1">Week {fixture.week}</h3>
                       <p className="text-[#0d245b] text-lg font-black mb-3">{fixture.month} {extractDateNumber(fixture.date)}</p>
+                      <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
+                        <span className="text-[11px] font-black uppercase tracking-wide text-[#4d6185]">Score</span>
+                        <span className="text-[#0d245b] text-lg font-black">{formatScoreValue(score)}</span>
+                      </div>
                       <div className="space-y-2 text-[#35507f] text-sm font-bold">
                         <p className="flex items-center gap-2">
                           <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
@@ -892,6 +873,92 @@ const CompactMatchHero: React.FC = () => {
   );
 };
 
+const InfoSection: React.FC<{ id?: string; title: string; children: React.ReactNode }> = ({ id, title, children }) => (
+  <section id={id} className="bg-white border border-[#e2e7f0] rounded-xl p-6 sm:p-8 shadow-sm scroll-mt-32">
+    <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">{title}</h2>
+    <div className="text-gray-700 leading-relaxed space-y-3">{children}</div>
+  </section>
+);
+
+const BulletGrid: React.FC<{ items: Array<PurposeItem | ValueItem> }> = ({ items }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {items.map((item, index) => {
+      const heading = 'name' in item ? item.name : item.title;
+      return (
+        <article key={`${heading}-${index}`} className="bg-white border border-[#e2e7f0] rounded-xl p-5 shadow-sm">
+          <h3 className="text-[#081534] text-lg font-black uppercase tracking-tight mb-2">{heading}</h3>
+          <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
+        </article>
+      );
+    })}
+  </div>
+);
+
+const StatTiles: React.FC<{ stats: Array<{ label: string; value: string; description: string }> }> = ({ stats }) => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    {stats.map((stat) => (
+      <article key={stat.label} className="bg-[#081534] text-white rounded-xl p-5 border-t-4 border-[#F5A623] shadow-sm">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-[#b4c0d9] font-black">{stat.label}</p>
+        <p className="text-3xl font-black mt-1">{stat.value}</p>
+        <p className="text-sm text-[#d1d9e9] mt-2">{stat.description}</p>
+      </article>
+    ))}
+  </div>
+);
+
+const ContactCtaCard: React.FC<{ title: string; subtitle: string }> = ({ title, subtitle }) => (
+  <div className="bg-black text-white rounded-xl p-6 border border-[#F5A623]/40">
+    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623] mb-2">{subtitle}</p>
+    <h3 className="text-2xl font-black uppercase tracking-tight mb-3">{title}</h3>
+    <p className="text-sm text-gray-300 mb-4">{CONTACT_INFO.name} | {CONTACT_INFO.role}</p>
+    <a
+      href={CONTACT_INFO.phoneHref}
+      className="inline-flex items-center justify-center bg-[#F5A623] text-black px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest hover:bg-white transition-colors"
+    >
+      Call {CONTACT_INFO.phone}
+    </a>
+  </div>
+);
+
+const TierCard: React.FC<{ tier: SponsorshipTier }> = ({ tier }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <article className="bg-white border border-[#d7deea] rounded-xl p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div>
+          <h3 className="text-2xl font-black uppercase italic tracking-tight text-[#081534]">{tier.name}</h3>
+          <p className="text-[#F5A623] text-xl font-black">{tier.price}</p>
+        </div>
+        <button
+          onClick={() => setExpanded((v) => !v)}
+          className="text-[11px] font-black uppercase tracking-wider border border-[#081534] text-[#081534] rounded-full px-3 py-1 hover:bg-[#081534] hover:text-white transition-colors"
+          aria-expanded={expanded}
+        >
+          {expanded ? 'Hide Details' : 'View Details'}
+        </button>
+      </div>
+
+      <ul className="space-y-2 mb-3">
+        {tier.keyInclusions.map((inclusion) => (
+          <li key={inclusion} className="text-sm text-gray-700 flex items-start gap-2">
+            <span className="text-[#F5A623] font-black">•</span>
+            <span>{inclusion}</span>
+          </li>
+        ))}
+      </ul>
+
+      {expanded && (
+        <div className="pt-3 border-t border-[#e2e7f0] space-y-2">
+          {tier.benefits.map((benefit) => (
+            <p key={benefit} className="text-xs text-gray-600 leading-relaxed">- {benefit}</p>
+          ))}
+        </div>
+      )}
+    </article>
+  );
+};
+
 const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate }) => (
   <>
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
@@ -905,9 +972,15 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         </div>
       </div>
       <div className="lg:col-span-4 flex flex-col space-y-4">
+        <div className="bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black mb-2">Club Snapshot</p>
+          {HOME_CONTENT.highlights.map((line) => (
+            <p key={line} className="text-sm text-gray-700 leading-relaxed mb-2 last:mb-0">{line}</p>
+          ))}
+        </div>
         <StandingsWidget />
         <MatchPollWidget />
-        <FixturesSlider />
+        <PlayerSponsorsSlider />
       </div>
     </section>
 
@@ -1098,191 +1171,350 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         </div>
       </div>
     </section>
+
+    <section className="mb-16">
+      <SectionHeader title="Why Support Eagles" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {HOME_CONTENT.whySupport.map((item) => (
+          <article key={item.title} className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+            <h3 className="text-[#081534] text-xl font-black uppercase tracking-tight mb-2">{item.title}</h3>
+            <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
   </>
 );
 
 const AboutPage: React.FC = () => (
-  <div className="max-w-7xl mx-auto py-12 animate-in fade-in duration-700 px-4">
-    <div className="relative h-[650px] mb-20 overflow-hidden shadow-2xl">
-      <img src="https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?auto=format&fit=crop&q=80&w=1600" className="w-full h-full object-cover" alt="Eagles Rugby Club" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent flex flex-col justify-center px-12 lg:px-24">
-        <h1 className="text-white text-6xl lg:text-8xl font-black uppercase italic tracking-tighter leading-none mb-6">ONE HEART,<br />ONE VISION</h1>
-        <p className="text-gray-200 text-xl font-bold max-w-2xl uppercase tracking-widest border-l-4 border-[#F5A623] pl-6 py-2 bg-black/20 backdrop-blur-sm">A movement built on courage, brotherhood, and an unbreakable will to win.</p>
-      </div>
-    </div>
-    <section className="mb-24 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-      <div className="lg:col-span-7 space-y-8">
-        <h2 className="text-5xl font-black uppercase italic tracking-tighter text-[#1a1a1a]">WHO WE ARE</h2>
-        <div className="text-lg text-gray-600 font-medium leading-relaxed space-y-6">
-          <p>Eagles Rugby Club is more than a team; it is a movement. Founded in 2019, we have rapidly emerged as a rising force in Ugandan rugby, dedicated to excellence on and off the pitch.</p>
-          <div className="bg-[#F5A623]/5 p-8 border-l-8 border-[#F5A623]">
-            <p className="italic font-bold text-gray-800 text-xl">"Greatness is achieved through unity and discipline."</p>
-          </div>
-        </div>
-      </div>
-      <div className="lg:col-span-5 relative group">
-        <div className="absolute inset-0 bg-[#F5A623] translate-x-4 translate-y-4 -z-10"></div>
-        <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=1000" className="w-full shadow-xl grayscale hover:grayscale-0 transition-all duration-700" alt="Team Huddle" />
+  <div className="max-w-7xl mx-auto py-12 animate-in fade-in duration-700 px-4 space-y-8">
+    <section className="relative rounded-2xl overflow-hidden border border-[#d9e0ec]">
+      <img src="/homehero.jpeg" className="w-full h-[420px] object-cover" alt="Eagles Rugby Club" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent p-8 sm:p-12 flex flex-col justify-end">
+        <p className="text-[#F5A623] text-xs uppercase tracking-[0.3em] font-black mb-2">About Eagles Rugby Club</p>
+        <h1 className="text-white text-4xl sm:text-6xl font-black uppercase italic tracking-tighter leading-none mb-3">Founded 2019</h1>
+        <p className="text-white/90 max-w-3xl text-sm sm:text-base leading-relaxed">{ABOUT_CONTENT.overview.summary}</p>
       </div>
     </section>
 
-    <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
-      <article id="vision" className="bg-white border-l-8 border-[#F5A623] p-8 shadow-sm scroll-mt-32">
-        <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-3">Vision</h3>
-        <p className="text-gray-600 font-medium leading-relaxed">
-          To be Uganda's most respected rugby institution by developing world-class athletes and leaders grounded in discipline, unity, and integrity.
-        </p>
-      </article>
-      <article id="mission" className="bg-white border-l-8 border-[#F5A623] p-8 shadow-sm scroll-mt-32">
-        <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-3">Mission</h3>
-        <p className="text-gray-600 font-medium leading-relaxed">
-          To provide opportunity for hidden talent through elite training, education, mentorship, and a strong brotherhood culture on and off the field.
-        </p>
-      </article>
-      <article id="core-values" className="bg-white border-l-8 border-[#F5A623] p-8 shadow-sm scroll-mt-32">
-        <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-3">Core Values</h3>
-        <p className="text-gray-600 font-medium leading-relaxed">
-          Discipline, teamwork, responsibility, resilience, and excellence in every session, match, and community touchpoint.
-        </p>
-      </article>
-      <article id="home-ground" className="bg-white border-l-8 border-[#F5A623] p-8 shadow-sm scroll-mt-32">
-        <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-3">Home Ground</h3>
-        <p className="text-gray-600 font-medium leading-relaxed">
-          Kitante Primary School Grounds, Kampala, Uganda, where the club was founded and where the Eagles spirit took flight in 2019.
-        </p>
-      </article>
+    <InfoSection title={ABOUT_CONTENT.overview.title}>
+      {ABOUT_CONTENT.overview.paragraphs.map((paragraph) => (
+        <p key={paragraph}>{paragraph}</p>
+      ))}
+    </InfoSection>
+
+    <section>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Our Purpose</h2>
+      <BulletGrid items={ABOUT_CONTENT.purpose} />
     </section>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <InfoSection id="vision" title="Vision">
+        <p>{ABOUT_CONTENT.vision}</p>
+      </InfoSection>
+      <InfoSection id="mission" title="Mission">
+        <p>{ABOUT_CONTENT.mission}</p>
+      </InfoSection>
+    </div>
+
+    <section id="core-values" className="scroll-mt-32">
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Core Values</h2>
+      <BulletGrid items={ABOUT_CONTENT.coreValues} />
+    </section>
+
+    <InfoSection id="home-ground" title="Home Ground">
+      <p>{ABOUT_CONTENT.homeGround}</p>
+    </InfoSection>
+
+    <InfoSection title="Commitment to Sustainable Growth">
+      {ABOUT_CONTENT.growthCommitments.map((item) => (
+        <p key={item}>- {item}</p>
+      ))}
+    </InfoSection>
   </div>
 );
 
 const HistoryPage: React.FC = () => (
-  <div className="animate-in fade-in duration-700">
-    {/* High Impact Hero */}
-    <section className="relative h-[80vh] flex items-center overflow-hidden">
-      <img 
-        src="https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?auto=format&fit=crop&q=80&w=1920" 
-        className="absolute inset-0 w-full h-full object-cover scale-105 filter brightness-50" 
-        alt="History Background" 
-      />
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-        <span className="inline-block bg-[#F5A623] text-white px-4 py-1 text-[10px] font-black uppercase tracking-[0.3em] mb-4">Established 2019</span>
-        <h1 className="text-white text-7xl lg:text-[12rem] font-black uppercase italic tracking-tighter leading-[0.85] mb-8">
-          FLIGHT<br /><span className="text-[#F5A623]">PATH</span>
-        </h1>
-        <div className="max-w-xl border-l-4 border-white pl-8 py-2">
-          <p className="text-white/80 text-lg lg:text-2xl font-bold uppercase tracking-wide leading-snug">
-            Tracing the journey from a local vision at Kitante to a national movement of brotherhood and resilience.
-          </p>
-        </div>
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
+    <section className="bg-[#081534] text-white rounded-2xl p-8 sm:p-12 border-t-4 border-[#F5A623]">
+      <p className="text-[#F5A623] text-xs uppercase tracking-[0.3em] font-black mb-2">Our Journey</p>
+      <h1 className="text-5xl sm:text-6xl font-black uppercase italic tracking-tighter mb-4">History</h1>
+      <p className="text-[#d4deef] max-w-4xl leading-relaxed">{HISTORY_CONTENT.intro}</p>
+    </section>
+
+    <section className="space-y-4">
+      {HISTORY_CONTENT.milestones.map((milestone) => (
+        <article key={milestone.year} className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="bg-[#F5A623] text-black text-xs font-black uppercase tracking-widest px-2 py-1 rounded">{milestone.year}</span>
+            <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534]">{milestone.title}</h2>
+          </div>
+          <p className="text-gray-600 leading-relaxed">{milestone.description}</p>
+        </article>
+      ))}
+    </section>
+
+    <InfoSection title="Legacy">
+      <p>{HISTORY_CONTENT.closing}</p>
+    </InfoSection>
+  </div>
+);
+
+const SquadPage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700">
+    <SectionHeader title="2026 Players" />
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      {MOCK_PLAYERS.map((player) => (
+        <article key={player.id} className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm">
+          <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
+            <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
+          </div>
+          <h3 className="text-sm font-black uppercase tracking-tight">{player.name}</h3>
+          <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">{player.position}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+);
+
+const HallOfFamePage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-12">
+    <section>
+      <SectionHeader title="Hall of Fame" />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {MOCK_HALL_OF_FAME.map((member) => (
+          <article key={member.id} className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm">
+            <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
+              <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" />
+            </div>
+            <h3 className="text-sm font-black uppercase tracking-tight">{member.name}</h3>
+          </article>
+        ))}
       </div>
     </section>
 
-    <div className="max-w-7xl mx-auto px-6 py-24">
-      {/* Founder Spotlight */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-32 items-center">
-        <div className="lg:col-span-5 relative">
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-[#F5A623]/10 -z-10 rounded-full blur-3xl"></div>
-          <div className="aspect-[4/5] bg-[#1a1a1a] p-4 relative">
-             <img 
-               src="https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?auto=format&fit=crop&q=80&w=800" 
-               className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 shadow-2xl" 
-               alt="Founder Kampani Arthur" 
-             />
-             <div className="absolute -bottom-8 -right-8 bg-[#F5A623] text-white p-6 shadow-2xl">
-               <p className="text-xs font-black uppercase tracking-widest mb-1">Founder & Visionary</p>
-               <h3 className="text-2xl font-black uppercase italic tracking-tighter leading-none">Kampani Arthur</h3>
-             </div>
-          </div>
-        </div>
-        <div className="lg:col-span-7 space-y-8">
-          <h2 className="text-5xl font-black uppercase italic tracking-tighter text-[#1a1a1a] mb-6">THE GENESIS</h2>
-          <div className="text-xl text-gray-600 font-medium leading-relaxed space-y-6">
-            <p>
-              Born at <span className="text-black font-black italic">Kitante Primary School</span>, Eagles Rugby Club was founded by Kampani Arthur to bridge a critical gap: providing a platform for Uganda's hidden upcountry talent.
-            </p>
-            <p>
-              Inspired by his time as captain at Namulango College, Arthur instilled a culture of <span className="text-[#F5A623] font-black">discipline, responsibility, and teamwork</span> that became the club's heartbeat.
-            </p>
-            <div className="py-6 border-y border-gray-100 italic font-bold text-gray-400 uppercase text-sm tracking-widest">
-              "We didn't just want a team; we wanted to give talent a home."
+    <section>
+      <SectionHeader title="Our X-Players" />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {MOCK_X_PLAYERS.map((player) => (
+          <article key={player.id} className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm">
+            <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
+              <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
             </div>
+            <h3 className="text-sm font-black uppercase tracking-tight">{player.name}</h3>
+            <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">{player.currentClub}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+);
+
+const ShopPage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6">
+      <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Official Shop</h1>
+      <p className="text-gray-600">{SHOP_CONTENT.intro}</p>
+    </section>
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      {MOCK_SHOP_PRODUCTS.map((product) => (
+        <article key={product.id} className="bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm">
+          <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded">
+            <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
           </div>
-        </div>
-      </section>
-
-      {/* Modern Timeline */}
-      <section className="mb-32">
-        <div className="text-center mb-20">
-          <h2 className="text-6xl font-black uppercase italic tracking-tighter mb-4">THE CHRONICLES</h2>
-          <div className="w-24 h-2 bg-[#F5A623] mx-auto"></div>
-        </div>
-
-        <div className="relative">
-          {/* Timeline Center Line */}
-          <div className="absolute left-1/2 -translate-x-1/2 h-full w-px bg-gray-200 hidden md:block"></div>
-          
-          <div className="space-y-24">
-            {[
-              { year: '2019', title: 'Foundation', text: 'Eagles RC takes flight at Kitante, focusing on players with grit but no stage.' },
-              { year: 'Season 1', title: 'The Debut', text: 'Finished 4th in Second Division. A statement of intent led by Coach Edmand Tumusiime.' },
-              { year: '2023-24', title: 'Invincible Era', text: 'An unbeaten run of absolute dominance leads to Top Division promotion.' },
-              { year: '2025', title: 'Eternal Legacy', text: 'The tragic loss of fly-half Ronnie Kayondo. The club regroups, fueled by his fighting spirit.' },
-              { year: 'Beyond', title: 'Rising Higher', text: 'Over 200 players developed. Today, we stand as a symbol of Ugandan resilience.' }
-            ].map((m, i) => (
-              <div key={i} className={`relative flex flex-col md:flex-row items-center ${i % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
-                <div className="md:w-1/2 px-12 text-center md:text-right">
-                  {i % 2 !== 0 && <div className="hidden md:block"></div>}
-                  {i % 2 === 0 && (
-                    <div className="space-y-3">
-                      <span className="text-[#F5A623] text-4xl font-black italic">{m.year}</span>
-                      <h4 className="text-2xl font-black uppercase tracking-tight text-gray-900">{m.title}</h4>
-                      <p className="text-gray-500 font-medium leading-relaxed max-w-md ml-auto">{m.text}</p>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="w-12 h-12 rounded-full bg-white border-4 border-[#F5A623] flex items-center justify-center z-10 my-6 md:my-0 shadow-xl">
-                  <div className="w-3 h-3 rounded-full bg-[#F5A623]"></div>
-                </div>
-
-                <div className="md:w-1/2 px-12 text-center md:text-left">
-                  {i % 2 === 0 && <div className="hidden md:block"></div>}
-                  {i % 2 !== 0 && (
-                    <div className="space-y-3">
-                      <span className="text-[#F5A623] text-4xl font-black italic">{m.year}</span>
-                      <h4 className="text-2xl font-black uppercase tracking-tight text-gray-900">{m.title}</h4>
-                      <p className="text-gray-500 font-medium leading-relaxed max-w-md mr-auto">{m.text}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Development & Philosophy Section */}
-      <section className="bg-[#1a1a1a] -mx-6 lg:-mx-32 p-16 lg:p-32 text-white overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] border-[50px] border-white/5 rounded-full -mr-64 -mt-64"></div>
-        <div className="max-w-5xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div>
-              <h2 className="text-5xl lg:text-7xl font-black uppercase italic tracking-tighter mb-10 leading-[0.9]">MORE THAN<br />RUGBY.</h2>
-              <div className="space-y-6 text-gray-400 font-bold text-lg uppercase tracking-wide leading-relaxed">
-                <p>We don't just recruit players; we build professionals. Through mentorship and hard work, we prepare athletes for success in classrooms and boardrooms.</p>
-                <p>Since 2019, 200+ players have carried our discipline into the corporate world.</p>
-              </div>
-            </div>
-            <div className="text-center lg:text-right border-l-8 border-[#F5A623] pl-12 lg:pl-0 lg:border-l-0 lg:border-r-8 lg:pr-12">
-              <p className="text-3xl lg:text-5xl font-black uppercase italic tracking-tighter leading-tight mb-8">
-                "A WINNING TEAM BEATS WITH<br /><span className="text-[#F5A623]">ONE HEART.</span>"
-              </p>
-              <button className="bg-white text-black px-10 py-4 font-black uppercase text-sm tracking-widest hover:bg-[#F5A623] hover:text-white transition-all">Support The Vision</button>
-            </div>
-          </div>
-        </div>
-      </section>
+          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
+          <p className="text-[#F5A623] text-sm font-black mt-1">{product.price}</p>
+        </article>
+      ))}
     </div>
+  </div>
+);
+
+const TvPage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6">
+      <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Eagles TV</h1>
+      <p className="text-gray-600">{TV_CONTENT.intro}</p>
+    </section>
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      {MOCK_TV.map((tv) => (
+        <article key={tv.id} className="group cursor-pointer">
+          <div className="relative aspect-video overflow-hidden bg-gray-200 mb-2 rounded-lg">
+            <img src={tv.imageUrl} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+              <div className="w-10 h-10 bg-[#F5A623] rounded-full flex items-center justify-center text-black">
+                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+              </div>
+            </div>
+            <span className="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-1.5 py-0.5 font-bold">{tv.duration}</span>
+          </div>
+          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{tv.title}</h3>
+        </article>
+      ))}
+    </div>
+  </div>
+);
+
+const DonatePage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
+    <section className="bg-[#081534] text-white rounded-xl p-8 border-t-4 border-[#F5A623]">
+      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Donate</h1>
+      <p className="text-[#d4deef] max-w-3xl">{DONATE_CONTENT.intro}</p>
+    </section>
+
+    <BulletGrid items={DONATE_CONTENT.allocation} />
+    <ContactCtaCard title="Support a Child. Support a Player." subtitle="Make an Impact" />
+  </div>
+);
+
+const PlayerSponsorPage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-8">
+      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Player Sponsor</h1>
+      <p className="text-gray-700">{PLAYER_SPONSOR_CONTENT.offer}</p>
+    </section>
+
+    <section>
+      <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">What Your Sponsorship Supports</h2>
+      <div className="bg-white border border-[#e2e7f0] rounded-xl p-6 space-y-2">
+        {PLAYER_SPONSOR_CONTENT.supports.map((item) => (
+          <p key={item} className="text-sm text-gray-700">- {item}</p>
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Why Sponsor a Player</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {PLAYER_SPONSOR_CONTENT.reasons.map((reason) => (
+          <article key={reason} className="bg-white border border-[#e2e7f0] rounded-xl p-5 text-sm text-gray-700">{reason}</article>
+        ))}
+      </div>
+    </section>
+
+    <ContactCtaCard title="Start a Player Sponsorship" subtitle="UGX 200,000 Monthly" />
+  </div>
+);
+
+const FitnessCenterPage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-8">
+      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Fitness Center</h1>
+      <p className="text-gray-700 mb-3">{FITNESS_CONTENT.intro}</p>
+      <p className="text-sm font-black uppercase tracking-wider text-[#081534]">{FITNESS_CONTENT.schedule}</p>
+    </section>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <InfoSection title="Pricing">
+        {FITNESS_CONTENT.pricing.map((item) => (
+          <p key={item}>- {item}</p>
+        ))}
+      </InfoSection>
+      <InfoSection title="Program Benefits">
+        {FITNESS_CONTENT.benefits.map((item) => (
+          <p key={item}>- {item}</p>
+        ))}
+      </InfoSection>
+    </div>
+
+    <InfoSection title="Where Session Fees Go">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {FITNESS_CONTENT.feeUse.map((item) => (
+          <article key={item} className="bg-[#f6f8fb] border border-[#dce3ef] rounded-lg p-4 text-sm text-gray-700">{item}</article>
+        ))}
+      </div>
+    </InfoSection>
+
+    <ContactCtaCard title="Register for Fitness Sessions" subtitle="UGX 20,000 Per Session" />
+  </div>
+);
+
+const ProjectsPage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
+    <section className="bg-[#081534] text-white rounded-xl p-8 border-t-4 border-[#F5A623]">
+      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Our Projects</h1>
+      {PROJECTS_CONTENT.summary.map((line) => (
+        <p key={line} className="text-[#d4deef] max-w-4xl mb-2 last:mb-0">{line}</p>
+      ))}
+    </section>
+
+    <StatTiles stats={PROJECTS_CONTENT.stats} />
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <InfoSection title="Why This Project Matters">
+        {PROJECTS_CONTENT.whyItMatters.map((item) => (
+          <p key={item}>- {item}</p>
+        ))}
+      </InfoSection>
+      <InfoSection title="How You Can Support">
+        {PROJECTS_CONTENT.supportOptions.map((item) => (
+          <p key={item}>- {item}</p>
+        ))}
+      </InfoSection>
+    </div>
+
+    <ContactCtaCard title="Pledge Support for Stand Construction" subtitle="Infrastructure Sponsorship" />
+  </div>
+);
+
+const FoundationPage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-8">
+      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Our Foundation</h1>
+      <p className="text-gray-700">{FOUNDATION_CONTENT.mission}</p>
+    </section>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {FOUNDATION_CONTENT.impacts.map((impact) => (
+        <article key={impact.title} className="bg-white border border-[#e2e7f0] rounded-xl p-5 shadow-sm">
+          <h2 className="text-xl font-black uppercase tracking-tight text-[#081534] mb-2">{impact.title}</h2>
+          <p className="text-sm text-gray-600">{impact.description}</p>
+        </article>
+      ))}
+    </div>
+
+    <InfoSection title="Partnership">
+      <p>{FOUNDATION_CONTENT.partnership}</p>
+    </InfoSection>
+    <ContactCtaCard title="Partner With Eagles Foundation" subtitle="Education and Opportunity" />
+  </div>
+);
+
+const SponsorUsPage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
+    <section className="bg-[#081534] text-white rounded-xl p-8 border-t-4 border-[#F5A623]">
+      <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Sponsor Us</h1>
+      <p className="text-[#d4deef] max-w-4xl">
+        Sponsoring Eagles Rugby Club is a strategic way to drive brand visibility while investing in youth development and community progress.
+      </p>
+    </section>
+
+    <section>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Business Value</h2>
+      <BulletGrid items={SPONSOR_US_CONTENT.businessCase} />
+    </section>
+
+    <section>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Why We Need Sponsorship</h2>
+      <BulletGrid items={SPONSOR_US_CONTENT.sponsorshipNeeds} />
+    </section>
+
+    <section>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Sponsorship Packages</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {SPONSOR_US_CONTENT.tiers.map((tier) => (
+          <TierCard key={tier.name} tier={tier} />
+        ))}
+      </div>
+    </section>
+
+    <InfoSection title="How Sponsorship Funds Are Utilized">
+      {SPONSOR_US_CONTENT.utilization.map((item) => (
+        <p key={item}>- {item}</p>
+      ))}
+    </InfoSection>
+
+    <ContactCtaCard title="Discuss a Sponsorship Package" subtitle="Corporate and Individual Partners" />
   </div>
 );
 
@@ -1342,20 +1574,21 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#f4f4f4]">
       <Header currentPage={currentPage} onNavigate={setCurrentPage} />
       
-      <main className={`max-w-[1700px] mx-auto ${currentPage === 'history' ? '' : 'px-4 lg:px-12 mt-6'}`}>
+      <main className="max-w-[1700px] mx-auto px-4 lg:px-12 mt-6">
         {currentPage === 'home' ? <HomePage onNavigate={setCurrentPage} /> : null}
         {currentPage === 'about' ? <AboutPage /> : null}
         {currentPage === 'history' ? <HistoryPage /> : null}
+        {currentPage === 'squad' ? <SquadPage /> : null}
+        {currentPage === 'hall-of-fame' ? <HallOfFamePage /> : null}
+        {currentPage === 'shop' ? <ShopPage /> : null}
+        {currentPage === 'tv' ? <TvPage /> : null}
+        {currentPage === 'donate' ? <DonatePage /> : null}
+        {currentPage === 'contact' ? <PlayerSponsorPage /> : null}
+        {currentPage === 'fitness-center' ? <FitnessCenterPage /> : null}
+        {currentPage === 'our-projects' ? <ProjectsPage /> : null}
+        {currentPage === 'our-foundation' ? <FoundationPage /> : null}
+        {currentPage === 'sponsor-us' ? <SponsorUsPage /> : null}
         {currentPage === 'gallery' ? <GalleryPage /> : null}
-        
-        {['squad', 'shop', 'tv', 'donate', 'contact', 'hall-of-fame', 'fitness-center', 'our-projects', 'our-foundation', 'sponsor-us'].includes(currentPage) && (
-          <div className="min-h-[60vh] flex items-center justify-center">
-            <div className="text-center px-4">
-              <h2 className="text-4xl font-black uppercase italic tracking-tighter text-gray-300 mb-4">Under Construction</h2>
-              <button onClick={() => setCurrentPage('home')} className="bg-[#F5A623] text-white px-6 py-2 font-black uppercase text-[10px] tracking-widest">Return Home</button>
-            </div>
-          </div>
-        )}
       </main>
 
       <a

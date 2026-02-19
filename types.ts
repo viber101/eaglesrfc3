@@ -75,3 +75,65 @@ export interface Product {
   price: string;
   imageUrl: string;
 }
+
+export interface ContactInfo {
+  name: string;
+  phone: string;
+  phoneHref: string;
+  role?: string;
+  email?: string;
+}
+
+export interface PurposeItem {
+  title: string;
+  description: string;
+}
+
+export interface ValueItem {
+  name: string;
+  description: string;
+}
+
+export interface ClubOverview {
+  title: string;
+  summary: string;
+  paragraphs: string[];
+}
+
+export interface FitnessProgram {
+  intro: string;
+  schedule: string;
+  pricing: string[];
+  benefits: string[];
+  feeUse: string[];
+}
+
+export interface ProjectStat {
+  label: string;
+  value: string;
+  description: string;
+}
+
+export interface FoundationImpact {
+  title: string;
+  description: string;
+}
+
+export interface SponsorshipTier {
+  name: string;
+  price: string;
+  keyInclusions: string[];
+  benefits: string[];
+}
+
+export interface PlayerSponsorProgram {
+  offer: string;
+  supports: string[];
+  reasons: string[];
+}
+
+export interface HistoryMilestone {
+  year: string;
+  title: string;
+  description: string;
+}
