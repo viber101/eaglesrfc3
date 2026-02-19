@@ -4,6 +4,7 @@ import Header from './components/Header';
 import SectionHeader from './components/SectionHeader';
 import Card from './components/Card';
 import { MOCK_TRENDING_VIDEOS, MOCK_SHOP_PRODUCTS, MOCK_NEWS, MOCK_STANDINGS, MOCK_PLAYERS, MOCK_TV, MOCK_ATHLETES, MOCK_X_PLAYERS, MOCK_HALL_OF_FAME, MOCK_BUSINESS_ATHLETES } from './constants';
+import { castVote as castPollVote, getPollCounts, PollApiConfigError, type PollChoice, type PollCounts } from './lib/pollApi';
 
 type FixtureItem = {
   id: string;
@@ -24,18 +25,8 @@ type FixtureScore = {
   status: string;
 };
 
-type PollChoice = 'win' | 'loss' | 'draw';
-type PollCounts = Record<PollChoice, number>;
-
 const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-vote-v1';
-const POLL_SHARED_COUNTS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx8zhnML1fWp7nrPSbYylRCUiQjsoSzKsZRiQoBIuYZu-C6RUyAcAxbASRYFHK8tKXH/exec';
-const POLL_VOTE_SUBMIT_ENDPOINT = POLL_SHARED_COUNTS_ENDPOINT;
-const POLL_VOTE_FIELD = 'choice';
-const GOOGLE_FORM_VOTE_VALUES: Record<PollChoice, string> = {
-  win: 'Win (Eagles)',
-  draw: 'Draw',
-  loss: 'Loss (Eagles)'
-};
+const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-token-v1';
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
 
@@ -542,25 +533,35 @@ const MatchPollWidget: React.FC = () => {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'sending' | 'sent' | 'failed'>('idle');
   const [countsStatus, setCountsStatus] = useState<'loading' | 'live' | 'offline' | 'unconfigured'>('loading');
 
-  const fetchSharedCounts = async () => {
-    if (!POLL_SHARED_COUNTS_ENDPOINT || POLL_SHARED_COUNTS_ENDPOINT.includes('YOUR_SCRIPT_ID')) {
-      setCountsStatus('unconfigured');
-      return;
-    }
-
+  const getOrCreateSessionToken = () => {
     try {
-      const response = await fetch(POLL_SHARED_COUNTS_ENDPOINT, { cache: 'no-store' });
-      if (!response.ok) {
-        throw new Error('Bad response');
+      const existingToken = sessionStorage.getItem(POLL_SESSION_TOKEN_STORAGE_KEY);
+      if (existingToken) {
+        return existingToken;
       }
-      const payload = await response.json() as Partial<PollCounts> & { total?: number };
-      setCounts({
-        win: Number(payload.win) || 0,
-        draw: Number(payload.draw) || 0,
-        loss: Number(payload.loss) || 0
-      });
-      setCountsStatus('live');
+
+      const createdToken = typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+      sessionStorage.setItem(POLL_SESSION_TOKEN_STORAGE_KEY, createdToken);
+      return createdToken;
     } catch {
+      setStorageStatus('blocked');
+      return `volatile-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+  };
+
+  const fetchSharedCounts = async () => {
+    try {
+      const nextCounts = await getPollCounts();
+      setCounts(nextCounts);
+      setCountsStatus('live');
+    } catch (error) {
+      if (error instanceof PollApiConfigError) {
+        setCountsStatus('unconfigured');
+        return;
+      }
       setCountsStatus('offline');
     }
   };
@@ -576,6 +577,7 @@ const MatchPollWidget: React.FC = () => {
       if (sessionChoice === 'win' || sessionChoice === 'loss' || sessionChoice === 'draw') {
         setSelectedChoice(sessionChoice);
       }
+      getOrCreateSessionToken();
     } catch {
       setCounts({ win: 0, draw: 0, loss: 0 });
       setSelectedChoice(null);
@@ -610,21 +612,17 @@ const MatchPollWidget: React.FC = () => {
     }
 
     try {
-      const formData = new URLSearchParams();
-      formData.append(POLL_VOTE_FIELD, GOOGLE_FORM_VOTE_VALUES[choice]);
-
-      await fetch(POLL_VOTE_SUBMIT_ENDPOINT, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-        body: formData.toString(),
-        keepalive: true
-      });
+      const sessionToken = getOrCreateSessionToken();
+      const voteResult = await castPollVote(choice, sessionToken);
+      setCounts(voteResult.counts);
       setSubmitStatus('sent');
       window.setTimeout(fetchSharedCounts, 2000);
-    } catch {
+    } catch (error) {
+      if (error instanceof PollApiConfigError) {
+        setCountsStatus('unconfigured');
+      } else {
+        setCountsStatus('offline');
+      }
       setSubmitStatus('failed');
     }
   };
