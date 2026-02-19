@@ -5,69 +5,415 @@ import SectionHeader from './components/SectionHeader';
 import Card from './components/Card';
 import { MOCK_TRENDING_VIDEOS, MOCK_SHOP_PRODUCTS, MOCK_NEWS, MOCK_STANDINGS, MOCK_PLAYERS, MOCK_TV, MOCK_ATHLETES } from './constants';
 
-const MatchCard: React.FC<{
-  isResult?: boolean;
+type FixtureItem = {
+  id: string;
+  week: string;
+  month: string;
   date: string;
-  time: string;
-  competition: string;
+  day: string;
+  category: string;
   venue: string;
-  homeTeam: { name: string; logo: string };
-  awayTeam: { name: string; logo: string };
-  score?: { home: number; away: number };
-  showTickets?: boolean;
-}> = ({ isResult, date, time, competition, venue, homeTeam, awayTeam, score, showTickets }) => (
-  <div className="bg-white shadow-sm border-t-2 border-[#F5A623] mb-4">
-    <div className="flex justify-between px-4 py-3 border-b border-gray-100">
-      <div className="text-left">
-        <p className="text-[10px] font-extrabold uppercase text-gray-900">{date}</p>
-        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-tight">KICKOFF - {time}</p>
+  time: string;
+  home: string;
+  away: string;
+};
+
+type FixtureScore = {
+  home: number;
+  away: number;
+  status: string;
+};
+
+type PollChoice = 'win' | 'loss' | 'draw';
+type PollCounts = Record<PollChoice, number>;
+
+const POLL_COUNTS_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-counts-v1';
+const POLL_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-vote-v1';
+const POLL_LAST_SAVED_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-last-saved-v1';
+const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-vote-v1';
+
+const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
+
+const cleanCell = (value: string) => value.replace(/"/g, '').replace(/\s+/g, ' ').trim();
+const extractDateNumber = (value: string) => value.match(/\d+/)?.[0] ?? value;
+const normalizeTeam = (value: string) => cleanCell(value).toLowerCase();
+const isEaglesTeam = (value: string) => normalizeTeam(value).includes('eagles');
+const toFixtureKey = (fixture: FixtureItem) => `${fixture.week}-${normalizeTeam(fixture.home)}-${normalizeTeam(fixture.away)}`;
+
+const toFixtureDateLabel = (fixture: FixtureItem) => {
+  const month = fixture.month ? fixture.month.slice(0, 3).toUpperCase() : 'TBC';
+  const dateNumber = extractDateNumber(fixture.date);
+  const day = fixture.day ? fixture.day.slice(0, 3).toUpperCase() : '';
+  return `${day} ${month} ${dateNumber}`.trim();
+};
+
+const parseFixturesCsv = (csvText: string): FixtureItem[] => {
+  const fixtures: FixtureItem[] = [];
+  const lines = csvText.split(/\r?\n/);
+  const context = {
+    week: '',
+    month: '',
+    date: '',
+    day: '',
+    category: 'Men',
+    venue: '',
+    time: ''
+  };
+
+  for (const line of lines) {
+    const cells = line.split(',').map(cleanCell);
+    if (cells.every((cell) => !cell)) {
+      continue;
+    }
+
+    const rowTitle = (cells[0] || '').toLowerCase();
+    if (
+      rowTitle.includes('fixtures') ||
+      rowTitle === 'week' ||
+      rowTitle.includes('break') ||
+      rowTitle.includes('semi') ||
+      rowTitle === 'final'
+    ) {
+      continue;
+    }
+
+    if (/^\d+$/.test(cells[0])) context.week = cells[0];
+    if (cells[1] && cells[1].toLowerCase() !== 'month') context.month = cells[1];
+    if (cells[2] && !/date|day/i.test(cells[2])) context.date = cells[2];
+    if (cells[3] && /monday|tuesday|wednesday|thursday|friday|saturday|sunday/i.test(cells[3])) {
+      context.day = cells[3];
+    }
+    if (cells[4] && /monday|tuesday|wednesday|thursday|friday|saturday|sunday/i.test(cells[4])) {
+      context.day = cells[4];
+    }
+
+    if (cells[4] && !/category/i.test(cells[4]) && !/sunday|saturday/i.test(cells[4])) {
+      context.category = cells[4];
+    } else if (/men|women/i.test(cells[3])) {
+      context.category = cells[3];
+    }
+
+    if (cells[5] && cells[5].toLowerCase() !== 'venue') context.venue = cells[5];
+    if (cells[6] && cells[6].toLowerCase() !== 'time') context.time = cells[6];
+
+    const vsIndex = cells.findIndex((cell) => cell.toLowerCase() === 'vs');
+    if (vsIndex === -1) {
+      continue;
+    }
+
+    let home = '';
+    for (let i = vsIndex - 1; i >= 0; i -= 1) {
+      if (cells[i]) {
+        home = cells[i];
+        break;
+      }
+    }
+
+    let away = '';
+    for (let i = vsIndex + 1; i < cells.length; i += 1) {
+      if (cells[i]) {
+        away = cells[i];
+        break;
+      }
+    }
+
+    if (!home || !away) {
+      continue;
+    }
+
+    fixtures.push({
+      id: `${context.week || 'X'}-${fixtures.length + 1}`,
+      week: context.week || 'TBC',
+      month: context.month || 'TBC',
+      date: context.date || 'TBC',
+      day: context.day || 'TBC',
+      category: context.category || 'Men',
+      venue: cells[5] || context.venue || 'TBC',
+      time: cells[6] || context.time || 'TBC',
+      home,
+      away
+    });
+  }
+
+  return fixtures;
+};
+
+const FixturesSlider: React.FC = () => {
+  const [fixtures, setFixtures] = useState<FixtureItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/fixtures/2026-cura-championship-fixtures.csv')
+      .then((response) => response.text())
+      .then((csvText) => {
+        if (isMounted) {
+          setFixtures(parseFixturesCsv(csvText));
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setFixtures([]);
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, [fixtures.length, isLoading]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = scrollContainerRef.current.clientWidth * 0.9;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  return (
+    <div className="bg-[#081534] rounded-xl p-4 shadow-lg overflow-hidden">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-white text-[11px] font-black uppercase tracking-widest">2026 CURA Fixtures</h3>
+        <span className="text-[#9fb0c4] text-[10px] font-bold uppercase tracking-wide">Slide</span>
       </div>
-      <div className="text-right">
-        <p className="text-[10px] font-extrabold uppercase text-gray-900">{competition}</p>
-        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-tight">{venue}</p>
-      </div>
-    </div>
-    <div className="py-6 px-4">
-      <div className="flex items-center justify-center space-x-6">
-        <div className="flex flex-col items-center w-24">
-          <span className="text-sm font-black uppercase text-gray-900 text-center">{homeTeam.name}</span>
-        </div>
-        <div className="flex items-center">
-          {isResult && score ? (
-            <div className="flex items-center space-x-2 text-2xl font-black">
-              <span className="text-[#F5A623]">{score.home}</span>
-              <span className="text-gray-900">-</span>
-              <span className="text-gray-900">{score.away}</span>
+
+      <div className="relative group">
+        {canScrollLeft && (
+          <button onClick={() => scroll('left')} className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/95 rounded-full flex items-center justify-center text-[#081534] shadow-md">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+        )}
+        {canScrollRight && (
+          <button onClick={() => scroll('right')} className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/95 rounded-full flex items-center justify-center text-[#081534] shadow-md">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
+          </button>
+        )}
+
+        <div ref={scrollContainerRef} onScroll={checkScroll} className="flex overflow-x-auto pb-2 space-x-3 snap-x snap-mandatory scrollbar-hide">
+          {isLoading && (
+            <div className="min-w-[270px] bg-[#e8ecf2] p-4 border-t-4 border-[#F5A623]">
+              <p className="text-[#081534] text-sm font-black uppercase">Loading Fixtures...</p>
             </div>
-          ) : (
-            <span className="text-2xl font-medium text-[#F5A623] italic">V</span>
+          )}
+
+          {!isLoading && fixtures.map((fixture) => {
+            const score = FIXTURE_SCORE_OVERRIDES[toFixtureKey(fixture)];
+            return (
+              <article key={fixture.id} className="min-w-[270px] snap-start bg-[#e8ecf2] text-black border-t-4 border-[#F5A623] p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="bg-[#bdd0e1] text-[#081534] text-[10px] px-1.5 py-0.5 font-black uppercase">{fixture.category}</span>
+                  <span className="text-[10px] text-[#4f647a] font-black uppercase">{toFixtureDateLabel(fixture)}</span>
+                  <span className="text-[10px] text-[#4f647a] font-black uppercase ml-auto">{fixture.time}</span>
+                </div>
+                <p className={`text-2xl font-black uppercase italic tracking-tight leading-none ${isEaglesTeam(fixture.home) ? 'text-[#F5A623]' : 'text-black'}`}>{fixture.home}</p>
+                <p className={`text-2xl font-black uppercase italic tracking-tight leading-none mt-2 ${isEaglesTeam(fixture.away) ? 'text-[#F5A623]' : 'text-black'}`}>{fixture.away}</p>
+
+                <div className="mt-4 p-2.5 bg-white/70 rounded border border-[#d5dde8]">
+                  {score ? (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase text-[#4f647a]">{score.status}</span>
+                      <span className="text-lg font-black text-[#081534]">{score.home} - {score.away}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase text-[#4f647a]">Score</span>
+                      <span className="text-lg font-black text-[#081534]">-- : --</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-[#cfd7e2] flex items-center justify-between">
+                  <span className="text-[11px] text-[#4f647a] font-black uppercase">Week {fixture.week}</span>
+                  <span className="text-[11px] text-[#081534] font-black uppercase">{fixture.venue}</span>
+                </div>
+              </article>
+            );
+          })}
+
+          {!isLoading && fixtures.length === 0 && (
+            <div className="min-w-[270px] bg-[#e8ecf2] p-4 border-t-4 border-[#F5A623]">
+              <p className="text-black text-sm font-black uppercase">No fixtures found in CSV.</p>
+            </div>
           )}
         </div>
-        <div className="flex flex-col items-center w-24">
-          <span className="text-sm font-black uppercase text-gray-900 text-center">{awayTeam.name}</span>
-        </div>
       </div>
     </div>
-    <div className="px-6 pb-6 space-y-2">
-      <button className="w-full bg-[#f0f0f0] text-gray-900 py-2.5 rounded-full font-extrabold uppercase text-[11px] tracking-wider hover:bg-gray-200 transition-colors">
-        News & Video
-      </button>
-      {showTickets && (
-        <button className="w-full bg-[#F5A623] text-white py-2.5 rounded-full font-extrabold uppercase text-[11px] tracking-wider hover:bg-black transition-colors">
-          Ticket Info
+  );
+};
+
+const MatchPollWidget: React.FC = () => {
+  const [counts, setCounts] = useState<PollCounts>({ win: 0, loss: 0, draw: 0 });
+  const [selectedChoice, setSelectedChoice] = useState<PollChoice | null>(null);
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
+  const [storageStatus, setStorageStatus] = useState<'ready' | 'blocked'>('ready');
+
+  useEffect(() => {
+    try {
+      const testKey = '__poll_storage_test__';
+      localStorage.setItem(testKey, 'ok');
+      localStorage.removeItem(testKey);
+      sessionStorage.setItem(testKey, 'ok');
+      sessionStorage.removeItem(testKey);
+      setStorageStatus('ready');
+
+      const storedCounts = localStorage.getItem(POLL_COUNTS_STORAGE_KEY);
+      if (storedCounts) {
+        const parsedCounts = JSON.parse(storedCounts) as Partial<PollCounts>;
+        setCounts({
+          win: Number(parsedCounts.win) || 0,
+          loss: Number(parsedCounts.loss) || 0,
+          draw: Number(parsedCounts.draw) || 0
+        });
+      }
+      const storedChoice = localStorage.getItem(POLL_VOTE_STORAGE_KEY) as PollChoice | null;
+      if (storedChoice === 'win' || storedChoice === 'loss' || storedChoice === 'draw') {
+        setSelectedChoice(storedChoice);
+      }
+      const storedLastSavedAt = localStorage.getItem(POLL_LAST_SAVED_STORAGE_KEY);
+      if (storedLastSavedAt) {
+        setLastSavedAt(storedLastSavedAt);
+      }
+      const sessionChoice = sessionStorage.getItem(POLL_SESSION_VOTE_STORAGE_KEY) as PollChoice | null;
+      if (sessionChoice === 'win' || sessionChoice === 'loss' || sessionChoice === 'draw') {
+        setSelectedChoice(sessionChoice);
+      }
+    } catch {
+      setCounts({ win: 0, loss: 0, draw: 0 });
+      setSelectedChoice(null);
+      setLastSavedAt(null);
+      setStorageStatus('blocked');
+    }
+  }, []);
+
+  const totalVotes = counts.win + counts.loss + counts.draw;
+  const getPct = (choice: PollChoice) => (totalVotes > 0 ? Math.round((counts[choice] / totalVotes) * 100) : 0);
+
+  const vote = (choice: PollChoice) => {
+    if (selectedChoice) {
+      return;
+    }
+    const nextCounts: PollCounts = {
+      ...counts,
+      [choice]: counts[choice] + 1
+    };
+    setCounts(nextCounts);
+    setSelectedChoice(choice);
+    const now = new Date().toISOString();
+    setLastSavedAt(now);
+    try {
+      localStorage.setItem(POLL_COUNTS_STORAGE_KEY, JSON.stringify(nextCounts));
+      localStorage.setItem(POLL_VOTE_STORAGE_KEY, choice);
+      localStorage.setItem(POLL_LAST_SAVED_STORAGE_KEY, now);
+      sessionStorage.setItem(POLL_SESSION_VOTE_STORAGE_KEY, choice);
+      setStorageStatus('ready');
+    } catch {
+      setStorageStatus('blocked');
+    }
+  };
+
+  return (
+    <div className="bg-black text-white rounded-xl p-4 border-t-2 border-[#F5A623] shadow-sm">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-[11px] font-black uppercase tracking-widest">Match Poll</h3>
+        <span className="text-[#F5A623] text-[10px] font-black uppercase">{totalVotes} Votes</span>
+      </div>
+      <div className="bg-white/10 rounded p-2 mb-3">
+        <p className="text-[10px] font-black uppercase text-[#F5A623]">Stored Data (Local Browser)</p>
+        <p className="text-[10px] font-bold uppercase text-white/80">
+          W {counts.win} | D {counts.draw} | L {counts.loss}
+        </p>
+        <p className="text-[10px] font-bold uppercase text-white/60">
+          Storage: {storageStatus === 'ready' ? 'Saved to Local Storage' : 'Storage Blocked'}
+        </p>
+        <p className="text-[10px] font-bold uppercase text-white/60">
+          Last Save: {lastSavedAt ? new Date(lastSavedAt).toLocaleString() : 'Not yet'}
+        </p>
+      </div>
+      <p className="text-sm font-black uppercase mb-1"><span className="text-[#F5A623]">Eagles</span> vs Golden Badgers</p>
+      <p className="text-[10px] font-bold uppercase text-white/70 mb-3">One vote per session, no login required</p>
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        <button
+          onClick={() => vote('win')}
+          disabled={!!selectedChoice}
+          className={`py-2 rounded text-[10px] font-black uppercase tracking-wider transition-colors ${
+            selectedChoice === 'win' ? 'bg-[#F5A623] text-black' : 'bg-white/10 hover:bg-white/20'
+          } ${selectedChoice ? 'cursor-not-allowed opacity-80' : ''}`}
+        >
+          Win
         </button>
+        <button
+          onClick={() => vote('draw')}
+          disabled={!!selectedChoice}
+          className={`py-2 rounded text-[10px] font-black uppercase tracking-wider transition-colors ${
+            selectedChoice === 'draw' ? 'bg-[#F5A623] text-black' : 'bg-white/10 hover:bg-white/20'
+          } ${selectedChoice ? 'cursor-not-allowed opacity-80' : ''}`}
+        >
+          Draw
+        </button>
+        <button
+          onClick={() => vote('loss')}
+          disabled={!!selectedChoice}
+          className={`py-2 rounded text-[10px] font-black uppercase tracking-wider transition-colors ${
+            selectedChoice === 'loss' ? 'bg-[#F5A623] text-black' : 'bg-white/10 hover:bg-white/20'
+          } ${selectedChoice ? 'cursor-not-allowed opacity-80' : ''}`}
+        >
+          Loss
+        </button>
+      </div>
+      {selectedChoice && (
+        <p className="text-[10px] font-bold uppercase text-[#F5A623] mb-3">
+          You already voted this session: {selectedChoice}
+        </p>
       )}
+
+      <div className="space-y-2">
+        {(['win', 'draw', 'loss'] as PollChoice[]).map((choice) => (
+          <div key={choice}>
+            <div className="flex items-center justify-between text-[10px] font-black uppercase mb-1">
+              <span>{choice}</span>
+              <span>{getPct(choice)}%</span>
+            </div>
+            <div className="h-2 bg-white/10 rounded">
+              <div className="h-2 bg-[#F5A623] rounded transition-all" style={{ width: `${getPct(choice)}%` }} />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const StandingsWidget: React.FC = () => (
   <div className="bg-white shadow-sm border-t-2 border-[#F5A623] p-0 overflow-hidden">
     <div className="flex justify-end p-4 border-b border-gray-100">
-      <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">PREMIER LEAGUE</span>
+      <span className="text-[10px] font-black uppercase text-black tracking-wider">PREMIER LEAGUE</span>
     </div>
     <div className="px-2 py-4">
-      <div className="grid grid-cols-12 text-[10px] font-black uppercase text-gray-400 px-4 mb-4">
+      <div className="grid grid-cols-12 text-[10px] font-black uppercase text-black px-4 mb-4">
         <div className="col-span-2">POS</div>
         <div className="col-span-6">TEAM</div>
         <div className="col-span-2 text-center">GD</div>
@@ -79,16 +425,16 @@ const StandingsWidget: React.FC = () => (
             key={s.team} 
             className={`grid grid-cols-12 items-center px-4 py-2.5 text-[11px] font-black uppercase transition-all relative ${
               s.team === 'Eagles' 
-              ? 'bg-[#F5A623]/5 text-[#F5A623] border-l-4 border-[#F5A623]' 
-              : 'text-gray-900 border-l-4 border-transparent'
+              ? 'bg-black text-[#F5A623] border-l-4 border-[#F5A623]' 
+              : 'text-black border-l-4 border-transparent'
             }`}
           >
-            <div className={`col-span-2 ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-gray-400 opacity-60'}`}>{s.pos}</div>
+            <div className={`col-span-2 ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-black'}`}>{s.pos}</div>
             <div className="col-span-6 flex items-center">
-              <span className={`truncate tracking-tight ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-gray-300'}`}>{s.team}</span>
+              <span className={`truncate tracking-tight ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-black'}`}>{s.team}</span>
             </div>
-            <div className={`col-span-2 text-center ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-gray-400'}`}>{s.gd}</div>
-            <div className={`col-span-2 text-right ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-gray-400 opacity-0'}`}>{s.pts}</div>
+            <div className={`col-span-2 text-center ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-black'}`}>{s.gd}</div>
+            <div className={`col-span-2 text-right ${s.team === 'Eagles' ? 'text-[#F5A623]' : 'text-black'}`}>{s.pts}</div>
           </div>
         ))}
       </div>
@@ -157,17 +503,25 @@ const CountdownUnit: React.FC<{ value: number; label: string }> = ({ value, labe
 );
 
 const CompactMatchHero: React.FC = () => {
-  const [timeLeft, setTimeLeft] = useState({ days: 6, hours: 15, minutes: 30, seconds: 0 });
+  const matchKickoff = new Date('2026-02-22T14:00:00+03:00');
+  const getTimeLeft = () => {
+    const now = new Date();
+    const diffMs = matchKickoff.getTime() - now.getTime();
+    if (diffMs <= 0) {
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return { days, hours, minutes, seconds };
+  };
+  const [timeLeft, setTimeLeft] = useState(getTimeLeft);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        if (prev.days > 0) return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
-        return prev;
-      });
+      setTimeLeft(getTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -217,9 +571,14 @@ const CompactMatchHero: React.FC = () => {
       </div>
 
       {/* CTA */}
-      <button className="w-full bg-[#F5A623] hover:bg-[#D4921A] text-black text-xs font-black uppercase tracking-wider py-2.5 rounded-lg transition-colors">
-        Get Tickets
-      </button>
+      <a
+        href="https://tip.vanvaa.com/?q=MTcxMg=="
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-full bg-[#F5A623] hover:bg-[#D4921A] text-black text-xs font-black uppercase tracking-wider py-2.5 rounded-lg transition-colors text-center block"
+      >
+        Support Eagles
+      </a>
     </div>
   );
 };
@@ -238,7 +597,8 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       </div>
       <div className="lg:col-span-4 flex flex-col space-y-4">
         <StandingsWidget />
-        <MatchCard date="SAT FEB 22" time="16:00" competition="NILE SPECIAL RUGBY" venue="KYADONDO GROUNDS" homeTeam={{ name: "Eagles", logo: "/KINTANTE FUN DAY FLYER.png" }} awayTeam={{ name: "Heathens", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Manchester_City_FC_badge.svg/1200px-Manchester_City_FC_badge.svg.png" }} showTickets={true} />
+        <MatchPollWidget />
+        <FixturesSlider />
       </div>
     </section>
 
@@ -403,6 +763,33 @@ const AboutPage: React.FC = () => (
         <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=1000" className="w-full shadow-xl grayscale hover:grayscale-0 transition-all duration-700" alt="Team Huddle" />
       </div>
     </section>
+
+    <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
+      <article id="vision" className="bg-white border-l-8 border-[#F5A623] p-8 shadow-sm scroll-mt-32">
+        <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-3">Vision</h3>
+        <p className="text-gray-600 font-medium leading-relaxed">
+          To be Uganda's most respected rugby institution by developing world-class athletes and leaders grounded in discipline, unity, and integrity.
+        </p>
+      </article>
+      <article id="mission" className="bg-white border-l-8 border-[#F5A623] p-8 shadow-sm scroll-mt-32">
+        <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-3">Mission</h3>
+        <p className="text-gray-600 font-medium leading-relaxed">
+          To provide opportunity for hidden talent through elite training, education, mentorship, and a strong brotherhood culture on and off the field.
+        </p>
+      </article>
+      <article id="core-values" className="bg-white border-l-8 border-[#F5A623] p-8 shadow-sm scroll-mt-32">
+        <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-3">Core Values</h3>
+        <p className="text-gray-600 font-medium leading-relaxed">
+          Discipline, teamwork, responsibility, resilience, and excellence in every session, match, and community touchpoint.
+        </p>
+      </article>
+      <article id="home-ground" className="bg-white border-l-8 border-[#F5A623] p-8 shadow-sm scroll-mt-32">
+        <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-3">Home Ground</h3>
+        <p className="text-gray-600 font-medium leading-relaxed">
+          Kitante Primary School Grounds, Kampala, Uganda, where the club was founded and where the Eagles spirit took flight in 2019.
+        </p>
+      </article>
+    </section>
   </div>
 );
 
@@ -545,7 +932,7 @@ const App: React.FC = () => {
   }, [currentPage]);
 
   return (
-    <div className="min-h-screen bg-[#f4f4f4] pb-20">
+    <div className="min-h-screen bg-[#f4f4f4]">
       <Header currentPage={currentPage} onNavigate={setCurrentPage} />
       
       <main className={`max-w-[1700px] mx-auto ${currentPage === 'history' ? '' : 'px-4 lg:px-12 mt-6'}`}>
@@ -553,7 +940,7 @@ const App: React.FC = () => {
         {currentPage === 'about' ? <AboutPage /> : null}
         {currentPage === 'history' ? <HistoryPage /> : null}
         
-        {['squad', 'shop', 'tv', 'donate', 'contact'].includes(currentPage) && (
+        {['squad', 'shop', 'tv', 'donate', 'contact', 'hall-of-fame', 'fitness-center', 'our-projects', 'our-foundation', 'sponsor-us'].includes(currentPage) && (
           <div className="min-h-[60vh] flex items-center justify-center">
             <div className="text-center px-4">
               <h2 className="text-4xl font-black uppercase italic tracking-tighter text-gray-300 mb-4">Under Construction</h2>
@@ -712,3 +1099,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
