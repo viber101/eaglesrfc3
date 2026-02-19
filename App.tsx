@@ -25,12 +25,13 @@ type FixtureScore = {
 };
 
 type PollChoice = 'win' | 'loss' | 'draw';
-type PollCounts = Record<PollChoice, number>;
 
-const POLL_COUNTS_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-counts-v1';
-const POLL_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-vote-v1';
-const POLL_LAST_SAVED_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-last-saved-v1';
 const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-vote-v1';
+const GOOGLE_FORM_VOTE_LINKS: Record<PollChoice, string> = {
+  win: 'https://docs.google.com/forms/d/e/1FAIpQLSd4PaLvY26vWQyF5w46LvpcgyJgXBa3FJDKzYmI3Vg7DS1O6A/viewform?usp=pp_url&entry.767880650=Win+(Eagles)',
+  draw: 'https://docs.google.com/forms/d/e/1FAIpQLSd4PaLvY26vWQyF5w46LvpcgyJgXBa3FJDKzYmI3Vg7DS1O6A/viewform?usp=pp_url&entry.767880650=Draw',
+  loss: 'https://docs.google.com/forms/d/e/1FAIpQLSd4PaLvY26vWQyF5w46LvpcgyJgXBa3FJDKzYmI3Vg7DS1O6A/viewform?usp=pp_url&entry.767880650=Loss+(Eagles)'
+};
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
 
@@ -266,95 +267,57 @@ const FixturesSlider: React.FC = () => {
 };
 
 const MatchPollWidget: React.FC = () => {
-  const [counts, setCounts] = useState<PollCounts>({ win: 0, loss: 0, draw: 0 });
   const [selectedChoice, setSelectedChoice] = useState<PollChoice | null>(null);
-  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
   const [storageStatus, setStorageStatus] = useState<'ready' | 'blocked'>('ready');
 
   useEffect(() => {
     try {
       const testKey = '__poll_storage_test__';
-      localStorage.setItem(testKey, 'ok');
-      localStorage.removeItem(testKey);
       sessionStorage.setItem(testKey, 'ok');
       sessionStorage.removeItem(testKey);
       setStorageStatus('ready');
 
-      const storedCounts = localStorage.getItem(POLL_COUNTS_STORAGE_KEY);
-      if (storedCounts) {
-        const parsedCounts = JSON.parse(storedCounts) as Partial<PollCounts>;
-        setCounts({
-          win: Number(parsedCounts.win) || 0,
-          loss: Number(parsedCounts.loss) || 0,
-          draw: Number(parsedCounts.draw) || 0
-        });
-      }
-      const storedChoice = localStorage.getItem(POLL_VOTE_STORAGE_KEY) as PollChoice | null;
-      if (storedChoice === 'win' || storedChoice === 'loss' || storedChoice === 'draw') {
-        setSelectedChoice(storedChoice);
-      }
-      const storedLastSavedAt = localStorage.getItem(POLL_LAST_SAVED_STORAGE_KEY);
-      if (storedLastSavedAt) {
-        setLastSavedAt(storedLastSavedAt);
-      }
       const sessionChoice = sessionStorage.getItem(POLL_SESSION_VOTE_STORAGE_KEY) as PollChoice | null;
       if (sessionChoice === 'win' || sessionChoice === 'loss' || sessionChoice === 'draw') {
         setSelectedChoice(sessionChoice);
       }
     } catch {
-      setCounts({ win: 0, loss: 0, draw: 0 });
       setSelectedChoice(null);
-      setLastSavedAt(null);
       setStorageStatus('blocked');
     }
   }, []);
-
-  const totalVotes = counts.win + counts.loss + counts.draw;
-  const getPct = (choice: PollChoice) => (totalVotes > 0 ? Math.round((counts[choice] / totalVotes) * 100) : 0);
 
   const vote = (choice: PollChoice) => {
     if (selectedChoice) {
       return;
     }
-    const nextCounts: PollCounts = {
-      ...counts,
-      [choice]: counts[choice] + 1
-    };
-    setCounts(nextCounts);
     setSelectedChoice(choice);
-    const now = new Date().toISOString();
-    setLastSavedAt(now);
     try {
-      localStorage.setItem(POLL_COUNTS_STORAGE_KEY, JSON.stringify(nextCounts));
-      localStorage.setItem(POLL_VOTE_STORAGE_KEY, choice);
-      localStorage.setItem(POLL_LAST_SAVED_STORAGE_KEY, now);
       sessionStorage.setItem(POLL_SESSION_VOTE_STORAGE_KEY, choice);
       setStorageStatus('ready');
     } catch {
       setStorageStatus('blocked');
     }
+    window.open(GOOGLE_FORM_VOTE_LINKS[choice], '_blank', 'noopener,noreferrer');
   };
 
   return (
     <div className="bg-black text-white rounded-xl p-4 border-t-2 border-[#F5A623] shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-[11px] font-black uppercase tracking-widest">Match Poll</h3>
-        <span className="text-[#F5A623] text-[10px] font-black uppercase">{totalVotes} Votes</span>
+        <span className="text-[#F5A623] text-[10px] font-black uppercase">Google Forms</span>
       </div>
       <div className="bg-white/10 rounded p-2 mb-3">
-        <p className="text-[10px] font-black uppercase text-[#F5A623]">Stored Data (Local Browser)</p>
+        <p className="text-[10px] font-black uppercase text-[#F5A623]">Storage</p>
         <p className="text-[10px] font-bold uppercase text-white/80">
-          W {counts.win} | D {counts.draw} | L {counts.loss}
+          Votes Stored In Google Forms
         </p>
         <p className="text-[10px] font-bold uppercase text-white/60">
-          Storage: {storageStatus === 'ready' ? 'Saved to Local Storage' : 'Storage Blocked'}
-        </p>
-        <p className="text-[10px] font-bold uppercase text-white/60">
-          Last Save: {lastSavedAt ? new Date(lastSavedAt).toLocaleString() : 'Not yet'}
+          Session Lock: {storageStatus === 'ready' ? 'Working' : 'Storage Blocked'}
         </p>
       </div>
       <p className="text-sm font-black uppercase mb-1"><span className="text-[#F5A623]">Eagles</span> vs Golden Badgers</p>
-      <p className="text-[10px] font-bold uppercase text-white/70 mb-3">One vote per session, no login required</p>
+      <p className="text-[10px] font-bold uppercase text-white/70 mb-3">One vote per session, redirects to Google Form</p>
       <div className="grid grid-cols-3 gap-2 mb-4">
         <button
           onClick={() => vote('win')}
@@ -389,20 +352,6 @@ const MatchPollWidget: React.FC = () => {
           You already voted this session: {selectedChoice}
         </p>
       )}
-
-      <div className="space-y-2">
-        {(['win', 'draw', 'loss'] as PollChoice[]).map((choice) => (
-          <div key={choice}>
-            <div className="flex items-center justify-between text-[10px] font-black uppercase mb-1">
-              <span>{choice}</span>
-              <span>{getPct(choice)}%</span>
-            </div>
-            <div className="h-2 bg-white/10 rounded">
-              <div className="h-2 bg-[#F5A623] rounded transition-all" style={{ width: `${getPct(choice)}%` }} />
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 };
