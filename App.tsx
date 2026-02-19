@@ -25,12 +25,16 @@ type FixtureScore = {
 };
 
 type PollChoice = 'win' | 'loss' | 'draw';
+type PollCounts = Record<PollChoice, number>;
 
 const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-vote-v1';
-const GOOGLE_FORM_VOTE_LINKS: Record<PollChoice, string> = {
-  win: 'https://docs.google.com/forms/d/e/1FAIpQLSd4PaLvY26vWQyF5w46LvpcgyJgXBa3FJDKzYmI3Vg7DS1O6A/viewform?usp=pp_url&entry.767880650=Win+(Eagles)',
-  draw: 'https://docs.google.com/forms/d/e/1FAIpQLSd4PaLvY26vWQyF5w46LvpcgyJgXBa3FJDKzYmI3Vg7DS1O6A/viewform?usp=pp_url&entry.767880650=Draw',
-  loss: 'https://docs.google.com/forms/d/e/1FAIpQLSd4PaLvY26vWQyF5w46LvpcgyJgXBa3FJDKzYmI3Vg7DS1O6A/viewform?usp=pp_url&entry.767880650=Loss+(Eagles)'
+const POLL_SHARED_COUNTS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx8zhnML1fWp7nrPSbYylRCUiQjsoSzKsZRiQoBIuYZu-C6RUyAcAxbASRYFHK8tKXH/exec';
+const GOOGLE_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSd4PaLvY26vWQyF5w46LvpcgyJgXBa3FJDKzYmI3Vg7DS1O6A/formResponse';
+const GOOGLE_FORM_ENTRY_FIELD = 'entry.767880650';
+const GOOGLE_FORM_VOTE_VALUES: Record<PollChoice, string> = {
+  win: 'Win (Eagles)',
+  draw: 'Draw',
+  loss: 'Loss (Eagles)'
 };
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
@@ -267,8 +271,36 @@ const FixturesSlider: React.FC = () => {
 };
 
 const MatchPollWidget: React.FC = () => {
+  const [counts, setCounts] = useState<PollCounts>({ win: 0, draw: 0, loss: 0 });
   const [selectedChoice, setSelectedChoice] = useState<PollChoice | null>(null);
   const [storageStatus, setStorageStatus] = useState<'ready' | 'blocked'>('ready');
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'sending' | 'sent' | 'failed'>('idle');
+  const [countsStatus, setCountsStatus] = useState<'loading' | 'live' | 'offline' | 'unconfigured'>('loading');
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+
+  const fetchSharedCounts = async () => {
+    if (!POLL_SHARED_COUNTS_ENDPOINT || POLL_SHARED_COUNTS_ENDPOINT.includes('YOUR_SCRIPT_ID')) {
+      setCountsStatus('unconfigured');
+      return;
+    }
+
+    try {
+      const response = await fetch(POLL_SHARED_COUNTS_ENDPOINT, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error('Bad response');
+      }
+      const payload = await response.json() as Partial<PollCounts> & { total?: number };
+      setCounts({
+        win: Number(payload.win) || 0,
+        draw: Number(payload.draw) || 0,
+        loss: Number(payload.loss) || 0
+      });
+      setCountsStatus('live');
+      setLastSyncedAt(new Date().toISOString());
+    } catch {
+      setCountsStatus('offline');
+    }
+  };
 
   useEffect(() => {
     try {
@@ -282,42 +314,85 @@ const MatchPollWidget: React.FC = () => {
         setSelectedChoice(sessionChoice);
       }
     } catch {
+      setCounts({ win: 0, draw: 0, loss: 0 });
       setSelectedChoice(null);
       setStorageStatus('blocked');
     }
+
+    fetchSharedCounts();
+    const intervalId = window.setInterval(fetchSharedCounts, 30000);
+    return () => window.clearInterval(intervalId);
   }, []);
 
-  const vote = (choice: PollChoice) => {
+  const totalVotes = counts.win + counts.draw + counts.loss;
+
+  const vote = async (choice: PollChoice) => {
     if (selectedChoice) {
       return;
     }
+
+    const nextCounts: PollCounts = {
+      ...counts,
+      [choice]: counts[choice] + 1
+    };
+    setCounts(nextCounts);
     setSelectedChoice(choice);
+    setSubmitStatus('sending');
     try {
       sessionStorage.setItem(POLL_SESSION_VOTE_STORAGE_KEY, choice);
       setStorageStatus('ready');
     } catch {
       setStorageStatus('blocked');
     }
-    window.open(GOOGLE_FORM_VOTE_LINKS[choice], '_blank', 'noopener,noreferrer');
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append(GOOGLE_FORM_ENTRY_FIELD, GOOGLE_FORM_VOTE_VALUES[choice]);
+
+      await fetch(GOOGLE_FORM_RESPONSE_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: formData.toString(),
+        keepalive: true
+      });
+      setSubmitStatus('sent');
+      window.setTimeout(fetchSharedCounts, 2000);
+    } catch {
+      setSubmitStatus('failed');
+    }
   };
 
   return (
     <div className="bg-black text-white rounded-xl p-4 border-t-2 border-[#F5A623] shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-[11px] font-black uppercase tracking-widest">Match Poll</h3>
-        <span className="text-[#F5A623] text-[10px] font-black uppercase">Google Forms</span>
+        <span className="text-[#F5A623] text-[10px] font-black uppercase">{totalVotes} Votes</span>
       </div>
       <div className="bg-white/10 rounded p-2 mb-3">
-        <p className="text-[10px] font-black uppercase text-[#F5A623]">Storage</p>
+        <p className="text-[10px] font-black uppercase text-[#F5A623]">Vote Totals</p>
         <p className="text-[10px] font-bold uppercase text-white/80">
-          Votes Stored In Google Forms
+          Win: {counts.win} | Draw: {counts.draw} | Loss: {counts.loss}
+        </p>
+        <p className="text-[10px] font-bold uppercase text-white/60">
+          Shared Counts: {countsStatus === 'live' ? 'Live' : countsStatus === 'loading' ? 'Loading...' : countsStatus === 'unconfigured' ? 'Not Configured' : 'Offline'}
         </p>
         <p className="text-[10px] font-bold uppercase text-white/60">
           Session Lock: {storageStatus === 'ready' ? 'Working' : 'Storage Blocked'}
         </p>
+        <p className="text-[10px] font-bold uppercase text-white/60">
+          Submit Status: {submitStatus === 'idle' ? 'Ready' : submitStatus === 'sending' ? 'Sending...' : submitStatus === 'sent' ? 'Captured' : 'Send Failed'}
+        </p>
+        {lastSyncedAt && (
+          <p className="text-[10px] font-bold uppercase text-white/60">
+            Last Sync: {new Date(lastSyncedAt).toLocaleTimeString()}
+          </p>
+        )}
       </div>
       <p className="text-sm font-black uppercase mb-1"><span className="text-[#F5A623]">Eagles</span> vs Golden Badgers</p>
-      <p className="text-[10px] font-bold uppercase text-white/70 mb-3">One vote per session, redirects to Google Form</p>
+      <p className="text-[10px] font-bold uppercase text-white/70 mb-3">One vote per session, submits in-app (no redirect)</p>
       <div className="grid grid-cols-3 gap-2 mb-4">
         <button
           onClick={() => vote('win')}
