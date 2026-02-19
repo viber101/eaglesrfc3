@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import Header from './components/Header';
 import SectionHeader from './components/SectionHeader';
 import Card from './components/Card';
-import { MOCK_TRENDING_VIDEOS, MOCK_SHOP_PRODUCTS, MOCK_NEWS, MOCK_STANDINGS, MOCK_PLAYERS, MOCK_TV, MOCK_ATHLETES } from './constants';
+import { MOCK_TRENDING_VIDEOS, MOCK_SHOP_PRODUCTS, MOCK_NEWS, MOCK_STANDINGS, MOCK_PLAYERS, MOCK_TV, MOCK_ATHLETES, MOCK_X_PLAYERS, MOCK_HALL_OF_FAME, MOCK_BUSINESS_ATHLETES } from './constants';
 
 type FixtureItem = {
   id: string;
@@ -29,8 +29,8 @@ type PollCounts = Record<PollChoice, number>;
 
 const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-vote-v1';
 const POLL_SHARED_COUNTS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx8zhnML1fWp7nrPSbYylRCUiQjsoSzKsZRiQoBIuYZu-C6RUyAcAxbASRYFHK8tKXH/exec';
-const GOOGLE_FORM_RESPONSE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSd4PaLvY26vWQyF5w46LvpcgyJgXBa3FJDKzYmI3Vg7DS1O6A/formResponse';
-const GOOGLE_FORM_ENTRY_FIELD = 'entry.767880650';
+const POLL_VOTE_SUBMIT_ENDPOINT = POLL_SHARED_COUNTS_ENDPOINT;
+const POLL_VOTE_FIELD = 'choice';
 const GOOGLE_FORM_VOTE_VALUES: Record<PollChoice, string> = {
   win: 'Win (Eagles)',
   draw: 'Draw',
@@ -50,6 +50,44 @@ const toFixtureDateLabel = (fixture: FixtureItem) => {
   const dateNumber = extractDateNumber(fixture.date);
   const day = fixture.day ? fixture.day.slice(0, 3).toUpperCase() : '';
   return `${day} ${month} ${dateNumber}`.trim();
+};
+
+const MONTH_ORDER = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
+
+const MONTH_INDEX: Record<string, number> = MONTH_ORDER.reduce((acc, month, index) => {
+  acc[month.toLowerCase()] = index;
+  return acc;
+}, {} as Record<string, number>);
+
+const getTimeSortValue = (value: string) => {
+  const clean = cleanCell(value).toUpperCase();
+  const match = clean.match(/^(\d{1,2}):(\d{2})(AM|PM)$/);
+  if (!match) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+  let hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  const ampm = match[3];
+  if (ampm === 'PM' && hours !== 12) {
+    hours += 12;
+  }
+  if (ampm === 'AM' && hours === 12) {
+    hours = 0;
+  }
+  return (hours * 60) + minutes;
 };
 
 const parseFixturesCsv = (csvText: string): FixtureItem[] => {
@@ -156,7 +194,11 @@ const FixturesSlider: React.FC = () => {
       .then((response) => response.text())
       .then((csvText) => {
         if (isMounted) {
-          setFixtures(parseFixturesCsv(csvText));
+          const parsedFixtures = parseFixturesCsv(csvText);
+          const eaglesFixtures = parsedFixtures.filter(
+            (fixture) => isEaglesTeam(fixture.home) || isEaglesTeam(fixture.away)
+          );
+          setFixtures(eaglesFixtures);
         }
       })
       .catch(() => {
@@ -270,13 +312,235 @@ const FixturesSlider: React.FC = () => {
   );
 };
 
+const CalendarSection: React.FC = () => {
+  const [fixtures, setFixtures] = useState<FixtureItem[]>([]);
+  const [activeMonths, setActiveMonths] = useState<string[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/fixtures/2026-cura-championship-fixtures.csv')
+      .then((response) => response.text())
+      .then((csvText) => {
+        if (!isMounted) {
+          return;
+        }
+
+        const parsedFixtures = parseFixturesCsv(csvText);
+        const sortedFixtures = [...parsedFixtures].sort((a, b) => {
+          const monthDelta = (MONTH_INDEX[a.month.toLowerCase()] ?? 99) - (MONTH_INDEX[b.month.toLowerCase()] ?? 99);
+          if (monthDelta !== 0) {
+            return monthDelta;
+          }
+          const dateDelta = Number(extractDateNumber(a.date)) - Number(extractDateNumber(b.date));
+          if (dateDelta !== 0) {
+            return dateDelta;
+          }
+          return getTimeSortValue(a.time) - getTimeSortValue(b.time);
+        });
+
+        const availableMonths = Array.from(new Set(sortedFixtures.map((fixture) => fixture.month)))
+          .sort((a, b) => (MONTH_INDEX[a.toLowerCase()] ?? 99) - (MONTH_INDEX[b.toLowerCase()] ?? 99));
+        setFixtures(sortedFixtures);
+        setActiveMonths(availableMonths);
+
+        const currentMonth = MONTH_ORDER[new Date().getMonth()];
+        if (availableMonths.includes(currentMonth)) {
+          setSelectedMonth(currentMonth);
+        } else {
+          setSelectedMonth(availableMonths[0] || '');
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setFixtures([]);
+          setActiveMonths([]);
+          setSelectedMonth('');
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const visibleFixtures = selectedMonth
+    ? fixtures.filter((fixture) => fixture.month.toLowerCase() === selectedMonth.toLowerCase())
+    : fixtures;
+
+  const currentMonth = MONTH_ORDER[new Date().getMonth()];
+  const isMonthActive = (month: string) => activeMonths.includes(month);
+
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, [visibleFixtures.length, isLoading, selectedMonth]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = scrollContainerRef.current.clientWidth * 0.85;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  return (
+    <section className="mb-12">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-4xl sm:text-5xl font-black tracking-tighter text-[#081534]">Calendar</h2>
+        <div className="hidden sm:flex items-center gap-6 text-[#081534] text-sm font-bold">
+          <button className="flex items-center gap-2 hover:text-[#F5A623] transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4h18M6 8h12M9 12h6M10 16h4" /></svg>
+            Filters
+          </button>
+          <button className="flex items-center gap-2 hover:text-[#F5A623] transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
+            Subscribe
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-[#081534] rounded-full p-1.5 mb-6 overflow-x-auto scrollbar-hide border border-[#F5A623]/40">
+        <div className="flex min-w-max">
+          {MONTH_ORDER.map((month) => (
+            <button
+              key={month}
+              onClick={() => isMonthActive(month) && setSelectedMonth(month)}
+              disabled={!isMonthActive(month)}
+              className={`px-5 py-2 rounded-full text-sm font-bold transition-colors ${
+                selectedMonth === month ? 'bg-[#F5A623] text-black' : 'text-white/80 hover:bg-white/10'
+              } ${!isMonthActive(month) ? 'opacity-35 cursor-not-allowed hover:bg-transparent' : ''}`}
+            >
+              {month.slice(0, 3)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <button
+          onClick={() => isMonthActive(currentMonth) && setSelectedMonth(currentMonth)}
+          disabled={!isMonthActive(currentMonth)}
+          className={`bg-black text-white text-sm font-black px-5 py-2 rounded-full border border-[#F5A623] transition-colors ${
+            isMonthActive(currentMonth) ? 'hover:bg-[#F5A623] hover:text-black' : 'opacity-40 cursor-not-allowed'
+          }`}
+        >
+          Go to current month
+        </button>
+      </div>
+
+      {isLoading ? (
+        <div className="bg-white border border-gray-200 rounded-2xl p-8 text-center text-gray-500 font-bold uppercase text-sm">
+          Loading Calendar...
+        </div>
+      ) : (
+        <div className="bg-[#081534] rounded-2xl p-4 sm:p-5 shadow-[0_20px_45px_rgba(8,21,52,0.35)]">
+          <div className="relative">
+            {canScrollLeft && (
+              <button onClick={() => scroll('left')} className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#081534] shadow-lg">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
+              </button>
+            )}
+            {canScrollRight && (
+              <button onClick={() => scroll('right')} className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#081534] shadow-lg">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
+              </button>
+            )}
+
+            <div ref={scrollContainerRef} onScroll={checkScroll} className="flex overflow-x-auto gap-4 scrollbar-hide snap-x snap-mandatory pb-1">
+              {visibleFixtures.map((fixture) => {
+                const score = FIXTURE_SCORE_OVERRIDES[toFixtureKey(fixture)];
+                return (
+                  <article key={`${fixture.id}-${fixture.home}-${fixture.away}`} className="min-w-[320px] sm:min-w-[360px] max-w-[360px] rounded-2xl overflow-hidden bg-white border border-[#d7dbe3] shadow-sm snap-start">
+                    <div className="bg-gradient-to-br from-[#0d245b] via-[#0b1d4a] to-[#081538] p-5 text-white border-t-4 border-[#F5A623]">
+                      <div className="flex items-center justify-between text-[11px] font-black uppercase tracking-wider text-[#b2bdd5] mb-4">
+                        <span>{fixture.category}</span>
+                        <span>{toFixtureDateLabel(fixture)} {fixture.time}</span>
+                      </div>
+                      <div className="grid grid-cols-3 items-center gap-3">
+                        <p className={`text-sm font-black uppercase leading-tight text-left ${isEaglesTeam(fixture.home) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.home}</p>
+                        <p className="text-4xl font-black text-center">
+                          {score ? `${score.home} - ${score.away}` : 'V'}
+                        </p>
+                        <p className={`text-sm font-black uppercase leading-tight text-right ${isEaglesTeam(fixture.away) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.away}</p>
+                      </div>
+                    </div>
+                    <div className="p-5 bg-[#f7f8fb]">
+                      <p className="text-[#1b2f5a] text-xs font-bold mb-2">CURA Championship</p>
+                      <h3 className="text-[#0d245b] text-3xl font-black tracking-tight mb-1">Week {fixture.week}</h3>
+                      <p className="text-[#0d245b] text-lg font-black mb-3">{fixture.month} {extractDateNumber(fixture.date)}</p>
+                      <div className="space-y-2 text-[#35507f] text-sm font-bold">
+                        <p className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
+                          {fixture.day}, {fixture.time}
+                        </p>
+                        <p className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657 13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
+                          {fixture.venue}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+              {!visibleFixtures.length && (
+                <div className="min-w-[320px] bg-white border border-gray-200 rounded-2xl p-8 text-center text-gray-500 font-bold uppercase text-sm">
+                  No fixtures found for this month.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+};
+
+const getCategoryPercentages = (values: PollCounts) => {
+  const total = values.win + values.draw + values.loss;
+  if (total <= 0) {
+    return { win: 0, draw: 0, loss: 0 };
+  }
+  return {
+    win: (values.win / total) * 100,
+    draw: (values.draw / total) * 100,
+    loss: (values.loss / total) * 100
+  };
+};
+
+const getBarWidth = (percentage: number, rawCount: number) => {
+  if (rawCount <= 0) {
+    return 0;
+  }
+  return Math.max(4, percentage);
+};
+
 const MatchPollWidget: React.FC = () => {
   const [counts, setCounts] = useState<PollCounts>({ win: 0, draw: 0, loss: 0 });
   const [selectedChoice, setSelectedChoice] = useState<PollChoice | null>(null);
   const [storageStatus, setStorageStatus] = useState<'ready' | 'blocked'>('ready');
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'sending' | 'sent' | 'failed'>('idle');
   const [countsStatus, setCountsStatus] = useState<'loading' | 'live' | 'offline' | 'unconfigured'>('loading');
-  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
 
   const fetchSharedCounts = async () => {
     if (!POLL_SHARED_COUNTS_ENDPOINT || POLL_SHARED_COUNTS_ENDPOINT.includes('YOUR_SCRIPT_ID')) {
@@ -296,7 +560,6 @@ const MatchPollWidget: React.FC = () => {
         loss: Number(payload.loss) || 0
       });
       setCountsStatus('live');
-      setLastSyncedAt(new Date().toISOString());
     } catch {
       setCountsStatus('offline');
     }
@@ -325,6 +588,7 @@ const MatchPollWidget: React.FC = () => {
   }, []);
 
   const totalVotes = counts.win + counts.draw + counts.loss;
+  const percentages = getCategoryPercentages(counts);
 
   const vote = async (choice: PollChoice) => {
     if (selectedChoice) {
@@ -347,9 +611,9 @@ const MatchPollWidget: React.FC = () => {
 
     try {
       const formData = new URLSearchParams();
-      formData.append(GOOGLE_FORM_ENTRY_FIELD, GOOGLE_FORM_VOTE_VALUES[choice]);
+      formData.append(POLL_VOTE_FIELD, GOOGLE_FORM_VOTE_VALUES[choice]);
 
-      await fetch(GOOGLE_FORM_RESPONSE_URL, {
+      await fetch(POLL_VOTE_SUBMIT_ENDPOINT, {
         method: 'POST',
         mode: 'no-cors',
         headers: {
@@ -365,69 +629,92 @@ const MatchPollWidget: React.FC = () => {
     }
   };
 
+  const pollRows: Array<{ key: PollChoice; label: string; value: number; percentage: number }> = [
+    { key: 'win', label: 'WIN', value: counts.win, percentage: percentages.win },
+    { key: 'draw', label: 'DRAW', value: counts.draw, percentage: percentages.draw },
+    { key: 'loss', label: 'LOSS', value: counts.loss, percentage: percentages.loss }
+  ];
+
+  const buttonBase = 'border-2 border-black rounded-md py-2 text-xs sm:text-[11px] font-black uppercase tracking-wider transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#f6f2e8]';
+
   return (
-    <div className="bg-black text-white rounded-xl p-4 border-t-2 border-[#F5A623] shadow-sm">
+    <section className="rounded-xl border-2 border-black bg-[#f6f2e8] text-black p-4 shadow-[4px_4px_0_#000]">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-[11px] font-black uppercase tracking-widest">Match Poll</h3>
-        <span className="text-[#F5A623] text-[10px] font-black uppercase">{totalVotes} Votes</span>
+        <h3 className="text-[11px] font-black uppercase tracking-[0.2em]">Match Poll</h3>
+        <p aria-live="polite" className="text-xs font-black uppercase tracking-wide">TOTAL VOTES: {totalVotes}</p>
       </div>
-      <div className="bg-white/10 rounded p-2 mb-3">
-        <p className="text-[10px] font-black uppercase text-[#F5A623]">Vote Totals</p>
-        <p className="text-[10px] font-bold uppercase text-white/80">
-          Win: {counts.win} | Draw: {counts.draw} | Loss: {counts.loss}
-        </p>
-        <p className="text-[10px] font-bold uppercase text-white/60">
-          Shared Counts: {countsStatus === 'live' ? 'Live' : countsStatus === 'loading' ? 'Loading...' : countsStatus === 'unconfigured' ? 'Not Configured' : 'Offline'}
-        </p>
-        <p className="text-[10px] font-bold uppercase text-white/60">
-          Session Lock: {storageStatus === 'ready' ? 'Working' : 'Storage Blocked'}
-        </p>
-        <p className="text-[10px] font-bold uppercase text-white/60">
-          Submit Status: {submitStatus === 'idle' ? 'Ready' : submitStatus === 'sending' ? 'Sending...' : submitStatus === 'sent' ? 'Captured' : 'Send Failed'}
-        </p>
-        {lastSyncedAt && (
-          <p className="text-[10px] font-bold uppercase text-white/60">
-            Last Sync: {new Date(lastSyncedAt).toLocaleTimeString()}
-          </p>
-        )}
-      </div>
-      <p className="text-sm font-black uppercase mb-1"><span className="text-[#F5A623]">Eagles</span> vs Golden Badgers</p>
-      <p className="text-[10px] font-bold uppercase text-white/70 mb-3">One vote per session, submits in-app (no redirect)</p>
+
+      <p className="text-xs font-black uppercase tracking-wide mb-3"><span className="text-[#F5A623]">Eagles</span> vs Golden Badgers</p>
+
       <div className="grid grid-cols-3 gap-2 mb-4">
         <button
           onClick={() => vote('win')}
           disabled={!!selectedChoice}
-          className={`py-2 rounded text-[10px] font-black uppercase tracking-wider transition-colors ${
-            selectedChoice === 'win' ? 'bg-[#F5A623] text-black' : 'bg-white/10 hover:bg-white/20'
-          } ${selectedChoice ? 'cursor-not-allowed opacity-80' : ''}`}
+          aria-pressed={selectedChoice === 'win'}
+          className={`${buttonBase} bg-black text-white ${
+            selectedChoice === 'win' ? 'ring-2 ring-[#F5A623] scale-[1.02] shadow-[2px_2px_0_#000]' : ''
+          } ${selectedChoice ? 'cursor-not-allowed opacity-90' : 'hover:-translate-y-0.5'}`}
         >
-          Win
+          WIN
         </button>
         <button
           onClick={() => vote('draw')}
           disabled={!!selectedChoice}
-          className={`py-2 rounded text-[10px] font-black uppercase tracking-wider transition-colors ${
-            selectedChoice === 'draw' ? 'bg-[#F5A623] text-black' : 'bg-white/10 hover:bg-white/20'
-          } ${selectedChoice ? 'cursor-not-allowed opacity-80' : ''}`}
+          aria-pressed={selectedChoice === 'draw'}
+          className={`${buttonBase} bg-[#F5A623] text-black ${
+            selectedChoice === 'draw' ? 'ring-2 ring-black scale-[1.02] shadow-[2px_2px_0_#000]' : ''
+          } ${selectedChoice ? 'cursor-not-allowed opacity-90' : 'hover:-translate-y-0.5'}`}
         >
-          Draw
+          DRAW
         </button>
         <button
           onClick={() => vote('loss')}
           disabled={!!selectedChoice}
-          className={`py-2 rounded text-[10px] font-black uppercase tracking-wider transition-colors ${
-            selectedChoice === 'loss' ? 'bg-[#F5A623] text-black' : 'bg-white/10 hover:bg-white/20'
-          } ${selectedChoice ? 'cursor-not-allowed opacity-80' : ''}`}
+          aria-pressed={selectedChoice === 'loss'}
+          className={`${buttonBase} bg-white text-black ${
+            selectedChoice === 'loss' ? 'ring-2 ring-[#F5A623] scale-[1.02] shadow-[2px_2px_0_#000]' : ''
+          } ${selectedChoice ? 'cursor-not-allowed opacity-90' : 'hover:-translate-y-0.5'}`}
         >
-          Loss
+          LOSS
         </button>
       </div>
+
+      <div className="space-y-2 mb-4">
+        {pollRows.map((row) => (
+          <div key={row.key} className="flex items-center gap-2">
+            <span className="w-14 text-xs font-black uppercase">{row.label}</span>
+            <div className="h-5 flex-1 border-2 border-black bg-white overflow-hidden">
+              <div
+                className="h-full border-r-2 border-black bg-[repeating-linear-gradient(-45deg,#111_0px,#111_6px,#F5A623_6px,#F5A623_12px)] transition-all duration-500"
+                style={{ width: `${getBarWidth(row.percentage, row.value)}%` }}
+              />
+            </div>
+            <span className="w-8 text-right text-xs font-black">{row.value}</span>
+          </div>
+        ))}
+      </div>
+
       {selectedChoice && (
-        <p className="text-[10px] font-bold uppercase text-[#F5A623] mb-3">
-          You already voted this session: {selectedChoice}
+        <p className="text-[10px] font-black uppercase text-[#1a1a1a]">
+          Your vote this session: <span className="text-[#F5A623]">{selectedChoice.toUpperCase()}</span>
         </p>
       )}
-    </div>
+      {submitStatus === 'failed' && (
+        <p className="text-[10px] font-black uppercase text-[#1a1a1a] mt-1">
+          Vote saved locally for this session; sync pending.
+        </p>
+      )}
+      {(countsStatus === 'offline' || countsStatus === 'unconfigured') && (
+        <p className="text-[10px] font-black uppercase text-[#1a1a1a] mt-1">
+          Live tally unavailable; showing last known totals.
+        </p>
+      )}
+      {storageStatus === 'blocked' && (
+        <p className="text-[10px] font-black uppercase text-[#1a1a1a] mt-1">
+          Session lock unavailable on this browser.
+        </p>
+      )}
+    </section>
   );
 };
 
@@ -626,7 +913,9 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       </div>
     </section>
 
-    <Carousel title="Our First Team">
+    <CalendarSection />
+
+    <Carousel title="2026 Players">
       {MOCK_PLAYERS.map((p) => (
         <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
@@ -634,7 +923,58 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
             <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
           </div>
           <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
-          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">{p.position}</p>
+          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.position}</p>
+          <button className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
+            Sponsor Player
+          </button>
+        </div>
+      ))}
+    </Carousel>
+
+    <Carousel title="Our X-Players">
+      {MOCK_X_PLAYERS.map((p) => (
+        <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
+          <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
+            <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
+          </div>
+          <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
+          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.currentClub}</p>
+          <button className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
+            Sponsor Player
+          </button>
+        </div>
+      ))}
+    </Carousel>
+
+    <Carousel title="Hall of Fame">
+      {MOCK_HALL_OF_FAME.map((p) => (
+        <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
+          <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
+            <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
+          </div>
+          <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
+          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.title}</p>
+          <button className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
+            Sponsor Player
+          </button>
+        </div>
+      ))}
+    </Carousel>
+
+    <Carousel title="Our Athletes in Business">
+      {MOCK_BUSINESS_ATHLETES.map((p) => (
+        <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
+          <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
+            <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
+          </div>
+          <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
+          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.title}</p>
+          <button className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
+            Sponsor Player
+          </button>
         </div>
       ))}
     </Carousel>
@@ -948,6 +1288,51 @@ const HistoryPage: React.FC = () => (
   </div>
 );
 
+const GalleryPage: React.FC = () => {
+  const galleryImages = [
+    { src: '/homehero.jpeg', title: 'Match Day Focus' },
+    { src: '/ceo.jpeg', title: 'Club Leadership' },
+    { src: '/kit.jpeg', title: '2026 Kit' },
+    { src: '/KINTANTE FUN DAY FLYER.png', title: 'Community Day' },
+    { src: '/partners/Otim Chirs.jpeg', title: 'Athletes in Business' },
+    { src: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM.jpeg', title: 'Partners' },
+    { src: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM (1).jpeg', title: 'Partners' },
+    { src: '/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM (2).jpeg', title: 'Partners' }
+  ];
+
+  return (
+    <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700">
+      <div className="mb-10 flex items-end justify-between gap-4">
+        <div>
+          <p className="text-[#F5A623] text-xs font-black uppercase tracking-[0.3em] mb-2">Eagles TV</p>
+          <h1 className="text-5xl sm:text-6xl font-black uppercase italic tracking-tighter text-[#081534]">Gallery</h1>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {galleryImages.map((image, index) => (
+          <article
+            key={`${image.src}-${index}`}
+            className={`group relative overflow-hidden rounded-xl bg-black shadow-sm ${
+              index === 0 ? 'sm:col-span-2 lg:col-span-2 lg:row-span-2 min-h-[360px]' : 'min-h-[220px]'
+            }`}
+          >
+            <img
+              src={image.src}
+              alt={image.title}
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4">
+              <p className="text-white text-sm font-black uppercase tracking-wider">{image.title}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
 
@@ -963,6 +1348,7 @@ const App: React.FC = () => {
         {currentPage === 'home' ? <HomePage onNavigate={setCurrentPage} /> : null}
         {currentPage === 'about' ? <AboutPage /> : null}
         {currentPage === 'history' ? <HistoryPage /> : null}
+        {currentPage === 'gallery' ? <GalleryPage /> : null}
         
         {['squad', 'shop', 'tv', 'donate', 'contact', 'hall-of-fame', 'fitness-center', 'our-projects', 'our-foundation', 'sponsor-us'].includes(currentPage) && (
           <div className="min-h-[60vh] flex items-center justify-center">
@@ -988,16 +1374,6 @@ const App: React.FC = () => {
 
       {/* Premium Sports Footer - Full Width */}
       <footer className="bg-[#0a0a0a] text-white mt-20 w-full relative overflow-hidden">
-        {/* Dynamic Sports Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#F5A623" strokeWidth="0.5"/>
-            </pattern>
-            <rect width="100" height="100" fill="url(#grid)"/>
-          </svg>
-        </div>
-        
         {/* Angled Gold Accent Bar - Sports Energy */}
         <div className="relative h-2 bg-[#F5A623] transform -skew-y-1 origin-top-left scale-110"></div>
         
@@ -1008,20 +1384,20 @@ const App: React.FC = () => {
             <div className="max-w-7xl mx-auto px-6 py-8">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div className="text-center md:text-left">
-                  <span className="text-[#F5A623] text-3xl font-black">200+</span>
-                  <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Players Developed</p>
+                  <span className="text-[#F5A623] text-3xl font-black">47</span>
+                  <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Games Played</p>
                 </div>
                 <div className="text-center md:text-left">
-                  <span className="text-[#F5A623] text-3xl font-black">5+</span>
-                  <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Years of Excellence</p>
+                  <span className="text-[#F5A623] text-3xl font-black">20</span>
+                  <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Games Won</p>
                 </div>
                 <div className="text-center md:text-left">
-                  <span className="text-[#F5A623] text-3xl font-black">1</span>
-                  <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Vision</p>
+                  <span className="text-[#F5A623] text-3xl font-black">24</span>
+                  <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Games Lost</p>
                 </div>
                 <div className="text-center md:text-left">
-                  <span className="text-[#F5A623] text-3xl font-black">∞</span>
-                  <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Heart & Passion</p>
+                  <span className="text-[#F5A623] text-3xl font-black">3</span>
+                  <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Games Drawn</p>
                 </div>
               </div>
             </div>
@@ -1123,4 +1499,5 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 

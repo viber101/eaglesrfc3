@@ -8,6 +8,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   const [isAboutHovered, setIsAboutHovered] = useState(false);
   const [isOurClubHovered, setIsOurClubHovered] = useState(false);
+  const [isTvHovered, setIsTvHovered] = useState(false);
   const promoMessage = "Buy an Eagles Membership Card for as low as 100,000 UGX & enjoy up to 20% off in 20+ departmental stores. 20% of the proceeds support a child's education.";
 
   const navigateToAboutSection = (sectionId: string) => {
@@ -32,9 +33,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   ];
 
   const menuItems = [
-    { name: 'Eagles TV', id: 'tv' },
     { name: 'Donate', id: 'donate' },
-    { name: 'Contact', id: 'contact' }
+    { name: 'Player Sponsor', id: 'contact' }
+  ];
+
+  const tvItems = [
+    { name: 'Eagles TV', id: 'tv' },
+    { name: 'Gallery', id: 'gallery' }
   ];
 
   return (
@@ -166,6 +171,42 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               {isOurClubHovered && (
                 <div className="absolute top-full left-0 w-60 bg-[#111] text-white border border-white/15 shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                   {ourClubItems.map((item, index) => (
+                    <button
+                      key={item.id}
+                      onClick={() => onNavigate(item.id)}
+                      className={`w-full text-left px-4 py-3 hover:bg-white/10 font-bold uppercase text-[11px] tracking-wider ${
+                        index > 0 ? 'border-t border-white/10' : ''
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div
+              className="relative h-full flex items-center"
+              onMouseEnter={() => setIsTvHovered(true)}
+              onMouseLeave={() => setIsTvHovered(false)}
+            >
+              <button
+                onClick={() => onNavigate('tv')}
+                className={`h-full flex items-center px-1 transition-all border-b-4 ${
+                  ['tv', 'gallery'].includes(currentPage)
+                    ? 'border-[#F5A623] text-[#F5A623]'
+                    : 'border-transparent text-white hover:text-[#F5A623]'
+                }`}
+              >
+                Eagles TV
+                <svg className={`ml-1 w-3 h-3 transition-transform ${isTvHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {isTvHovered && (
+                <div className="absolute top-full left-0 w-44 bg-[#111] text-white border border-white/15 shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                  {tvItems.map((item, index) => (
                     <button
                       key={item.id}
                       onClick={() => onNavigate(item.id)}

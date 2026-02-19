@@ -16,6 +16,7 @@ export interface Player {
   position: string;
   imageUrl: string;
   number: string;
+  gamesPlayed: number;
 }
 
 export interface Athlete {
@@ -24,6 +25,22 @@ export interface Athlete {
   profession: string;
   phone: string;
   imageUrl: string;
+}
+
+export interface XPlayer {
+  id: string;
+  name: string;
+  currentClub: string;
+  imageUrl: string;
+  number: string;
+}
+
+export interface HallOfFameMember {
+  id: string;
+  name: string;
+  imageUrl: string;
+  number: string;
+  title: string;
 }
 
 export interface Standing {
