@@ -94,6 +94,12 @@ const X_CAPTAINS = [
   { period: '2023-2024', name: 'Ojara Emmanuel' },
   { period: '2024-2025', name: 'Odonkara Emanuel' }
 ];
+const X_CAPTAIN_IMAGES = [
+  '/x captains/Regan Kitara.jpeg',
+  '/x captains/Danmark Omeda.jpeg',
+  '/x captains/Ojara Emmanuel.jpeg',
+  '/x captains/Odonkara Emanuel.jpeg'
+];
 const X_COACHES = [
   { period: '2019-2023', name: 'Edmond Tumusiime' },
   { period: '2023-2025', name: 'Cherokee Sylvain Ngue' }
@@ -1336,7 +1342,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         <div key={`${item.period}-${item.name}`} className="flex-none w-[260px] snap-start">
           <article className="relative h-[360px] overflow-hidden border border-[#cfd8e6]">
             <img
-              src={LEGACY_SLIDE_IMAGES[index % LEGACY_SLIDE_IMAGES.length]}
+              src={toAssetUrl(X_CAPTAIN_IMAGES[index % X_CAPTAIN_IMAGES.length])}
               alt={item.name}
               className="w-full h-full object-cover"
               loading="lazy"
