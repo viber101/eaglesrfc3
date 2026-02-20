@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import Header from './components/Header';
 import SectionHeader from './components/SectionHeader';
 import Card from './components/Card';
-import { MOCK_TRENDING_VIDEOS, MOCK_SHOP_PRODUCTS, MOCK_NEWS, MOCK_STANDINGS, MOCK_PLAYERS, MOCK_TV, MOCK_X_PLAYERS, MOCK_HALL_OF_FAME, MOCK_BUSINESS_ATHLETES } from './constants';
+import { MOCK_SHOP_PRODUCTS, MOCK_NEWS, MOCK_STANDINGS, MOCK_PLAYERS, MOCK_TV, MOCK_X_PLAYERS, MOCK_HALL_OF_FAME, MOCK_BUSINESS_ATHLETES } from './constants';
 import { castVote as castPollVote, getPollCounts, PollApiConfigError, type PollChoice, type PollCounts } from './lib/pollApi';
 import {
   ABOUT_CONTENT,
@@ -45,24 +45,55 @@ const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-to
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
 const PLAYER_SPONSORS = [
-  { id: 'sponsor-1', name: 'Kampanis', role: 'Club Sponsor', imageUrl: '/partners/kampanis.png' },
-  { id: 'sponsor-2', name: 'Vacker', role: 'Kit Sponsor', imageUrl: '/partners/Vacker.jpeg' },
-  { id: 'sponsor-3', name: 'Wina Classic', role: 'Supporting Sponsor', imageUrl: '/partners/Wina Classic.jpeg' },
-  { id: 'sponsor-4', name: 'CHINT', role: 'Supporting Sponsor', imageUrl: '/partners/CHINT.jpeg' },
-  { id: 'sponsor-5', name: 'Caramec', role: 'Official Sponsor', imageUrl: '/partners/caramec.png' }
+  { id: 'sponsor-1', name: 'Kampanis', role: 'Club Sponsor', imageUrl: '/partners/kampanis.png', description: 'Supporting player welfare, gear, and match readiness.', contact: '+256 773 207 919' },
+  { id: 'sponsor-2', name: 'Vacker', role: 'Kit Sponsor', imageUrl: '/partners/Vacker.jpeg', description: 'Providing quality support for team identity and kits.', contact: '+256 773 207 919' },
+  { id: 'sponsor-3', name: 'Wina Classic', role: 'Supporting Sponsor', imageUrl: '/partners/Wina Classic.jpeg', description: 'Backing club operations and match-day activities.', contact: '+256 773 207 919' },
+  { id: 'sponsor-4', name: 'CHINT', role: 'Supporting Sponsor', imageUrl: '/partners/CHINT.jpeg', description: 'Investing in community growth through rugby.', contact: '+256 773 207 919' },
+  { id: 'sponsor-5', name: 'Caramec', role: 'Official Sponsor', imageUrl: '/partners/caramec.png', description: 'Powering development pathways for Eagles players.', contact: '+256 773 207 919' }
+];
+const X_CAPTAINS = [
+  { period: '2019-2022', name: 'Regan Kitara' },
+  { period: '2022-2023', name: 'Danmark Omeda' },
+  { period: '2023-2024', name: 'Ojara Emmanuel' },
+  { period: '2024-2025', name: 'Odonkara Emanuel' }
+];
+const X_COACHES = [
+  { period: '2019-2023', name: 'Edmond Tumusiime' },
+  { period: '2023-2025', name: 'Cherokee Sylvain Ngue' }
+];
+const CATEGORY_SPONSORSHIP_TYPES = [
+  'Man of the Match Sponsor',
+  'Impact Player Sponsor',
+  'Pitch Maintenance Sponsor',
+  'Flood Light Sponsor',
+  'Scoreboard Sponsor',
+  'Rugby Balls Sponsor',
+  'Scrum Machine Sponsor',
+  'Tackle Bags Sponsor',
+  'Laundry Service Sponsor',
+  'Medical Sponsor',
+  'Meals Sponsor'
+];
+const CATEGORY_SPONSORSHIP_BENEFITS = [
+  'Logo on our website',
+  'SMS blasting',
+  'Social media mentions',
+  'Allocation of a brand ambassador',
+  'One pitch-side advertising space (3 meters by 4 meters) for your company'
 ];
 const PAGE_IMAGES = {
   aboutHero: '/gallery/Eagles (10).jpeg',
   aboutStory: ['/gallery/Eagles (3).jpeg', '/gallery/Eagles (8).jpeg', '/gallery/Eagles (14).jpeg'],
   historyHero: '/gallery/Eagles (17).jpeg',
   historyMoments: ['/gallery/Eagles (4).jpeg', '/gallery/Eagles (9).jpeg', '/gallery/Eagles (19).jpeg'],
-  fitnessHero: '/gallery/Education & sports/Education (6).jpeg',
-  fitnessSupport: '/gallery/Education & sports/Education (2).jpeg',
+  fitnessHero: '/fitness centre/any.jpeg',
+  fitnessSupport: '/fitness centre/paul.jpeg',
   projectsHero: '/gallery/Stands/Stands (1).jpeg',
   projectsGallery: ['/gallery/Stands/Stands (2).jpeg', '/gallery/Stands/Stands (3).jpeg', '/gallery/Stands/Stands (4).jpeg'],
-  foundationHero: '/gallery/Education & sports/Education (10).jpeg',
-  foundationGallery: ['/gallery/Education & sports/Education (8).jpeg', '/gallery/Education & sports/Education (11).jpeg', '/gallery/Education & sports/Education (14).jpeg'],
+  foundationHero: '/gallery/Education & sports/Education (1).jpeg',
+  foundationGallery: ['/gallery/Education & sports/Education (2).jpeg', '/gallery/Education & sports/Education (3).jpeg', '/gallery/Education & sports/Education (4).jpeg'],
   sponsorHero: '/gallery/Eagles (18).jpeg',
+  sponsorUsHero: '/kit%20sponsor/kit%20sponsor.jpeg',
   donateHero: '/gallery/Education & sports/Education (12).jpeg',
   playerSponsorHero: '/gallery/Eagles (12).jpeg',
   shopHero: '/gallery/Eagles (6).jpeg',
@@ -84,7 +115,7 @@ const toFixtureDateLabel = (fixture: FixtureItem) => {
 };
 
 const formatScoreValue = (score?: FixtureScore) => (
-  score ? `${score.home} - ${score.away}` : '-- : --'
+  score ? `${score.home} : ${score.away}` : '... : ...'
 );
 
 const MONTH_ORDER = [
@@ -216,7 +247,7 @@ const parseFixturesCsv = (csvText: string): FixtureItem[] => {
   return fixtures;
 };
 
-const PlayerSponsorsSlider: React.FC = () => {
+const PlayerSponsorsSlider: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -248,8 +279,8 @@ const PlayerSponsorsSlider: React.FC = () => {
   return (
     <div className="bg-[#081534] rounded-xl p-4 shadow-lg overflow-hidden">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-white text-[11px] font-black uppercase tracking-widest">Player Sponsors</h3>
-        <span className="text-[#9fb0c4] text-[10px] font-bold uppercase tracking-wide">Slide</span>
+        <h3 className="text-white text-[11px] font-black uppercase tracking-widest">Become a Sponsor</h3>
+        <span className="text-[#9fb0c4] text-[10px] font-bold uppercase tracking-wide">Player Sponsors</span>
       </div>
 
       <div className="relative group">
@@ -280,9 +311,13 @@ const PlayerSponsorsSlider: React.FC = () => {
                 />
               </div>
 
-              <p className="mt-4 text-2xl font-black uppercase italic tracking-tight leading-none text-black">{sponsor.name}</p>
+              <p className="mt-2 text-xs text-[#2f4364] font-semibold leading-relaxed">{sponsor.description}</p>
+              <p className="mt-2 text-[10px] font-black uppercase tracking-widest text-[#081534]">Contact: {sponsor.contact}</p>
 
-              <button className="mt-4 w-full rounded-md border border-black bg-gradient-to-r from-[#F5A623] to-[#f8c75a] text-black py-2 text-[11px] font-black uppercase tracking-wider hover:from-black hover:to-black hover:text-[#F5A623] transition-colors flex items-center justify-center gap-2">
+              <button
+                onClick={() => onNavigate('contact')}
+                className="mt-4 w-full rounded-md border border-black bg-gradient-to-r from-[#F5A623] to-[#f8c75a] text-black py-2 text-[11px] font-black uppercase tracking-wider hover:from-black hover:to-black hover:text-[#F5A623] transition-colors flex items-center justify-center gap-2"
+              >
                 <span>Become a Sponsor</span>
                 <svg aria-hidden="true" className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4" d="M7 17L17 7M9 7h8v8" />
@@ -478,8 +513,12 @@ const CalendarSection: React.FC = () => {
                       <h3 className="text-[#0d245b] text-3xl font-black tracking-tight mb-1">Week {fixture.week}</h3>
                       <p className="text-[#0d245b] text-lg font-black mb-3">{fixture.month} {extractDateNumber(fixture.date)}</p>
                       <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Score</span>
+                        <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Final Score</span>
                         <span className="text-[#0d245b] text-base font-black">{formatScoreValue(score)}</span>
+                      </div>
+                      <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">HT</span>
+                        <span className="text-[#0d245b] text-base font-black">3 : 3</span>
                       </div>
                       <div className="space-y-2 text-[#35507f] text-sm font-bold">
                         <p className="flex items-center gap-2">
@@ -1012,13 +1051,13 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         </div>
         <StandingsWidget />
         <MatchPollWidget />
-        <PlayerSponsorsSlider />
+        <PlayerSponsorsSlider onNavigate={onNavigate} />
       </div>
     </section>
 
     <CalendarSection />
 
-    <Carousel title="2026 Players">
+    <Carousel title="Current Squad 2026">
       {MOCK_PLAYERS.map((p) => (
         <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
@@ -1027,25 +1066,27 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
           </div>
           <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
           <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.position}</p>
-          <button className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
+          <button
+            onClick={() => onNavigate('contact')}
+            className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+          >
             Sponsor Player
           </button>
         </div>
       ))}
     </Carousel>
 
-    <Carousel title="Our X-Players">
+    <Carousel title="Ex Players">
       {MOCK_X_PLAYERS.map((p) => (
         <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
-            <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            {p.imageUrl ? (
+              <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            ) : null}
             <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
           </div>
           <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
           <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.currentClub}</p>
-          <button className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
-            Sponsor Player
-          </button>
         </div>
       ))}
     </Carousel>
@@ -1059,9 +1100,6 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
           </div>
           <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
           <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.title}</p>
-          <button className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
-            Sponsor Player
-          </button>
         </div>
       ))}
     </Carousel>
@@ -1075,9 +1113,12 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
           </div>
           <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
           <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.title}</p>
-          <button className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
-            Sponsor Player
-          </button>
+          <a
+            href={CONTACT_INFO.phoneHref}
+            className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors text-center block"
+          >
+            Contact Player
+          </a>
         </div>
       ))}
     </Carousel>
@@ -1091,7 +1132,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         <div className="lg:col-span-7 flex flex-col justify-center">
           <h3 className="text-4xl lg:text-5xl font-black uppercase italic tracking-tighter mb-6 leading-none">A Legacy of Unity</h3>
           <div className="space-y-4 text-gray-600 leading-relaxed font-medium">
-            <p>Founded in 2019 at Kitante Primary School, Eagles Rugby Club was born to champion the hidden talents of upcountry Uganda.</p>
+            <p>Founded in 2019 by Arthur Kampani at Kitante Primary School.</p>
             <p>From unbeaten promotion runs to building a family of over 200 athletes, we fly as one heart.</p>
             <button onClick={() => onNavigate('history')} className="text-[#F5A623] font-black uppercase text-sm tracking-widest border-b-2 border-[#F5A623] pb-1 hover:text-black hover:border-black transition-all">Explore Full History</button>
           </div>
@@ -1107,20 +1148,53 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       ))}
     </Carousel>
 
-    {/* Trending Videos Section */}
-    <section className="mb-16">
-      <SectionHeader title="Trending Videos" />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {MOCK_TRENDING_VIDEOS.map((video) => (
-          <Card key={video.id} item={video} />
-        ))}
+    <section className="mb-16 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+        <h3 className="text-2xl font-black uppercase tracking-tighter text-[#081534] mb-4">X Captain</h3>
+        <div className="space-y-3">
+          {X_CAPTAINS.map((item) => (
+            <div key={`${item.period}-${item.name}`} className="flex items-center justify-between border-b border-[#edf1f7] pb-2 last:border-b-0 last:pb-0">
+              <p className="text-sm font-black text-[#081534]">{item.period}</p>
+              <p className="text-sm text-gray-700">{item.name}</p>
+            </div>
+          ))}
+        </div>
+      </article>
+      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+        <h3 className="text-2xl font-black uppercase tracking-tighter text-[#081534] mb-4">X Coaches</h3>
+        <div className="space-y-3">
+          {X_COACHES.map((item) => (
+            <div key={`${item.period}-${item.name}`} className="flex items-center justify-between border-b border-[#edf1f7] pb-2 last:border-b-0 last:pb-0">
+              <p className="text-sm font-black text-[#081534]">{item.period}</p>
+              <p className="text-sm text-gray-700">{item.name}</p>
+            </div>
+          ))}
+        </div>
+      </article>
+    </section>
+
+    <section className="mb-16 bg-white border border-[#e2e7f0] rounded-xl p-6">
+      <SectionHeader title="Gift Vouchers" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <article className="rounded-lg border border-[#d8deea] p-5 bg-[#f8fafc]">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#4d6185]">Voucher 01</p>
+          <h3 className="text-xl font-black uppercase text-[#081534] mt-1">Eagles Official Kit Voucher</h3>
+          <p className="text-sm text-gray-700 mt-2">Gift a full official kit package to a player or fan.</p>
+          <p className="text-[#F5A623] font-black mt-3">UGX 150,000</p>
+        </article>
+        <article className="rounded-lg border border-[#d8deea] p-5 bg-[#f8fafc]">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#4d6185]">Voucher 02</p>
+          <h3 className="text-xl font-black uppercase text-[#081534] mt-1">Membership Card Voucher</h3>
+          <p className="text-sm text-gray-700 mt-2">Gift annual club membership with member-only benefits.</p>
+          <p className="text-[#F5A623] font-black mt-3">UGX 100,000</p>
+        </article>
       </div>
     </section>
 
     {/* Shop Section */}
     <section className="mb-16">
       <SectionHeader title="Official Shop" />
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
         {MOCK_SHOP_PRODUCTS.map((product) => (
           <div key={product.id} className="group cursor-pointer bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
             <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3">
@@ -1136,9 +1210,15 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     {/* Eagles TV Section */}
     <section className="mb-16">
       <SectionHeader title="Eagles TV" />
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="flex overflow-x-auto pb-4 -mx-4 px-4 space-x-4 scrollbar-hide snap-x snap-mandatory">
         {MOCK_TV.map((tv) => (
-          <div key={tv.id} className="group cursor-pointer">
+          <a
+            key={tv.id}
+            href={tv.url || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group cursor-pointer flex-none w-[260px] sm:w-[300px] snap-start"
+          >
             <div className="relative aspect-video overflow-hidden bg-gray-200 mb-2">
               <img src={tv.imageUrl} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
@@ -1151,7 +1231,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               <span className="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-1.5 py-0.5 font-bold">{tv.duration}</span>
             </div>
             <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight group-hover:text-[#F5A623] transition-colors">{tv.title}</h3>
-          </div>
+          </a>
         ))}
       </div>
     </section>
@@ -1168,36 +1248,53 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       
       <div className="relative z-10">
         <div className="text-center mb-8">
-          <span className="text-[#F5A623] text-xs font-black uppercase tracking-[0.3em]">Proudly Supported By</span>
+          <span className="text-[#F5A623] text-xs font-black uppercase tracking-[0.3em]">Proudly Sponsored By</span>
           <h2 className="text-white text-3xl sm:text-4xl font-black uppercase italic tracking-tighter mt-2">Our Partners</h2>
         </div>
         
         <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
           <div className="bg-white/10 backdrop-blur rounded-xl p-4 hover:bg-white/20 transition-colors cursor-pointer group">
             <img 
-              src="/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM.jpeg" 
-              alt="Partner 1" 
+              src="/partners/kampanis.png" 
+              alt="Kampanis" 
               className="h-16 sm:h-20 w-auto object-contain filter brightness-90 group-hover:brightness-100 transition-all"
             />
           </div>
           <div className="bg-white/10 backdrop-blur rounded-xl p-4 hover:bg-white/20 transition-colors cursor-pointer group">
             <img 
-              src="/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM (1).jpeg" 
-              alt="Partner 2" 
+              src="/partners/Vacker.jpeg" 
+              alt="Vacker" 
               className="h-16 sm:h-20 w-auto object-contain filter brightness-90 group-hover:brightness-100 transition-all"
             />
           </div>
           <div className="bg-white/10 backdrop-blur rounded-xl p-4 hover:bg-white/20 transition-colors cursor-pointer group">
             <img 
-              src="/partners/WhatsApp Image 2026-02-16 at 6.12.50 PM (2).jpeg" 
-              alt="Partner 3" 
+              src="/partners/Wina Classic.jpeg" 
+              alt="Wina Classic" 
+              className="h-16 sm:h-20 w-auto object-contain filter brightness-90 group-hover:brightness-100 transition-all"
+            />
+          </div>
+          <div className="bg-white/10 backdrop-blur rounded-xl p-4 hover:bg-white/20 transition-colors cursor-pointer group">
+            <img 
+              src="/partners/CHINT.jpeg" 
+              alt="CHINT" 
+              className="h-16 sm:h-20 w-auto object-contain filter brightness-90 group-hover:brightness-100 transition-all"
+            />
+          </div>
+          <div className="bg-white/10 backdrop-blur rounded-xl p-4 hover:bg-white/20 transition-colors cursor-pointer group">
+            <img 
+              src="/partners/caramec.png" 
+              alt="Caramec" 
               className="h-16 sm:h-20 w-auto object-contain filter brightness-90 group-hover:brightness-100 transition-all"
             />
           </div>
         </div>
         
         <div className="text-center mt-8">
-          <button className="border border-[#F5A623] text-[#F5A623] hover:bg-[#F5A623] hover:text-black px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all">
+          <button
+            onClick={() => onNavigate('sponsor-us')}
+            className="border border-[#F5A623] text-[#F5A623] hover:bg-[#F5A623] hover:text-black px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all"
+          >
             Become a Partner
           </button>
         </div>
@@ -1292,6 +1389,28 @@ const HistoryPage: React.FC = () => (
       ))}
     </section>
 
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <InfoSection title="How Eagles Has Grown">
+        <p>
+          Since foundation, Eagles has evolved from a local rugby setup into a structured club with clearer coaching systems,
+          stronger player development pathways, and improving standards for preparation, discipline, and match performance.
+        </p>
+        <p>
+          The club has expanded its leadership structure, strengthened partnerships, and improved planning around welfare, equipment,
+          and long-term sustainability.
+        </p>
+      </InfoSection>
+      <InfoSection title="Community and Education Impact">
+        <p>
+          Eagles Rugby Club uses sport as a platform for broader impact by supporting youth mentorship and helping children from
+          struggling families remain in school.
+        </p>
+        <p>
+          This integration of rugby and social responsibility remains a core part of the club identity and long-term mission.
+        </p>
+      </InfoSection>
+    </div>
+
     <InfoSection title="Legacy">
       <p>{HISTORY_CONTENT.closing}</p>
     </InfoSection>
@@ -1318,7 +1437,7 @@ const SquadPage: React.FC = () => (
 );
 
 const HallOfFamePage: React.FC = () => (
-  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-12">
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700">
     <section>
       <SectionHeader title="Hall of Fame" />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -1328,21 +1447,6 @@ const HallOfFamePage: React.FC = () => (
               <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" />
             </div>
             <h3 className="text-sm font-black uppercase tracking-tight">{member.name}</h3>
-          </article>
-        ))}
-      </div>
-    </section>
-
-    <section>
-      <SectionHeader title="Our X-Players" />
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {MOCK_X_PLAYERS.map((player) => (
-          <article key={player.id} className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm">
-            <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
-              <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
-            </div>
-            <h3 className="text-sm font-black uppercase tracking-tight">{player.name}</h3>
-            <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">{player.currentClub}</p>
           </article>
         ))}
       </div>
@@ -1361,8 +1465,8 @@ const ShopPage: React.FC = () => (
         <img src={toAssetUrl(PAGE_IMAGES.shopHero)} alt="Shop hero" className="w-full h-full object-cover" />
       </div>
     </section>
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-      {MOCK_SHOP_PRODUCTS.map((product) => (
+    <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+      {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => (
         <article key={product.id} className="bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm">
           <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded">
             <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
@@ -1384,9 +1488,15 @@ const TvPage: React.FC = () => (
         <p className="text-gray-200 max-w-2xl">{TV_CONTENT.intro}</p>
       </div>
     </section>
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {MOCK_TV.map((tv) => (
-        <article key={tv.id} className="group cursor-pointer">
+        <a
+          key={tv.id}
+          href={tv.url || '#'}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group cursor-pointer"
+        >
           <div className="relative aspect-video overflow-hidden bg-gray-200 mb-2 rounded-lg">
             <img src={tv.imageUrl} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             <div className="absolute inset-0 flex items-center justify-center bg-black/20">
@@ -1397,7 +1507,7 @@ const TvPage: React.FC = () => (
             <span className="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] px-1.5 py-0.5 font-bold">{tv.duration}</span>
           </div>
           <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{tv.title}</h3>
-        </article>
+        </a>
       ))}
     </div>
   </div>
@@ -1426,6 +1536,12 @@ const DonatePage: React.FC = () => (
       >
         Donate Now
       </a>
+      <p className="mt-3 text-xs text-gray-600">
+        Vanvaa Link:{' '}
+        <a href="https://tip.vanvaa.com/?q=MTcxMg==" target="_blank" rel="noopener noreferrer" className="text-[#081534] font-bold underline">
+          https://tip.vanvaa.com/?q=MTcxMg==
+        </a>
+      </p>
     </section>
   </div>
 );
@@ -1466,8 +1582,17 @@ const PlayerSponsorPage: React.FC = () => (
 
 const FitnessCenterPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="relative rounded-xl overflow-hidden border border-[#e2e7f0] min-h-[300px]">
-      <img src={toAssetUrl(PAGE_IMAGES.fitnessHero)} alt="Fitness training" className="absolute inset-0 w-full h-full object-cover" />
+    <section className="relative rounded-xl overflow-hidden border border-[#e2e7f0] min-h-[360px] bg-[#081534]">
+      <img
+        src={toAssetUrl(PAGE_IMAGES.fitnessHero)}
+        alt="Fitness training background"
+        className="absolute inset-0 w-full h-full object-cover opacity-35 blur-sm scale-105"
+      />
+      <img
+        src={toAssetUrl(PAGE_IMAGES.fitnessHero)}
+        alt="Athlete carrying tyres"
+        className="absolute inset-0 w-full h-full object-contain object-center"
+      />
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/20 p-8 flex flex-col justify-end">
         <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-white">Fitness Center</h1>
         <p className="text-gray-200 mb-2 max-w-3xl">{FITNESS_CONTENT.intro}</p>
@@ -1496,8 +1621,8 @@ const FitnessCenterPage: React.FC = () => (
       </div>
     </InfoSection>
 
-    <section className="rounded-xl overflow-hidden border border-[#e2e7f0]">
-      <img src={toAssetUrl(PAGE_IMAGES.fitnessSupport)} alt="Fitness community" className="w-full h-[250px] object-cover" />
+    <section className="rounded-xl overflow-hidden border border-[#e2e7f0] bg-[#081534]">
+      <img src={toAssetUrl(PAGE_IMAGES.fitnessSupport)} alt="Fitness community" className="w-full h-[320px] object-contain object-center" />
     </section>
 
     <ContactCtaCard title="Register for Fitness Sessions" subtitle="UGX 20,000 Per Session" />
@@ -1568,13 +1693,29 @@ const FoundationPage: React.FC = () => (
 const SponsorUsPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
     <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
-      <img src={toAssetUrl(PAGE_IMAGES.sponsorHero)} alt="Sponsor hero" className="absolute inset-0 w-full h-full object-cover" />
+      <img src={toAssetUrl(PAGE_IMAGES.sponsorUsHero)} alt="Sponsor hero" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-[#081534]/70" />
       <div className="relative z-10">
         <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Sponsor Us</h1>
         <p className="text-[#d4deef] max-w-4xl">
           Sponsoring Eagles Rugby Club is a strategic way to drive brand visibility while investing in youth development and community progress.
         </p>
+      </div>
+    </section>
+
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+      <div>
+        <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-3">Eagles Shirt Branding</h2>
+        <p className="text-gray-700 mb-4">See the official Eagles shirt and available branding space options for sponsors.</p>
+        <div className="space-y-2 text-sm text-gray-700">
+          <p>- Front Chest Naming Space</p>
+          <p>- Left/Right Chest Logo Space</p>
+          <p>- Sleeve Branding Space</p>
+          <p>- Back Number Area Branding</p>
+        </div>
+      </div>
+      <div className="rounded-lg overflow-hidden border border-[#d7deea]">
+        <img src={toAssetUrl(PAGE_IMAGES.sponsorUsHero)} alt="Eagles shirt sponsorship spaces" className="w-full h-[320px] object-cover" />
       </div>
     </section>
 
@@ -1589,7 +1730,7 @@ const SponsorUsPage: React.FC = () => (
     </section>
 
     <section>
-      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Sponsorship Packages</h2>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Sponsorship Packages (USD)</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {SPONSOR_US_CONTENT.tiers.map((tier) => (
           <TierCard key={tier.name} tier={tier} />
@@ -1603,7 +1744,176 @@ const SponsorUsPage: React.FC = () => (
       ))}
     </InfoSection>
 
+    <InfoSection title="Category Sponsorship Concept (UGX 2,500,000 Per Year)">
+      <h3 className="text-sm font-black uppercase tracking-wider text-[#081534]">1. Background</h3>
+      <p>
+        Eagles Rugby Club is a structured, community-driven rugby institution committed to youth development,
+        education support, and competitive excellence. The club integrates sport with social responsibility,
+        including initiatives that assist children from struggling families to remain in school.
+      </p>
+      <p>
+        To strengthen operational sustainability and enhance brand partnerships, Eagles Rugby Club has developed
+        a Category Sponsorship Concept that allows companies and individuals to sponsor specific functional areas
+        of the club at a value of UGX 2,500,000 per year per category.
+      </p>
+
+      <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mt-4">2. Sponsorship Concept Overview</h3>
+      <p>This concept is designed to provide clear branding alignment opportunities, measurable marketing value, support specific operational needs, and deliver professional sponsor recognition.</p>
+
+      <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mt-4">3. Available Sponsorship Categories</h3>
+      <p>Each category is available at UGX 2,500,000 per year:</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {CATEGORY_SPONSORSHIP_TYPES.map((item) => (
+          <p key={item}>- {item}</p>
+        ))}
+      </div>
+
+      <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mt-4">4. Sponsorship Benefits</h3>
+      {CATEGORY_SPONSORSHIP_BENEFITS.map((item) => (
+        <p key={item}>- {item}</p>
+      ))}
+
+      <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mt-4">5. Value Proposition for Sponsors</h3>
+      <p><strong>Brand Visibility:</strong> consistent exposure during match days, online engagement, and club communications.</p>
+      <p><strong>Corporate Social Responsibility:</strong> visible commitment to youth empowerment, sport development, and education support.</p>
+      <p><strong>Direct Community Impact:</strong> sponsorship supports equipment procurement, facility maintenance, player welfare, medical preparedness, training environments, and education initiatives.</p>
+      <p><strong>Targeted Audience Engagement:</strong> connect with players, families, supporters, and the broader community.</p>
+
+      <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mt-4">6. Strategic Impact</h3>
+      <p>
+        This sponsorship model ensures operational sustainability for Eagles Rugby Club, structured branding opportunities
+        for partners, improved player performance infrastructure, and long-term community development.
+      </p>
+
+      <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mt-4">7. Conclusion</h3>
+      <p>
+        The Eagles Rugby Club Category Sponsorship Concept is built on professionalism, accountability, and measurable impact.
+        An annual commitment of UGX 2,500,000 per category positions your organization as a visible and responsible partner
+        in a growing and community-focused sports institution.
+      </p>
+      <p className="font-black uppercase tracking-wider text-[#081534]">Empower Sport. Strengthen Community. Elevate Your Brand.</p>
+    </InfoSection>
+
     <ContactCtaCard title="Discuss a Sponsorship Package" subtitle="Corporate and Individual Partners" />
+  </div>
+);
+
+const ServiceImageCard: React.FC<{
+  title: string;
+  subtitle: string;
+  imageUrl: string;
+  fallbackImageUrl: string;
+  badge: string;
+}> = ({ title, subtitle, imageUrl, fallbackImageUrl, badge }) => {
+  const [useFallback, setUseFallback] = useState(false);
+
+  return (
+    <article className="rounded-xl overflow-hidden border border-[#e2e7f0] bg-white">
+      <div className="relative h-44 bg-gradient-to-br from-[#0f224f] via-[#081534] to-[#1d3c85]">
+        <img
+          src={useFallback ? fallbackImageUrl : imageUrl}
+          alt={title}
+          className="w-full h-full object-cover"
+          loading="eager"
+          onError={() => setUseFallback(true)}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent" />
+        <span className="absolute top-3 right-3 bg-[#F5A623] text-black text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-wider">
+          {badge}
+        </span>
+      </div>
+      <div className="p-4">
+        <p className="text-[10px] font-black uppercase tracking-widest text-[#4d6185]">{title}</p>
+        <p className="text-sm font-bold text-[#081534] mt-1">{subtitle}</p>
+      </div>
+    </article>
+  );
+};
+
+const OtherServicesPage: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
+    <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
+      <img src="/other%20services/web%20design.png" alt="Other services" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-[#081534]/80" />
+      <div className="relative z-10">
+        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Other Services</h1>
+        <p className="text-[#d4deef] max-w-4xl">
+          Eagles Rugby Club offers professional digital services as part of our sustainability and innovation strategy.
+        </p>
+      </div>
+    </section>
+
+    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <ServiceImageCard
+        title="Web Services"
+        subtitle="Modern websites for organizations and businesses."
+        imageUrl="/other%20services/web%20design.png"
+        fallbackImageUrl="/other%20services/web%20design.png"
+        badge="Web"
+      />
+      <ServiceImageCard
+        title="App Development"
+        subtitle="Scalable Android, iOS, and cross-platform solutions."
+        imageUrl="/other%20services/app%20development.png"
+        fallbackImageUrl="/other%20services/app%20development.png"
+        badge="App"
+      />
+      <ServiceImageCard
+        title="SMS Marketing"
+        subtitle="Bulk SMS campaigns with targeted communication."
+        imageUrl="/other%20services/sms%20marketing.png"
+        fallbackImageUrl="/other%20services/sms%20marketing.png"
+        badge="SMS"
+      />
+      <ServiceImageCard
+        title="Poster Design"
+        subtitle="Professional poster designs for promotions and events."
+        imageUrl="/other%20services/poster%20design.png"
+        fallbackImageUrl="/other%20services/poster%20design.png"
+        badge="Design"
+      />
+    </section>
+
+    <InfoSection title="Eagles Rugby Club - Web Design Services">
+      <p>We offer professional web design services for businesses, schools, NGOs, and sports organizations, delivering modern, functional, and results-driven websites.</p>
+      <p><strong>Services include:</strong> Corporate/business websites, school websites, NGO/community websites, e-commerce platforms, sports/event websites, redesign/modernization, maintenance/support, and domain/hosting guidance.</p>
+      <p><strong>Why choose us:</strong> responsive design, affordable pricing, tailored solutions, and ongoing support.</p>
+    </InfoSection>
+
+    <InfoSection title="Eagles Rugby Club - App Development Services">
+      <p>We provide Android, iOS, cross-platform, and custom enterprise app development for practical, scalable digital transformation.</p>
+      <p><strong>Services include:</strong> business apps, school management systems, sports club management apps, e-commerce apps, and maintenance/upgrades.</p>
+      <p><strong>Why choose us:</strong> scalable solutions, user-centered design, affordable pricing, and reliable technical support.</p>
+    </InfoSection>
+
+    <InfoSection title="Eagles Rugby Club - SMS Marketing Services">
+      <p>We deliver professional SMS campaigns for businesses, schools, NGOs, and organizations with direct, high-engagement communication.</p>
+      <p><strong>Services include:</strong> bulk SMS campaigns, promotions, event reminders, school alerts, product announcements, customer engagement, awareness messaging, and full campaign management.</p>
+      <p><strong>Why choose us:</strong> instant delivery, wide reach, cost-effective campaigns, targeted communication, and strategy support.</p>
+    </InfoSection>
+
+    <InfoSection title="Poster Design Service">
+      <p>
+        Eagles Rugby Club offers professional poster design services for organizations and individuals at
+        <strong> UGX 50,000 per poster</strong>.
+      </p>
+      <p>
+        <strong>Benefits:</strong> professionally designed posters to organizations and individuals for campaigns,
+        product promotions, school communication, event publicity, and social media awareness.
+      </p>
+    </InfoSection>
+
+    <InfoSection title="Social Impact Through Your Project">
+      <p>
+        Choosing Eagles Rugby Club digital services supports player development, club operations, equipment and infrastructure,
+        and education support for children from struggling families.
+      </p>
+      <p className="font-black uppercase tracking-wider text-[#081534]">Building Websites. Building Youth. Building the Future.</p>
+      <p className="font-black uppercase tracking-wider text-[#081534]">Innovating Digitally. Empowering Socially. Building the Future.</p>
+      <p className="font-black uppercase tracking-wider text-[#081534]">Reach Faster. Market Smarter. Empower Stronger.</p>
+    </InfoSection>
+
+    <ContactCtaCard title="Request a Service Quote" subtitle="Web, App and SMS Solutions" />
   </div>
 );
 
@@ -1792,6 +2102,7 @@ const App: React.FC = () => {
         {currentPage === 'our-projects' ? <ProjectsPage /> : null}
         {currentPage === 'our-foundation' ? <FoundationPage /> : null}
         {currentPage === 'sponsor-us' ? <SponsorUsPage /> : null}
+        {currentPage === 'other-services' ? <OtherServicesPage /> : null}
         {currentPage === 'membership' ? <MembershipPage /> : null}
         {currentPage === 'gallery' ? <GalleryPage /> : null}
       </main>
@@ -1835,6 +2146,9 @@ const App: React.FC = () => {
                   <span className="text-[#F5A623] text-3xl font-black">3</span>
                   <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Games Drawn</p>
                 </div>
+              </div>
+              <div className="mt-8 flex justify-center">
+                <img src="/favicon.svg" alt="Eagles Rugby Club logo" className="h-16 w-16 object-contain" />
               </div>
             </div>
           </div>

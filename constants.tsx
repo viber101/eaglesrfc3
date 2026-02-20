@@ -1,5 +1,4 @@
-
-import { NewsItem, Player, Standing, TVItem, Product, Athlete, XPlayer, HallOfFameMember } from './types';
+import { NewsItem, Player, Standing, TVItem, Product, XPlayer, HallOfFameMember } from './types';
 
 export const COLORS = {
   primaryOrange: '#F5A623',
@@ -19,89 +18,97 @@ export const MOCK_STANDINGS: Standing[] = [
 ];
 
 export const MOCK_PLAYERS: Player[] = [
-  { id: '1', name: 'Nagalama Johnathan', position: 'Prop', number: '1', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-1/300/400' },
-  { id: '2', name: 'Otim Chris', position: 'Hooker', number: '2', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-2/300/400' },
-  { id: '3', name: 'Paul Kisubi', position: 'Prop', number: '3', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-3/300/400' },
-  { id: '4', name: 'Ochora Daniel', position: 'Lock', number: '4', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-4/300/400' },
-  { id: '5', name: 'Sabunyo Samyl', position: 'Lock', number: '5', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-5/300/400' },
-  { id: '6', name: 'Arap Willy', position: 'Flanker', number: '6', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-6/300/400' },
-  { id: '7', name: 'Bogere Francis', position: 'Eighth Man', number: '7', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-7/300/400' },
-  { id: '8', name: 'Mungufeni Williams Kato', position: '8th Man', number: '8', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-8/300/400' },
-  { id: '9', name: 'Liam Sewanyana', position: 'Scrum Half', number: '9', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-9/300/400' },
-  { id: '10', name: 'Joshua Ogwal', position: 'Fly Half', number: '10', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-10/300/400' },
-  { id: '11', name: 'Julius Omongin', position: 'Winger', number: '11', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-11/300/400' },
-  { id: '12', name: 'Ojara Emmanuel', position: 'Inside Centre', number: '12', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-12/300/400' },
-  { id: '13', name: 'Lagat Mark', position: 'Outside Centre', number: '13', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-13/300/400' },
-  { id: '14', name: 'Owen Manuel Oca', position: 'Winger', number: '14', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-14/300/400' },
-  { id: '15', name: 'Regan Origi', position: 'Winger', number: '15', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-15/300/400' },
-  { id: '16', name: 'Wasula Gerry Peter', position: 'Prop', number: '16', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-16/300/400' },
-  { id: '17', name: 'Griffin Odong', position: 'Prop', number: '17', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-17/300/400' },
-  { id: '18', name: 'Jombwe Josia', position: 'Prop', number: '18', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-18/300/400' },
-  { id: '19', name: 'Olara Humphrey Jacob', position: 'Flanker', number: '19', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-19/300/400' },
-  { id: '20', name: 'Osuta Aaron', position: 'Lock', number: '20', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-20/300/400' },
-  { id: '21', name: 'Danny Lagom', position: 'Inside Centre', number: '21', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-21/300/400' },
-  { id: '22', name: 'Herman Mwesigwa', position: 'Winger', number: '22', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-22/300/400' },
-  { id: '23', name: 'Ateng Robert', position: 'Prop', number: '23', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-23/300/400' },
-  { id: '24', name: 'Ekelot Mathew Calvin', position: 'Scrum Half', number: '24', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-24/300/400' },
-  { id: '25', name: 'Henry Rwoth', position: 'Inside Centre', number: '25', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-25/300/400' },
-  { id: '26', name: 'Elvis Ntale', position: 'Winger', number: '26', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-26/300/400' },
-  { id: '27', name: 'Baganizi Mark', position: 'Scrum Half', number: '27', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-27/300/400' },
-  { id: '28', name: 'Anywar Jonnar', position: 'Inside Centre', number: '28', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-28/300/400' },
-  { id: '29', name: 'Jasper Eron Matovu', position: 'Winger', number: '29', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-29/300/400' },
-  { id: '30', name: 'Satya Kiprotich', position: 'Winger', number: '30', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-30/300/400' },
-  { id: '31', name: 'Charles Tayebwa', position: 'Scrum Half', number: '31', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-31/300/400' },
-  { id: '32', name: 'Fahad Matovu', position: 'Coach', number: '32', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-32/300/400' },
-  { id: '33', name: 'Moshe', position: 'Flanker', number: '33', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-33/300/400' },
-  { id: '34', name: 'Etoke', position: 'Lock', number: '34', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-34/300/400' },
-  { id: '35', name: 'Olaro Jacobs', position: 'Lock', number: '35', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-35/300/400' },
-  { id: '36', name: 'Karama Rodney', position: 'Inside Centre', number: '36', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-36/300/400' },
-  { id: '37', name: 'Policap', position: 'Lock', number: '37', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-37/300/400' },
-  { id: '38', name: 'Stuart Mutyaba', position: 'Prop', number: '38', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-38/300/400' },
-  { id: '39', name: 'Muwola Malcolm', position: 'Winger', number: '39', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-39/300/400' },
-  { id: '40', name: 'Lema', position: 'Fly Half', number: '40', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-40/300/400' },
-  { id: '41', name: 'Koma Samuel', position: 'Winger', number: '41', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-41/300/400' },
-  { id: '42', name: 'Kauchi Sulaiman', position: 'Winger', number: '42', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-42/300/400' },
-  { id: '43', name: 'Semugenyi Jogna', position: 'Winger', number: '43', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-43/300/400' },
-  { id: '44', name: 'Okot Andrew', position: 'Prop', number: '44', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-44/300/400' },
-  { id: '45', name: 'Alpha Lumala', position: 'Lock', number: '45', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-45/300/400' },
-  { id: '46', name: 'Adam Kabalega', position: 'Prop', number: '46', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-46/300/400' },
-  { id: '47', name: 'Olaro Pascol', position: 'Flanker', number: '47', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-47/300/400' },
-  { id: '48', name: 'Aporu Derick', position: 'Full Back', number: '48', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-48/300/400' },
-  { id: '49', name: 'Salli', position: 'Winger', number: '49', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-49/300/400' },
-  { id: '50', name: 'Luswata', position: 'Winger', number: '50', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-50/300/400' },
-  { id: '51', name: 'Arojjo Joshua', position: 'Flanker', number: '51', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-51/300/400' },
-  { id: '52', name: 'Obowna Desire', position: 'Full Back', number: '52', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-52/300/400' },
-  { id: '53', name: 'Serunjogi George William', position: 'Winger', number: '53', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-53/300/400' },
-  { id: '54', name: 'Lukwago Santos', position: 'Winger', number: '54', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-54/300/400' },
-  { id: '55', name: 'Wagabaza Jimmy', position: 'Flanker', number: '55', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-55/300/400' },
-  { id: '56', name: 'Okwera Ronaldo', position: 'Prop', number: '56', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-56/300/400' }
-];
-
-export const MOCK_ATHLETES: Athlete[] = [
-  { id: 'a1', name: 'Thierry Henry', profession: 'Wine & Spirit Connoisseur', phone: '+44 20 7619 5000', imageUrl: 'https://picsum.photos/seed/henry/400/500' },
-  { id: 'a2', name: 'Ian Wright', profession: 'Broadcasting & Media Mogul', phone: '+44 20 7619 5001', imageUrl: 'https://picsum.photos/seed/wright/400/500' },
-  { id: 'a3', name: 'Patrick Vieira', profession: 'Sports Tech Founder', phone: '+44 20 7619 5002', imageUrl: 'https://picsum.photos/seed/vieira/400/500' },
-  { id: 'a4', name: 'Dennis Bergkamp', profession: 'Real Estate Developer', phone: '+44 20 7619 5003', imageUrl: 'https://picsum.photos/seed/dennis/400/500' },
-  { id: 'a5', name: 'Robert Pires', profession: 'Fashion Brand Ambassador', phone: '+44 20 7619 5004', imageUrl: 'https://picsum.photos/seed/pires/400/500' },
-  { id: 'a6', name: 'Freddie Ljungberg', profession: 'E-commerce Entrepreneur', phone: '+44 20 7619 5005', imageUrl: 'https://picsum.photos/seed/freddie/400/500' }
+  { id: '1', name: 'Ogwal Joshua', position: 'Fly Half', number: '1', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-1/300/400' },
+  { id: '2', name: 'Kisubi Paul', position: 'Prop', number: '2', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-2/300/400' },
+  { id: '3', name: 'Matovu Jasper', position: 'Winger', number: '3', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-3/300/400' },
+  { id: '4', name: 'Anywar Jonathan', position: 'Outside Centre', number: '4', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-4/300/400' },
+  { id: '5', name: 'Ssewanyana Liam', position: 'Scrum Half', number: '5', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-5/300/400' },
+  { id: '6', name: 'Jombwe Jose', position: 'Prop', number: '6', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-6/300/400' },
+  { id: '7', name: 'Olara Humphrey', position: 'Lock', number: '7', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-7/300/400' },
+  { id: '8', name: 'Aporu Derrick', position: 'Full Back', number: '8', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-8/300/400' },
+  { id: '9', name: 'Joseph Luswata', position: 'Winger', number: '9', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-9/300/400' },
+  { id: '10', name: 'Wasula Gerry Peter', position: 'Prop', number: '10', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-10/300/400' },
+  { id: '11', name: 'Lagat Mark', position: 'Outside Centre', number: '11', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-11/300/400' },
+  { id: '12', name: 'Ssali Raymond', position: 'Winger', number: '12', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-12/300/400' },
+  { id: '13', name: 'Ekelot Mathew', position: 'Scrum Half', number: '13', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-13/300/400' },
+  { id: '14', name: 'Lema Stephen', position: 'Fly Half', number: '14', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-14/300/400' },
+  { id: '15', name: 'Stuart Mutyaba', position: 'Prop', number: '15', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-15/300/400' },
+  { id: '16', name: 'Ochan Polycarp', position: 'Flanker', number: '16', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-16/300/400' },
+  { id: '17', name: 'Wamond Eric', position: 'Team Manager', number: '17', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-17/300/400' },
+  { id: '18', name: 'Kabalega Adam', position: 'Prop', number: '18', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-18/300/400' },
+  { id: '19', name: 'Tayebwa Charles', position: 'Scrum Half', number: '19', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-19/300/400' },
+  { id: '20', name: 'Nanagalama Johna', position: 'Prop', number: '20', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-20/300/400' },
+  { id: '21', name: 'Baganizi Mark', position: 'Scrum Half', number: '21', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-21/300/400' },
+  { id: '22', name: 'Ssemugenyi Jonah', position: 'Winger', number: '22', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-22/300/400' },
+  { id: '23', name: 'Komakech Samuel', position: 'Winger', number: '23', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-23/300/400' },
+  { id: '24', name: 'Serunjogi William', position: 'Winger', number: '24', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-24/300/400' },
+  { id: '25', name: 'Etoko Timothy', position: 'Lock', number: '25', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-25/300/400' },
+  { id: '26', name: 'Okwera Ronaldo', position: 'Prop', number: '26', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-26/300/400' },
+  { id: '27', name: 'Obwana Desire', position: 'Full Back', number: '27', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-27/300/400' },
+  { id: '28', name: 'Okot Andrew', position: 'Prop', number: '28', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-28/300/400' },
+  { id: '29', name: 'Ojara Emmanuel', position: 'Inside Centre', number: '29', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-29/300/400' },
+  { id: '30', name: 'KiprotichTinnito Satya', position: 'Winger', number: '30', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-30/300/400' },
+  { id: '31', name: 'Mwesigwa Herman', position: 'Winger', number: '31', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-31/300/400' },
+  { id: '32', name: 'Rwoth-Ongeo Henry', position: 'Outside Centre', number: '32', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-32/300/400' },
+  { id: '33', name: 'Otim Chris Ham', position: 'Prop', number: '33', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-33/300/400' },
+  { id: '34', name: 'Odongo Griffin Paul', position: 'Prop', number: '34', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-34/300/400' },
+  { id: '35', name: 'Matovu Fahad', position: 'Coach', number: '35', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-35/300/400' },
+  { id: '36', name: 'Bogere Francis', position: 'Eighth Man', number: '36', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-36/300/400' },
+  { id: '37', name: 'Lumala Alpha', position: 'Lock', number: '37', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-37/300/400' },
+  { id: '38', name: 'Ntare Elvis', position: 'Winger', number: '38', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-38/300/400' },
+  { id: '39', name: 'Lagom Danny', position: 'Centre', number: '39', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-39/300/400' },
+  { id: '40', name: 'Mungufeni William', position: 'Eighth Man', number: '40', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-40/300/400' },
+  { id: '41', name: 'Ochora Daniel', position: 'Lock (Student)', number: '41', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-41/300/400' },
+  { id: '42', name: 'Omeda Dan Mark', position: 'Centre', number: '42', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-42/300/400' },
+  { id: '43', name: 'Wagabaza Jimmy', position: 'Flanker', number: '43', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-43/300/400' },
+  { id: '44', name: 'OmonginJulius', position: 'Winger', number: '44', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-44/300/400' },
+  { id: '45', name: 'Kauki Sulaiman', position: 'Winger', number: '45', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-45/300/400' },
+  { id: '46', name: 'Muwola Malcom', position: 'Winger', number: '46', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-46/300/400' },
+  { id: '47', name: 'Moshe Keith', position: 'Flanker', number: '47', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-47/300/400' },
+  { id: '48', name: 'Osuta Aaron', position: 'Lock', number: '48', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-48/300/400' },
+  { id: '49', name: 'Olaro Paschal', position: 'Centre', number: '49', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-49/300/400' },
+  { id: '50', name: 'Oca Manuel Owen', position: 'Winger', number: '50', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-50/300/400' },
+  { id: '51', name: 'Kitara Regan', position: 'Full Back', number: '51', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-51/300/400' },
+  { id: '52', name: 'Nsubuga Chris', position: 'Winger', number: '52', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-52/300/400' },
+  { id: '53', name: 'Karama Rodney', position: 'Inside Centre', number: '53', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-53/300/400' },
+  { id: '54', name: 'Sabunyo Samuel', position: 'Lock', number: '54', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-54/300/400' },
+  { id: '55', name: 'Araptai Willy', position: 'Flanker', number: '55', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-55/300/400' },
+  { id: '56', name: 'Ateng Robert', position: 'Prop', number: '56', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-56/300/400' },
+  { id: '57', name: 'Masiga Jirch', position: 'Winger', number: '57', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-57/300/400' },
+  { id: '58', name: 'Mbubi Shamick', position: 'Fly Half', number: '58', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-58/300/400' },
+  { id: '59', name: 'Lukwago Santos', position: 'Winger', number: '59', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-59/300/400' },
+  { id: '60', name: 'Kisitu Hilary', position: 'Fly Half', number: '60', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-60/300/400' },
+  { id: '61', name: 'Mujuni Denis', position: 'Scrum Half', number: '61', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-61/300/400' }
 ];
 
 export const MOCK_X_PLAYERS: XPlayer[] = [
-  { id: 'xp1', name: 'Mugish Keith', currentClub: 'Currently playing at Heathens RFC', number: '1', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-1/300/400' },
-  { id: 'xp2', name: 'Waiswa Yusuf', currentClub: 'Currently playing at Heathens RFC', number: '2', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-2/300/400' },
-  { id: 'xp3', name: 'Jjuko Jude', currentClub: 'Currently playing at Heathens RFC', number: '3', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-3/300/400' },
-  { id: 'xp4', name: 'Jason Nowadays', currentClub: 'Currently playing at Heathens RFC', number: '4', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-4/300/400' },
-  { id: 'xp5', name: 'Otim Godfrey', currentClub: 'Currently playing at Victoria Sharks', number: '5', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-5/300/400' },
-  { id: 'xp6', name: 'Clause', currentClub: 'Currently playing at Heathens RFC', number: '6', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-6/300/400' },
-  { id: 'xp7', name: 'Job Wembabazi', currentClub: 'Currently playing at Rhinos RFC', number: '7', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-7/300/400' },
-  { id: 'xp8', name: 'Emma Neek', currentClub: 'Currently playing at Lira Bulls', number: '8', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-8/300/400' },
-  { id: 'xp9', name: 'Akala Ngereza', currentClub: 'Currently playing at Jinja Hippos', number: '9', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-9/300/400' },
-  { id: 'xp10', name: 'Odonkara Emma', currentClub: 'Currently playing at Gulu City Falcons', number: '10', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-10/300/400' },
-  { id: 'xp11', name: 'Daniel Choline', currentClub: 'Currently playing at Kitgum Lions', number: '11', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-11/300/400' },
-  { id: 'xp12', name: 'Mono Godfrey', currentClub: 'Retired', number: '12', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-12/300/400' },
-  { id: 'xp13', name: 'Okello Geoge', currentClub: 'Retired', number: '13', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-13/300/400' },
-  { id: 'xp14', name: 'Calvin Ochen', currentClub: 'Retired', number: '14', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-14/300/400' },
-  { id: 'xp15', name: 'Hamza Abala', currentClub: 'Retired', number: '15', imageUrl: 'https://picsum.photos/seed/eagles-xplayer-15/300/400' }
+  { id: 'xp1', name: 'Obalim Eddie', currentClub: 'Currently playing at Buffaloes', number: '1', imageUrl: '/our%20x-players/Obalim%20Eddie%20%282%29.jpeg' },
+  { id: 'xp2', name: 'Victor Baguma', currentClub: 'Currently playing at Buffaloes', number: '2', imageUrl: '' },
+  { id: 'xp3', name: 'Kasozi Timothy', currentClub: 'Currently working with finance', number: '3', imageUrl: '' },
+  { id: 'xp4', name: 'Arshley Sebayiga', currentClub: 'Currently retired due to injury', number: '4', imageUrl: '/our%20x-players/Arshley%20sebayiga.jpeg' },
+  { id: 'xp5', name: 'Jordan Sebayiga', currentClub: 'Traveled to Ireland to take up a boxing career', number: '5', imageUrl: '/our%20x-players/Jordan%20sebayiga.jpeg' },
+  { id: 'xp6', name: 'Wejuli Quinteen', currentClub: 'Currently working at Post Bank', number: '6', imageUrl: '/our%20x-players/Wejuli%20quinteen.jpeg' },
+  { id: 'xp7', name: 'Felix Kyeyune', currentClub: 'Started a branding and printing business', number: '7', imageUrl: '' },
+  { id: 'xp8', name: 'Abel Mark Nabireba', currentClub: 'Currently active', number: '8', imageUrl: '' },
+  { id: 'xp9', name: 'Mugisha Keith', currentClub: 'Currently playing at Heathens', number: '9', imageUrl: '/our%20x-players/Mugisha%20keith.jpeg' },
+  { id: 'xp10', name: 'Waiswa Yusuf', currentClub: 'Currently playing at Heathens', number: '10', imageUrl: '/our%20x-players/Waiswa%20yusuf.jpeg' },
+  { id: 'xp11', name: 'Juuko Jude', currentClub: 'Currently playing at Heathens', number: '11', imageUrl: '/our%20x-players/Juuko%20jude.jpeg' },
+  { id: 'xp12', name: 'Jason Nuwamanya', currentClub: 'Currently playing at Heathens', number: '12', imageUrl: '/our%20x-players/Jason%20nuwamanya.jpeg' },
+  { id: 'xp13', name: 'Otim Geofrey', currentClub: 'Currently playing at Victoria Sharks', number: '13', imageUrl: '/our%20x-players/Otim%20geofrey.jpeg' },
+  { id: 'xp14', name: 'Klaus Katende Yusuf', currentClub: 'Currently playing at Impis', number: '14', imageUrl: '/our%20x-players/Klaus%20katende%20yusuf.jpeg' },
+  { id: 'xp15', name: 'Job Wembabazi', currentClub: 'Currently playing at Rhinos', number: '15', imageUrl: '/our%20x-players/Job%20wembabazi.jpeg' },
+  { id: 'xp16', name: 'Emma Neek', currentClub: 'Currently playing at Liira Big Boys', number: '16', imageUrl: '' },
+  { id: 'xp17', name: 'Akala Ngereza', currentClub: 'Currently playing at Hippos', number: '17', imageUrl: '' },
+  { id: 'xp18', name: 'Odonkara Emmanuel', currentClub: 'Currently playing at Gulu City Falcons', number: '18', imageUrl: '/our%20x-players/Odonkara%20emmanuel.jpeg' },
+  { id: 'xp19', name: 'Mono Geofrey', currentClub: 'Currently retired', number: '19', imageUrl: '' },
+  { id: 'xp20', name: 'Daniel Odonga', currentClub: 'Currently playing at Kitgum Lions', number: '20', imageUrl: '' },
+  { id: 'xp21', name: 'Okello George', currentClub: 'Currently playing at Rams', number: '21', imageUrl: '' },
+  { id: 'xp22', name: 'Calvin Ocan', currentClub: 'Currently retired', number: '22', imageUrl: '' },
+  { id: 'xp23', name: 'Hamza Abala', currentClub: 'Currently retired', number: '23', imageUrl: '' },
+  { id: 'xp24', name: 'Kintu Travor', currentClub: 'Currently retired', number: '24', imageUrl: '' },
+  { id: 'xp25', name: 'Obol Joshua', currentClub: 'Currently playing at Rhinos', number: '25', imageUrl: '/our%20x-players/Obol%20joshua.jpeg' },
+  { id: 'xp26', name: 'Obwona Charles', currentClub: 'Currently working', number: '26', imageUrl: '/our%20x-players/Obwona%20charles.jpeg' },
+  { id: 'xp27', name: 'Anthony Oluka', currentClub: 'Status not specified', number: '27', imageUrl: '' }
 ];
 
 export const MOCK_HALL_OF_FAME: HallOfFameMember[] = [
@@ -121,39 +128,21 @@ export const MOCK_HALL_OF_FAME: HallOfFameMember[] = [
 ];
 
 export const MOCK_BUSINESS_ATHLETES: HallOfFameMember[] = [
-  { id: 'ab1', name: 'Otim Chris', number: '1', title: 'Architect and XR Developer', imageUrl: '/partners/Otim Chirs.jpeg' }
+  { id: 'ab1', name: 'Otim Chris', number: '1', title: 'Architect and XR Developer', imageUrl: '/gallery/Eagles (12).jpeg' }
 ];
 
 export const MOCK_TRENDING_VIDEOS: NewsItem[] = [
-  {
-    id: '1',
-    title: 'Highlights | Arsenal 4-0 Wigan Athletic | Braisize',
-    imageUrl: 'https://picsum.photos/seed/arsenal1/800/450',
-    duration: '03:00',
-    type: 'video'
-  },
-  {
-    id: '2',
-    title: 'Norgaard excited for FA Cup run draw?',
-    imageUrl: 'https://picsum.photos/seed/arsenal2/800/450',
-    duration: '01:55',
-    type: 'video'
-  },
-  {
-    id: '3',
-    title: 'Mikel Arteta: We showed real desire',
-    imageUrl: 'https://picsum.photos/seed/arsenal3/800/450',
-    duration: '02:04',
-    type: 'video'
-  }
+  { id: 'g1', title: 'Team Unity', imageUrl: '/gallery/Eagles (1).jpeg', type: 'gallery' },
+  { id: 'g2', title: 'Match Day', imageUrl: '/gallery/Eagles (2).jpeg', type: 'gallery' },
+  { id: 'g3', title: 'Club Spirit', imageUrl: '/gallery/Eagles (3).jpeg', type: 'gallery' },
+  { id: 'g4', title: 'Game Focus', imageUrl: '/gallery/Eagles (4).jpeg', type: 'gallery' },
+  { id: 'g5', title: 'Supporters', imageUrl: '/gallery/Eagles (5).jpeg', type: 'gallery' },
+  { id: 'g6', title: 'Training Day', imageUrl: '/gallery/Eagles (6).jpeg', type: 'gallery' }
 ];
 
 export const MOCK_SHOP_PRODUCTS: Product[] = [
-  { id: 'p1', name: 'Eagles Home Kit 2025', price: 'UGX 75,000', imageUrl: '/kit.jpeg' },
-  { id: 'p2', name: 'Eagles Away Kit 2025', price: 'UGX 75,000', imageUrl: '/kit.jpeg' },
-  { id: 'p3', name: 'Eagles Training Jersey', price: 'UGX 55,000', imageUrl: '/kit.jpeg' },
-  { id: 'p4', name: 'Eagles Fan Jersey', price: 'UGX 45,000', imageUrl: '/kit.jpeg' },
-  { id: 'p5', name: 'Eagles Limited Edition', price: 'UGX 95,000', imageUrl: '/kit.jpeg' }
+  { id: 'p1', name: 'Eagles Official Kit', price: 'UGX 150,000', imageUrl: '/kit.jpeg' },
+  { id: 'p2', name: 'Eagles Membership Card', price: 'UGX 100,000', imageUrl: '/kampanis.png' }
 ];
 
 export const MOCK_NEWS: NewsItem[] = [
@@ -164,10 +153,18 @@ export const MOCK_NEWS: NewsItem[] = [
 ];
 
 export const MOCK_TV: TVItem[] = [
-  { id: 'tv1', title: 'Inside Training', imageUrl: 'https://picsum.photos/seed/tv1/300/200', duration: '12:05' },
-  { id: 'tv2', title: 'Classic Matches: Highbury', imageUrl: 'https://picsum.photos/seed/tv2/300/200', duration: '08:45' },
-  { id: 'tv3', title: 'Behind the Scenes: Emirates', imageUrl: 'https://picsum.photos/seed/tv3/300/200', duration: '15:20' },
-  { id: 'tv4', title: 'Player Interview: Saka', imageUrl: 'https://picsum.photos/seed/tv4/300/200', duration: '05:30' },
-  { id: 'tv5', title: 'Academy Spotlight', imageUrl: 'https://picsum.photos/seed/tv5/300/200', duration: '10:00' }
+  { id: 'tv1', title: 'Eagles TV Video 1', imageUrl: '/gallery/Eagles (1).jpeg', duration: 'Watch', url: 'https://youtu.be/o-qEqvP163c?si=I_hVjbOfspodMfv0' },
+  { id: 'tv2', title: 'Eagles TV Video 2', imageUrl: '/gallery/Eagles (2).jpeg', duration: 'Watch', url: 'https://youtu.be/39yjNvRlciM?si=4qcUffpC7f3_rgrB' },
+  { id: 'tv3', title: 'Eagles TV Video 3', imageUrl: '/gallery/Eagles (3).jpeg', duration: 'Watch', url: 'https://youtu.be/LA73pD4EFv8?si=3TkIKBClzh_NMQnv' },
+  { id: 'tv4', title: 'Eagles TV Video 4', imageUrl: '/gallery/Eagles (4).jpeg', duration: 'Watch', url: 'https://youtu.be/ZCTuhWCQo-g?si=kznPN4a4sCXtiZ2p' },
+  { id: 'tv5', title: 'Eagles TV Video 5', imageUrl: '/gallery/Eagles (5).jpeg', duration: 'Watch', url: 'https://youtu.be/ShB3urBhSqk?si=FcijI_e3EhPJDSZM' },
+  { id: 'tv6', title: 'Eagles TV Video 6', imageUrl: '/gallery/Eagles (6).jpeg', duration: 'Watch', url: 'https://youtu.be/ouXulz0Isek?si=Na9xfg8x8n1NPSaQ' },
+  { id: 'tv7', title: 'Eagles TV Video 7', imageUrl: '/gallery/Eagles (7).jpeg', duration: 'Watch', url: 'https://youtu.be/TSwLQBV3yRg?si=pwZ4xJ3KdxsFe8-o' },
+  { id: 'tv8', title: 'Eagles TV Video 8', imageUrl: '/gallery/Eagles (8).jpeg', duration: 'Watch', url: 'https://youtu.be/zd3W9rS37Ik?si=3hCCJ3jJ0l4xLz1b' },
+  { id: 'tv9', title: 'Eagles TV Video 9', imageUrl: '/gallery/Eagles (9).jpeg', duration: 'Watch', url: 'https://youtu.be/xoS_RjG9cyw?si=-3D_7bMWSIh7rcOz' },
+  { id: 'tv10', title: 'Eagles TV Video 10', imageUrl: '/gallery/Eagles (10).jpeg', duration: 'Watch', url: 'https://youtu.be/uPfNxp8J0nk?si=tbBFcgU0vU8qKLUy' },
+  { id: 'tv11', title: 'Eagles TV Video 11', imageUrl: '/gallery/Eagles (12).jpeg', duration: 'Watch', url: 'https://youtu.be/EZK62CZhLlY?si=DnnB0Wu3ReQj_W2w' },
+  { id: 'tv12', title: 'Eagles TV Video 12', imageUrl: '/gallery/Eagles (13).jpeg', duration: 'Watch', url: 'https://youtu.be/2G4OesWitvI?si=5FkkuIZfxJtXPf3A' },
+  { id: 'tv13', title: 'Eagles TV Video 13', imageUrl: '/gallery/Eagles (14).jpeg', duration: 'Watch', url: 'https://youtu.be/kt1cIrKAQcI?si=JJZuvSiEK8nHiGlg' },
+  { id: 'tv14', title: 'Eagles TV Video 14', imageUrl: '/gallery/Eagles (15).jpeg', duration: 'Watch', url: 'https://youtu.be/DRdkGaCTANY?si=XP6bbw6KcKHrwRsT' }
 ];
-

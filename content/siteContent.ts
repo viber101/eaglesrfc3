@@ -89,25 +89,35 @@ export const HISTORY_CONTENT: {
   milestones: HistoryMilestone[];
   closing: string;
 } = {
-  intro: 'From a local initiative in 2019, Eagles Rugby Club has grown into a structured development platform that combines rugby excellence with leadership and community responsibility.',
+  intro: 'Founded in 2019 by Arthur Kampani at Kitante Primary School, Eagles Rugby Club began as a focused youth rugby initiative and has grown into a structured institution combining competitive rugby, leadership development, and practical community impact.',
   milestones: [
     {
       year: '2019',
       title: 'Foundation at Kitante',
-      description: 'The club was established with a deliberate focus on discipline, mentorship, and long-term player development.'
+      description: 'Eagles Rugby Club was established at Kitante Primary School with a clear mission: build disciplined athletes, develop character, and create opportunities for young people through sport.'
     },
     {
-      year: '2020-2023',
-      title: 'System Building',
-      description: 'Eagles strengthened coaching structures, internal management, and participation pathways for young athletes.'
+      year: '2020',
+      title: 'Program Structuring',
+      description: 'The club introduced more organized training schedules, role clarity, and player mentorship routines to strengthen consistency and long-term development.'
+    },
+    {
+      year: '2021-2022',
+      title: 'Competitive Consolidation',
+      description: 'Eagles improved its match preparedness and player depth, helping the team build competitive identity and a stronger culture of accountability.'
+    },
+    {
+      year: '2023',
+      title: 'Leadership and Community Expansion',
+      description: 'Club leadership structures matured while community-facing programs expanded to support youth participation, education continuity, and safer development pathways.'
     },
     {
       year: '2024-Present',
-      title: 'Community and Competitive Growth',
-      description: 'The club continues to scale performance standards while increasing its social impact through sport and youth programs.'
+      title: 'Institutional Growth and Partnerships',
+      description: 'Eagles continues to raise performance standards, grow sponsorship partnerships, and invest in infrastructure, player welfare, and long-term community outcomes.'
     }
   ],
-  closing: 'Eagles Rugby Club remains committed to building character, leadership, and competitive excellence for every player who wears the badge.'
+  closing: 'Today, Eagles Rugby Club stands as a values-driven organization committed to discipline, teamwork, leadership, and sustainable social impact through rugby. The journey continues with a focus on performance, professionalism, and empowering the next generation.'
 };
 
 export const FITNESS_CONTENT: FitnessProgram = {
@@ -145,7 +155,7 @@ export const PROJECTS_CONTENT: {
     { label: 'Children Served', value: '4,000', description: 'Current school and activity population using the facility.' },
     { label: 'Seating Target', value: '2,000', description: 'Children to be safely seated through phased stand construction.' },
     { label: 'Capacity per Stand', value: '200', description: 'Students accommodated by each completed stand.' },
-    { label: 'Cost per Stand', value: 'UGX 14,000,000', description: 'Estimated construction cost for one durable stand.' }
+    { label: 'Cost per Stand', value: 'USD 3,800', description: 'Estimated construction cost for one durable stand.' }
   ],
   whyItMatters: [
     'Improves child safety and comfort',
@@ -198,11 +208,12 @@ export const SPONSOR_US_CONTENT: {
   tiers: [
     {
       name: 'Platinum',
-      price: 'UGX 120,000,000',
+      price: 'USD 32,000',
       keyInclusions: [
         'Front-of-jersey naming rights',
         'Premium pitchside and press room visibility',
-        'Brand ambassador access to players'
+        'Brand ambassador access to players',
+        'Four pitch-side advertising spaces (3m x 4m each)'
       ],
       benefits: [
         'Exclusive naming rights on front of official jersey',
@@ -216,11 +227,12 @@ export const SPONSOR_US_CONTENT: {
     },
     {
       name: 'Diamond',
-      price: 'UGX 80,000,000',
+      price: 'USD 21,000',
       keyInclusions: [
         'Chest jersey logo placement',
         'Strong media and event visibility',
-        'Access to official club functions'
+        'Access to official club functions',
+        'Three pitch-side advertising spaces (3m x 4m each)'
       ],
       benefits: [
         'Logo placement on right or left chest of jerseys',
@@ -233,11 +245,12 @@ export const SPONSOR_US_CONTENT: {
     },
     {
       name: 'Gold',
-      price: 'UGX 40,000,000',
+      price: 'USD 10,500',
       keyInclusions: [
         'Strong event-day branding',
         'Digital promotion support',
-        'Club-function invitations'
+        'Club-function invitations',
+        'Two pitch-side advertising spaces (3m x 4m each)'
       ],
       benefits: [
         'Recognition in press room and on gameday assets',
@@ -249,11 +262,12 @@ export const SPONSOR_US_CONTENT: {
     },
     {
       name: 'Silver',
-      price: 'UGX 20,000,000',
+      price: 'USD 5,300',
       keyInclusions: [
         'Sleeve or shirt-number area logo options',
         'Core signage exposure',
-        'Entry-level official partner benefits'
+        'Entry-level official partner benefits',
+        'One pitch-side advertising space (3m x 4m)'
       ],
       benefits: [
         'Logo placement on sleeve or shirt-number zones',

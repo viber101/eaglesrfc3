@@ -57,6 +57,7 @@ export interface TVItem {
   title: string;
   imageUrl: string;
   duration: string;
+  url?: string;
 }
 
 export interface MatchInfo {

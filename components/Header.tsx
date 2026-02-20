@@ -72,6 +72,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   const menuItems = [
     { name: 'Donate', id: 'donate' },
     { name: 'Membership', id: 'membership' },
+    { name: 'Other Services', id: 'other-services' },
     { name: 'Player Sponsor', id: 'contact' }
   ];
 
@@ -79,9 +80,16 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
     { name: 'Eagles TV', id: 'tv' },
     { name: 'Gallery', id: 'gallery' }
   ];
+  const getDesktopItemClass = (active: boolean) => (
+    `h-[44px] flex items-center px-4 rounded-full transition-all duration-200 ${
+      active
+        ? 'bg-[#F5A623] text-black shadow-[0_6px_16px_rgba(245,166,35,0.35)]'
+        : 'text-white/90 hover:text-white hover:bg-white/10'
+    }`
+  );
 
   return (
-    <header className="sticky top-0 z-50 w-full shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
+    <header className="sticky top-0 z-50 w-full shadow-[0_14px_34px_rgba(0,0,0,0.35)]">
       <style>{`
         @keyframes promo-marquee {
           0% { transform: translateX(0); }
@@ -89,11 +97,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         }
       `}</style>
 
-      <div className="bg-black text-white border-b border-white/15 overflow-hidden">
+      <div className="bg-[linear-gradient(90deg,#0a0a0a,#111827,#0a0a0a)] text-white border-b border-[#F5A623]/30 overflow-hidden">
         <div className="max-w-[1700px] mx-auto px-4 lg:px-12">
-          <div className="relative h-9 flex items-center overflow-hidden">
+          <div className="relative h-8 flex items-center overflow-hidden">
             <div
-              className="flex items-center whitespace-nowrap font-semibold tracking-wide text-[10px] sm:text-[11px]"
+              className="flex items-center whitespace-nowrap font-semibold tracking-wide text-[10px]"
               style={{ animation: 'promo-marquee 24s linear infinite', width: 'max-content' }}
             >
               <span className="mx-8">{promoMessage}</span>
@@ -103,41 +111,35 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         </div>
       </div>
 
-      <div className="bg-black/95 backdrop-blur text-white border-b border-white/10">
-        <div className="max-w-[1700px] mx-auto px-4 lg:px-12 flex items-center h-[82px] relative">
+      <div className="bg-[#06080d]/95 backdrop-blur text-white border-b border-white/10">
+        <div className="max-w-[1700px] mx-auto px-4 lg:px-8 flex items-center h-[88px] relative">
           <div
-            className="flex items-center space-x-2 mr-10 cursor-pointer"
+            className="flex items-center justify-center px-3 sm:px-4 py-2 rounded-xl border border-white/10 bg-white/[0.03] mr-6 lg:mr-8 cursor-pointer"
             onClick={() => onNavigate('home')}
           >
             <img
               src="/KINTANTE FUN DAY FLYER.png"
               alt="Eagles RFC Logo"
-              className="h-14 sm:h-16 w-auto object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)]"
+              className="h-12 sm:h-14 w-auto object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)]"
             />
           </div>
 
-          <nav className="hidden lg:flex items-center space-x-10 uppercase text-[15px] font-black tracking-tight h-full">
+          <nav className="hidden lg:flex items-center gap-2 uppercase text-[12px] font-semibold tracking-[0.06em]">
             <button
               onClick={() => navigateToPage('home')}
-              className={`h-full flex items-center px-1 transition-all border-b-4 ${
-                currentPage === 'home' ? 'border-[#F5A623] text-[#F5A623]' : 'border-transparent text-white hover:text-[#F5A623]'
-              }`}
+              className={getDesktopItemClass(currentPage === 'home')}
             >
               Home
             </button>
 
             <div
-              className="relative h-full flex items-center"
+              className="relative flex items-center"
               onMouseEnter={() => setIsAboutHovered(true)}
               onMouseLeave={() => setIsAboutHovered(false)}
             >
               <button
                 onClick={() => navigateToPage('about')}
-                className={`h-full flex items-center px-1 transition-all border-b-4 ${
-                  currentPage === 'about' || currentPage === 'history'
-                    ? 'border-[#F5A623] text-[#F5A623]'
-                    : 'border-transparent text-white hover:text-[#F5A623]'
-                }`}
+                className={getDesktopItemClass(currentPage === 'about' || currentPage === 'history')}
               >
                 About
                 <svg className={`ml-1 w-3 h-3 transition-transform ${isAboutHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,40 +148,40 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
 
               {isAboutHovered && (
-                <div className="absolute top-full left-0 w-56 bg-[#111] text-white border border-white/15 shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+10px)] left-0 w-56 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   <button
                     onClick={() => navigateToPage('about')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-bold uppercase text-[11px] tracking-wider"
+                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em]"
                   >
                     About Us
                   </button>
                   <button
                     onClick={() => navigateToAboutSection('vision')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-bold uppercase text-[11px] tracking-wider border-t border-white/10"
+                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
                   >
                     Vision
                   </button>
                   <button
                     onClick={() => navigateToAboutSection('mission')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-bold uppercase text-[11px] tracking-wider border-t border-white/10"
+                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
                   >
                     Mission
                   </button>
                   <button
                     onClick={() => navigateToAboutSection('core-values')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-bold uppercase text-[11px] tracking-wider border-t border-white/10"
+                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
                   >
                     Core Values
                   </button>
                   <button
                     onClick={() => navigateToAboutSection('home-ground')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-bold uppercase text-[11px] tracking-wider border-t border-white/10"
+                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
                   >
                     Home Ground
                   </button>
                   <button
                     onClick={() => navigateToPage('history')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-bold uppercase text-[11px] tracking-wider border-t border-white/10"
+                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
                   >
                     Our History
                   </button>
@@ -188,17 +190,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             </div>
 
             <div
-              className="relative h-full flex items-center"
+              className="relative flex items-center"
               onMouseEnter={() => setIsOurClubHovered(true)}
               onMouseLeave={() => setIsOurClubHovered(false)}
             >
               <button
                 onClick={() => navigateToPage('squad')}
-                className={`h-full flex items-center px-1 transition-all border-b-4 ${
-                  ['squad', 'hall-of-fame', 'shop', 'fitness-center', 'history', 'our-projects', 'our-foundation', 'sponsor-us'].includes(currentPage)
-                    ? 'border-[#F5A623] text-[#F5A623]'
-                    : 'border-transparent text-white hover:text-[#F5A623]'
-                }`}
+                className={getDesktopItemClass(['squad', 'hall-of-fame', 'shop', 'fitness-center', 'history', 'our-projects', 'our-foundation', 'sponsor-us'].includes(currentPage))}
               >
                 Our Club
                 <svg className={`ml-1 w-3 h-3 transition-transform ${isOurClubHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,12 +205,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
 
               {isOurClubHovered && (
-                <div className="absolute top-full left-0 w-60 bg-[#111] text-white border border-white/15 shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+10px)] left-0 w-60 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   {ourClubItems.map((item, index) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}
-                      className={`w-full text-left px-4 py-3 hover:bg-white/10 font-bold uppercase text-[11px] tracking-wider ${
+                      className={`w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] ${
                         index > 0 ? 'border-t border-white/10' : ''
                       }`}
                     >
@@ -224,17 +222,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             </div>
 
             <div
-              className="relative h-full flex items-center"
+              className="relative flex items-center"
               onMouseEnter={() => setIsTvHovered(true)}
               onMouseLeave={() => setIsTvHovered(false)}
             >
               <button
                 onClick={() => navigateToPage('tv')}
-                className={`h-full flex items-center px-1 transition-all border-b-4 ${
-                  ['tv', 'gallery'].includes(currentPage)
-                    ? 'border-[#F5A623] text-[#F5A623]'
-                    : 'border-transparent text-white hover:text-[#F5A623]'
-                }`}
+                className={getDesktopItemClass(['tv', 'gallery'].includes(currentPage))}
               >
                 Eagles TV
                 <svg className={`ml-1 w-3 h-3 transition-transform ${isTvHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -243,12 +237,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
 
               {isTvHovered && (
-                <div className="absolute top-full left-0 w-44 bg-[#111] text-white border border-white/15 shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute top-[calc(100%+10px)] left-0 w-44 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   {tvItems.map((item, index) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}
-                      className={`w-full text-left px-4 py-3 hover:bg-white/10 font-bold uppercase text-[11px] tracking-wider ${
+                      className={`w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] ${
                         index > 0 ? 'border-t border-white/10' : ''
                       }`}
                     >
@@ -263,9 +257,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               <button
                 key={item.id}
                 onClick={() => navigateToPage(item.id)}
-                className={`h-full flex items-center px-1 transition-all border-b-4 ${
-                  currentPage === item.id ? 'border-[#F5A623] text-[#F5A623]' : 'border-transparent text-white hover:text-[#F5A623]'
-                }`}
+                className={getDesktopItemClass(currentPage === item.id)}
               >
                 {item.name}
               </button>
@@ -273,11 +265,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
           </nav>
 
           <div className="ml-auto flex items-center space-x-3">
-            <div className="flex items-center pl-4 border-l border-white/15">
-              <img src="/kampanis.png" alt="Kampanis" className="h-7 sm:h-9 w-auto object-contain" />
+            <div className="hidden lg:flex items-center pl-4 border-l border-white/15">
+              <div className="rounded-lg bg-white/5 border border-white/10 px-3 py-2">
+                <img src="/kampanis.png" alt="Kampanis" className="h-7 sm:h-8 w-auto object-contain" />
+              </div>
             </div>
             <button
-              className="lg:hidden text-white hover:text-[#F5A623]"
+              className="lg:hidden text-white hover:text-[#F5A623] bg-white/5 border border-white/15 rounded-lg p-2"
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             >
@@ -291,11 +285,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         </div>
 
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-white/10 bg-[#0a0a0a]">
+          <div className="lg:hidden border-t border-white/10 bg-[#0b1020]">
             <nav className="px-4 py-3 max-h-[70vh] overflow-y-auto">
               <button
                 onClick={() => navigateToPage('home')}
-                className={`w-full text-left py-3 uppercase text-sm font-black tracking-wide border-b border-white/10 ${
+                className={`w-full text-left py-3 uppercase text-xs font-semibold tracking-[0.08em] border-b border-white/10 ${
                   currentPage === 'home' ? 'text-[#F5A623]' : 'text-white'
                 }`}
               >
@@ -304,7 +298,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
               <button
                 onClick={() => setIsMobileAboutOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between py-3 uppercase text-sm font-black tracking-wide text-white border-b border-white/10"
+                className="w-full flex items-center justify-between py-3 uppercase text-xs font-semibold tracking-[0.08em] text-white border-b border-white/10"
                 aria-expanded={isMobileAboutOpen}
               >
                 About
@@ -314,18 +308,18 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
               {isMobileAboutOpen && (
                 <div className="pl-3 pb-2 border-b border-white/10">
-                  <button onClick={() => navigateToPage('about')} className="w-full text-left py-2 uppercase text-xs font-bold text-white/85">About Us</button>
-                  <button onClick={() => navigateToAboutSectionMobile('vision')} className="w-full text-left py-2 uppercase text-xs font-bold text-white/85">Vision</button>
-                  <button onClick={() => navigateToAboutSectionMobile('mission')} className="w-full text-left py-2 uppercase text-xs font-bold text-white/85">Mission</button>
-                  <button onClick={() => navigateToAboutSectionMobile('core-values')} className="w-full text-left py-2 uppercase text-xs font-bold text-white/85">Core Values</button>
-                  <button onClick={() => navigateToAboutSectionMobile('home-ground')} className="w-full text-left py-2 uppercase text-xs font-bold text-white/85">Home Ground</button>
-                  <button onClick={() => navigateToPage('history')} className="w-full text-left py-2 uppercase text-xs font-bold text-white/85">Our History</button>
+                  <button onClick={() => navigateToPage('about')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">About Us</button>
+                  <button onClick={() => navigateToAboutSectionMobile('vision')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">Vision</button>
+                  <button onClick={() => navigateToAboutSectionMobile('mission')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">Mission</button>
+                  <button onClick={() => navigateToAboutSectionMobile('core-values')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">Core Values</button>
+                  <button onClick={() => navigateToAboutSectionMobile('home-ground')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">Home Ground</button>
+                  <button onClick={() => navigateToPage('history')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">Our History</button>
                 </div>
               )}
 
               <button
                 onClick={() => setIsMobileOurClubOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between py-3 uppercase text-sm font-black tracking-wide text-white border-b border-white/10"
+                className="w-full flex items-center justify-between py-3 uppercase text-xs font-semibold tracking-[0.08em] text-white border-b border-white/10"
                 aria-expanded={isMobileOurClubOpen}
               >
                 Our Club
@@ -339,7 +333,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}
-                      className="w-full text-left py-2 uppercase text-xs font-bold text-white/85"
+                      className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85"
                     >
                       {item.name}
                     </button>
@@ -349,7 +343,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
               <button
                 onClick={() => setIsMobileTvOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between py-3 uppercase text-sm font-black tracking-wide text-white border-b border-white/10"
+                className="w-full flex items-center justify-between py-3 uppercase text-xs font-semibold tracking-[0.08em] text-white border-b border-white/10"
                 aria-expanded={isMobileTvOpen}
               >
                 Eagles TV
@@ -363,7 +357,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}
-                      className="w-full text-left py-2 uppercase text-xs font-bold text-white/85"
+                      className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85"
                     >
                       {item.name}
                     </button>
@@ -375,7 +369,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 <button
                   key={item.id}
                   onClick={() => navigateToPage(item.id)}
-                  className={`w-full text-left py-3 uppercase text-sm font-black tracking-wide border-b border-white/10 ${
+                  className={`w-full text-left py-3 uppercase text-xs font-semibold tracking-[0.08em] border-b border-white/10 ${
                     currentPage === item.id ? 'text-[#F5A623]' : 'text-white'
                   }`}
                 >
