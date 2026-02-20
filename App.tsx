@@ -45,11 +45,46 @@ const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-to
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
 const PLAYER_SPONSORS = [
-  { id: 'sponsor-1', name: 'Kampanis', role: 'Club Sponsor', imageUrl: '/partners/kampanis.png', description: 'Supporting player welfare, gear, and match readiness.', contact: '+256 773 207 919' },
-  { id: 'sponsor-2', name: 'Vacker', role: 'Kit Sponsor', imageUrl: '/partners/Vacker.jpeg', description: 'Providing quality support for team identity and kits.', contact: '+256 773 207 919' },
-  { id: 'sponsor-3', name: 'Wina Classic', role: 'Supporting Sponsor', imageUrl: '/partners/Wina Classic.jpeg', description: 'Backing club operations and match-day activities.', contact: '+256 773 207 919' },
-  { id: 'sponsor-4', name: 'CHINT', role: 'Supporting Sponsor', imageUrl: '/partners/CHINT.jpeg', description: 'Investing in community growth through rugby.', contact: '+256 773 207 919' },
-  { id: 'sponsor-5', name: 'Caramec', role: 'Official Sponsor', imageUrl: '/partners/caramec.png', description: 'Powering development pathways for Eagles players.', contact: '+256 773 207 919' }
+  {
+    id: 'sponsor-1',
+    name: 'Kampanis',
+    role: 'Club Sponsor',
+    imageUrl: '/partners/kampanis.png',
+    service: 'Kampanis offers professional shoe repair services at Forest Mall Lugogo. They also have shoe care products for more information call.',
+    contact: '+256 775 833 585'
+  },
+  {
+    id: 'sponsor-2',
+    name: 'Vacker',
+    role: 'Kit Sponsor',
+    imageUrl: '/partners/Vacker.jpeg',
+    service: 'Vacker provides quality apparel and support products for athletes and active teams.',
+    contact: '+256 775 833 585'
+  },
+  {
+    id: 'sponsor-3',
+    name: 'Wina Classic',
+    role: 'Supporting Sponsor',
+    imageUrl: '/partners/Wina Classic.jpeg',
+    service: 'Wina Classic supports match-day operations, team coordination, and event partnerships.',
+    contact: '+256 775 833 585'
+  },
+  {
+    id: 'sponsor-4',
+    name: 'CHINT',
+    role: 'Supporting Sponsor',
+    imageUrl: '/partners/CHINT.jpeg',
+    service: 'CHINT offers dependable electrical and power solutions for organizations and communities.',
+    contact: '+256 775 833 585'
+  },
+  {
+    id: 'sponsor-5',
+    name: 'Caramec',
+    role: 'Official Sponsor',
+    imageUrl: '/partners/caramec.png',
+    service: 'Caramec delivers practical engineering and project support across sports and community initiatives.',
+    contact: '+256 775 833 585'
+  }
 ];
 const X_CAPTAINS = [
   { period: '2019-2022', name: 'Regan Kitara' },
@@ -311,18 +346,16 @@ const PlayerSponsorsSlider: React.FC<{ onNavigate: (p: string) => void }> = ({ o
                 />
               </div>
 
-              <p className="mt-2 text-xs text-[#2f4364] font-semibold leading-relaxed">{sponsor.description}</p>
-              <p className="mt-2 text-[10px] font-black uppercase tracking-widest text-[#081534]">Contact: {sponsor.contact}</p>
-
-              <button
-                onClick={() => onNavigate('contact')}
+              <p className="mt-2 text-xs text-[#2f4364] font-semibold leading-relaxed">{sponsor.service}</p>
+              <a
+                href="tel:+256775833585"
                 className="mt-4 w-full rounded-md border border-black bg-gradient-to-r from-[#F5A623] to-[#f8c75a] text-black py-2 text-[11px] font-black uppercase tracking-wider hover:from-black hover:to-black hover:text-[#F5A623] transition-colors flex items-center justify-center gap-2"
               >
-                <span>Become a Sponsor</span>
+                <span>+256 775 833 585</span>
                 <svg aria-hidden="true" className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4" d="M7 17L17 7M9 7h8v8" />
                 </svg>
-              </button>
+              </a>
             </article>
           ))}
         </div>
@@ -1581,48 +1614,70 @@ const PlayerSponsorPage: React.FC = () => (
 );
 
 const FitnessCenterPage: React.FC = () => (
-  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="relative rounded-xl overflow-hidden border border-[#e2e7f0] min-h-[360px] bg-[#081534]">
-      <img
-        src={toAssetUrl(PAGE_IMAGES.fitnessHero)}
-        alt="Fitness training background"
-        className="absolute inset-0 w-full h-full object-cover opacity-35 blur-sm scale-105"
-      />
-      <img
-        src={toAssetUrl(PAGE_IMAGES.fitnessHero)}
-        alt="Athlete carrying tyres"
-        className="absolute inset-0 w-full h-full object-contain object-center"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/20 p-8 flex flex-col justify-end">
-        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-white">Fitness Center</h1>
-        <p className="text-gray-200 mb-2 max-w-3xl">{FITNESS_CONTENT.intro}</p>
-        <p className="text-sm font-black uppercase tracking-wider text-[#F5A623]">{FITNESS_CONTENT.schedule}</p>
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
+    <section className="relative rounded-2xl overflow-hidden border border-[#d9e0ec] bg-[#081534]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,166,35,0.2),transparent_45%)]" />
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 lg:p-8">
+        <div className="lg:col-span-6 flex flex-col justify-center">
+          <p className="text-[#F5A623] text-xs font-black uppercase tracking-[0.25em] mb-2">Eagles Performance</p>
+          <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter text-white mb-3">Fitness Center</h1>
+          <p className="text-[#dbe4f2] max-w-2xl leading-relaxed mb-4">{FITNESS_CONTENT.intro}</p>
+          <div className="inline-flex items-center gap-2 bg-[#F5A623] text-black rounded-full px-4 py-2 text-xs font-black uppercase tracking-widest w-fit">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
+            <span>{FITNESS_CONTENT.schedule}</span>
+          </div>
+        </div>
+        <div className="lg:col-span-6 grid grid-cols-2 gap-3">
+          <article className="col-span-2 rounded-xl overflow-hidden border border-white/15 bg-black/15 h-[320px]">
+            <img src={toAssetUrl('/fitness centre/any.jpeg')} alt="Athlete carrying tyres" className="w-full h-full object-contain object-center bg-black/20" />
+          </article>
+          <article className="rounded-xl overflow-hidden border border-white/15 bg-black/15 h-[150px]">
+            <img src={toAssetUrl('/fitness centre/jasper.jpeg')} alt="Speed drill" className="w-full h-full object-cover" />
+          </article>
+          <article className="rounded-xl overflow-hidden border border-white/15 bg-black/15 h-[150px]">
+            <img src={toAssetUrl('/fitness centre/griffin.jpeg')} alt="Team fitness drill" className="w-full h-full object-cover" />
+          </article>
+        </div>
       </div>
     </section>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <InfoSection title="Pricing">
-        {FITNESS_CONTENT.pricing.map((item) => (
-          <p key={item}>- {item}</p>
-        ))}
-      </InfoSection>
-      <InfoSection title="Program Benefits">
-        {FITNESS_CONTENT.benefits.map((item) => (
-          <p key={item}>- {item}</p>
-        ))}
-      </InfoSection>
-    </div>
+    <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+        <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534] mb-3">Pricing and Access</h2>
+        <div className="space-y-2">
+          {FITNESS_CONTENT.pricing.map((item) => (
+            <p key={item} className="text-sm text-gray-700 font-semibold">- {item}</p>
+          ))}
+        </div>
+      </article>
+      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+        <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534] mb-3">Program Benefits</h2>
+        <div className="space-y-2">
+          {FITNESS_CONTENT.benefits.map((item) => (
+            <p key={item} className="text-sm text-gray-700 font-semibold">- {item}</p>
+          ))}
+        </div>
+      </article>
+    </section>
 
-    <InfoSection title="Where Session Fees Go">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Where Session Fees Go</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {FITNESS_CONTENT.feeUse.map((item) => (
-          <article key={item} className="bg-[#f6f8fb] border border-[#dce3ef] rounded-lg p-4 text-sm text-gray-700">{item}</article>
+          <article key={item} className="bg-[#f6f8fb] border border-[#dce3ef] rounded-lg p-4 text-sm text-gray-700 font-semibold">
+            {item}
+          </article>
         ))}
       </div>
-    </InfoSection>
+    </section>
 
-    <section className="rounded-xl overflow-hidden border border-[#e2e7f0] bg-[#081534]">
-      <img src={toAssetUrl(PAGE_IMAGES.fitnessSupport)} alt="Fitness community" className="w-full h-[320px] object-contain object-center" />
+    <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <article className="rounded-xl overflow-hidden border border-[#dce3ef] h-[260px]">
+        <img src={toAssetUrl('/fitness centre/paul.jpeg')} alt="Tyre strength training" className="w-full h-full object-contain bg-[#0b1020]" />
+      </article>
+      <article className="rounded-xl overflow-hidden border border-[#dce3ef] h-[260px]">
+        <img src={toAssetUrl('/fitness centre/griffin.jpeg')} alt="Team conditioning" className="w-full h-full object-cover" />
+      </article>
     </section>
 
     <ContactCtaCard title="Register for Fitness Sessions" subtitle="UGX 20,000 Per Session" />

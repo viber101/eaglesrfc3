@@ -265,9 +265,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
           </nav>
 
           <div className="ml-auto flex items-center space-x-3">
-            <div className="hidden lg:flex items-center pl-4 border-l border-white/15">
+            <div className="flex items-center pl-2 sm:pl-4 border-l border-white/15">
               <div className="rounded-lg bg-white/5 border border-white/10 px-3 py-2">
-                <img src="/kampanis.png" alt="Kampanis" className="h-7 sm:h-8 w-auto object-contain" />
+                <img src="/kampanis.png" alt="Kampanis" className="h-6 sm:h-8 w-auto object-contain" />
               </div>
             </div>
             <button
