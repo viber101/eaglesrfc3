@@ -37,6 +37,8 @@ type FixtureItem = {
 type FixtureScore = {
   home: number;
   away: number;
+  halfTimeHome?: number;
+  halfTimeAway?: number;
   status: string;
 };
 
@@ -96,6 +98,13 @@ const X_COACHES = [
   { period: '2019-2023', name: 'Edmond Tumusiime' },
   { period: '2023-2025', name: 'Cherokee Sylvain Ngue' }
 ];
+const LEGACY_SLIDE_IMAGES = [
+  '/gallery/Eagles (1).jpeg',
+  '/gallery/Eagles (3).jpeg',
+  '/gallery/Eagles (9).jpeg',
+  '/gallery/Eagles (14).jpeg',
+  '/gallery/Eagles (19).jpeg'
+];
 const CATEGORY_SPONSORSHIP_TYPES = [
   'Man of the Match Sponsor',
   'Impact Player Sponsor',
@@ -141,16 +150,71 @@ const extractDateNumber = (value: string) => value.match(/\d+/)?.[0] ?? value;
 const normalizeTeam = (value: string) => cleanCell(value).toLowerCase();
 const isEaglesTeam = (value: string) => normalizeTeam(value).includes('eagles');
 const toFixtureKey = (fixture: FixtureItem) => `${fixture.week}-${normalizeTeam(fixture.home)}-${normalizeTeam(fixture.away)}`;
+const FIXTURE_DATE_SHIFT_DAYS = 6;
+
+const getBaseFixtureDate = (fixture: FixtureItem) => {
+  const dateNumber = Number(extractDateNumber(fixture.date));
+  if (!Number.isFinite(dateNumber)) {
+    return null;
+  }
+  const parsed = new Date(`${fixture.month} ${dateNumber}, 2026`);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const getAdjustedFixtureDate = (fixture: FixtureItem) => {
+  const baseDate = getBaseFixtureDate(fixture);
+  if (!baseDate) {
+    return null;
+  }
+  const shifted = new Date(baseDate);
+  shifted.setDate(shifted.getDate() + FIXTURE_DATE_SHIFT_DAYS);
+  return shifted;
+};
+
+const getFixtureMonthForFilter = (fixture: FixtureItem) => {
+  const adjustedDate = getAdjustedFixtureDate(fixture);
+  return adjustedDate
+    ? adjustedDate.toLocaleDateString('en-US', { month: 'long' })
+    : fixture.month;
+};
 
 const toFixtureDateLabel = (fixture: FixtureItem) => {
-  const month = fixture.month ? fixture.month.slice(0, 3).toUpperCase() : 'TBC';
+  const adjustedDate = getAdjustedFixtureDate(fixture);
+  if (adjustedDate) {
+    const day = adjustedDate.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+    const month = adjustedDate.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+    return `${day} ${month} ${adjustedDate.getDate()}`;
+  }
+  const monthFallback = fixture.month ? fixture.month.slice(0, 3).toUpperCase() : 'TBC';
   const dateNumber = extractDateNumber(fixture.date);
-  const day = fixture.day ? fixture.day.slice(0, 3).toUpperCase() : '';
-  return `${day} ${month} ${dateNumber}`.trim();
+  const dayFallback = fixture.day ? fixture.day.slice(0, 3).toUpperCase() : '';
+  return `${dayFallback} ${monthFallback} ${dateNumber}`.trim();
+};
+
+const toFixtureMonthDayLabel = (fixture: FixtureItem) => {
+  const adjustedDate = getAdjustedFixtureDate(fixture);
+  if (adjustedDate) {
+    const month = adjustedDate.toLocaleDateString('en-US', { month: 'long' });
+    return `${month} ${adjustedDate.getDate()}`;
+  }
+  return `${fixture.month} ${extractDateNumber(fixture.date)}`;
+};
+
+const toFixtureDayLabel = (fixture: FixtureItem) => {
+  const adjustedDate = getAdjustedFixtureDate(fixture);
+  if (adjustedDate) {
+    return adjustedDate.toLocaleDateString('en-US', { weekday: 'long' });
+  }
+  return fixture.day;
 };
 
 const formatScoreValue = (score?: FixtureScore) => (
   score ? `${score.home} : ${score.away}` : '... : ...'
+);
+const formatHalfTimeValue = (score?: FixtureScore) => (
+  score && typeof score.halfTimeHome === 'number' && typeof score.halfTimeAway === 'number'
+    ? `${score.halfTimeHome} : ${score.halfTimeAway}`
+    : '... : ...'
 );
 
 const MONTH_ORDER = [
@@ -189,6 +253,42 @@ const getTimeSortValue = (value: string) => {
     hours = 0;
   }
   return (hours * 60) + minutes;
+};
+
+const getFixtureKickoffDate = (fixture: FixtureItem) => {
+  const adjustedDate = getAdjustedFixtureDate(fixture);
+  if (!adjustedDate) {
+    return null;
+  }
+  const kickoff = new Date(adjustedDate);
+  const match = cleanCell(fixture.time).toUpperCase().match(/^(\d{1,2}):(\d{2})(AM|PM)$/);
+  if (!match) {
+    kickoff.setHours(12, 0, 0, 0);
+    return kickoff;
+  }
+
+  let hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  const ampm = match[3];
+  if (ampm === 'PM' && hours !== 12) {
+    hours += 12;
+  }
+  if (ampm === 'AM' && hours === 12) {
+    hours = 0;
+  }
+  kickoff.setHours(hours, minutes, 0, 0);
+  return kickoff;
+};
+
+const toNextMatchDateLabel = (fixture: FixtureItem) => {
+  const adjustedDate = getAdjustedFixtureDate(fixture);
+  if (!adjustedDate) {
+    return `${fixture.day.slice(0, 3)} ${extractDateNumber(fixture.date)}/${fixture.month.slice(0, 3)}`;
+  }
+  const weekday = adjustedDate.toLocaleDateString('en-US', { weekday: 'short' });
+  const day = adjustedDate.getDate().toString().padStart(2, '0');
+  const month = (adjustedDate.getMonth() + 1).toString().padStart(2, '0');
+  return `${weekday} ${day}/${month}`;
 };
 
 const parseFixturesCsv = (csvText: string): FixtureItem[] => {
@@ -315,7 +415,6 @@ const PlayerSponsorsSlider: React.FC<{ onNavigate: (p: string) => void }> = ({ o
     <div className="bg-[#081534] rounded-xl p-4 shadow-lg overflow-hidden">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-white text-[11px] font-black uppercase tracking-widest">Become a Sponsor</h3>
-        <span className="text-[#9fb0c4] text-[10px] font-bold uppercase tracking-wide">Player Sponsors</span>
       </div>
 
       <div className="relative group">
@@ -388,18 +487,27 @@ const CalendarSection: React.FC = () => {
         );
 
         const sortedFixtures = [...eaglesFixtures].sort((a, b) => {
-          const monthDelta = (MONTH_INDEX[a.month.toLowerCase()] ?? 99) - (MONTH_INDEX[b.month.toLowerCase()] ?? 99);
-          if (monthDelta !== 0) {
-            return monthDelta;
-          }
-          const dateDelta = Number(extractDateNumber(a.date)) - Number(extractDateNumber(b.date));
-          if (dateDelta !== 0) {
-            return dateDelta;
+          const adjustedA = getAdjustedFixtureDate(a);
+          const adjustedB = getAdjustedFixtureDate(b);
+          if (adjustedA && adjustedB) {
+            const dateDelta = adjustedA.getTime() - adjustedB.getTime();
+            if (dateDelta !== 0) {
+              return dateDelta;
+            }
+          } else {
+            const monthDelta = (MONTH_INDEX[a.month.toLowerCase()] ?? 99) - (MONTH_INDEX[b.month.toLowerCase()] ?? 99);
+            if (monthDelta !== 0) {
+              return monthDelta;
+            }
+            const dateDelta = Number(extractDateNumber(a.date)) - Number(extractDateNumber(b.date));
+            if (dateDelta !== 0) {
+              return dateDelta;
+            }
           }
           return getTimeSortValue(a.time) - getTimeSortValue(b.time);
         });
 
-        const availableMonths = Array.from(new Set(sortedFixtures.map((fixture) => fixture.month)))
+        const availableMonths = Array.from(new Set(sortedFixtures.map((fixture) => getFixtureMonthForFilter(fixture))))
           .sort((a, b) => (MONTH_INDEX[a.toLowerCase()] ?? 99) - (MONTH_INDEX[b.toLowerCase()] ?? 99));
         setFixtures(sortedFixtures);
         setActiveMonths(availableMonths);
@@ -430,7 +538,7 @@ const CalendarSection: React.FC = () => {
   }, []);
 
   const visibleFixtures = selectedMonth
-    ? fixtures.filter((fixture) => fixture.month.toLowerCase() === selectedMonth.toLowerCase())
+    ? fixtures.filter((fixture) => getFixtureMonthForFilter(fixture).toLowerCase() === selectedMonth.toLowerCase())
     : fixtures;
 
   const currentMonth = MONTH_ORDER[new Date().getMonth()];
@@ -535,28 +643,26 @@ const CalendarSection: React.FC = () => {
                       </div>
                       <div className="grid grid-cols-3 items-center gap-3">
                         <p className={`text-sm font-black uppercase leading-tight text-left ${isEaglesTeam(fixture.home) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.home}</p>
-                        <p className="text-3xl font-black text-center">
-                          {formatScoreValue(score)}
-                        </p>
+                        <p className="text-3xl font-black text-center">VS</p>
                         <p className={`text-sm font-black uppercase leading-tight text-right ${isEaglesTeam(fixture.away) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.away}</p>
                       </div>
                     </div>
                     <div className="p-5 bg-[#f7f8fb]">
                       <p className="text-[#1b2f5a] text-xs font-bold mb-2">CURA Championship</p>
                       <h3 className="text-[#0d245b] text-3xl font-black tracking-tight mb-1">Week {fixture.week}</h3>
-                      <p className="text-[#0d245b] text-lg font-black mb-3">{fixture.month} {extractDateNumber(fixture.date)}</p>
+                      <p className="text-[#0d245b] text-lg font-black mb-3">{toFixtureMonthDayLabel(fixture)}</p>
                       <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Final Score</span>
-                        <span className="text-[#0d245b] text-base font-black">{formatScoreValue(score)}</span>
+                        <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Half Time</span>
+                        <span className="text-[#0d245b] text-base font-black">{formatHalfTimeValue(score)}</span>
                       </div>
                       <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">HT</span>
-                        <span className="text-[#0d245b] text-base font-black">3 : 3</span>
+                        <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Full Time</span>
+                        <span className="text-[#0d245b] text-base font-black">{formatScoreValue(score)}</span>
                       </div>
                       <div className="space-y-2 text-[#35507f] text-sm font-bold">
                         <p className="flex items-center gap-2">
                           <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
-                          {fixture.day}, {fixture.time}
+                          {toFixtureDayLabel(fixture)}, {fixture.time}
                         </p>
                         <p className="flex items-center gap-2">
                           <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657 13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
@@ -885,7 +991,57 @@ const CountdownUnit: React.FC<{ value: number; label: string }> = ({ value, labe
 );
 
 const CompactMatchHero: React.FC = () => {
-  const matchKickoff = new Date('2026-02-22T14:00:00+03:00');
+  const [nextMatch, setNextMatch] = useState<FixtureItem | null>(null);
+  const fallbackMatch: FixtureItem = {
+    id: 'fallback-next-match',
+    week: '1',
+    month: 'February',
+    date: '28th',
+    day: 'Saturday',
+    category: 'Men',
+    venue: 'Mukono',
+    time: '2:00PM',
+    home: 'Life Guard Rams',
+    away: 'Eagles RFC'
+  };
+  const selectedMatch = nextMatch || fallbackMatch;
+  const matchKickoff = getFixtureKickoffDate(selectedMatch) ?? new Date('2026-02-28T14:00:00+03:00');
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/fixtures/2026-cura-championship-fixtures.csv')
+      .then((response) => response.text())
+      .then((csvText) => {
+        if (!isMounted) {
+          return;
+        }
+        const parsedFixtures = parseFixturesCsv(csvText).filter(
+          (fixture) => isEaglesTeam(fixture.home) || isEaglesTeam(fixture.away)
+        );
+        const sortedFixtures = [...parsedFixtures].sort((a, b) => {
+          const kickoffA = getFixtureKickoffDate(a);
+          const kickoffB = getFixtureKickoffDate(b);
+          if (kickoffA && kickoffB) {
+            return kickoffA.getTime() - kickoffB.getTime();
+          }
+          return getTimeSortValue(a.time) - getTimeSortValue(b.time);
+        });
+        const now = new Date();
+        const upcoming = sortedFixtures.find((fixture) => {
+          const kickoff = getFixtureKickoffDate(fixture);
+          return kickoff ? kickoff.getTime() >= now.getTime() : false;
+        });
+        setNextMatch(upcoming || sortedFixtures[0] || null);
+      })
+      .catch(() => {
+        if (isMounted) {
+          setNextMatch(null);
+        }
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const getTimeLeft = () => {
     const now = new Date();
     const diffMs = matchKickoff.getTime() - now.getTime();
@@ -900,13 +1056,15 @@ const CompactMatchHero: React.FC = () => {
     return { days, hours, minutes, seconds };
   };
   const [timeLeft, setTimeLeft] = useState(getTimeLeft);
+  const displayDate = toNextMatchDateLabel(selectedMatch);
+  const displayTime = cleanCell(selectedMatch.time);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(getTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [matchKickoff]);
 
   return (
     <div className="bg-transparent backdrop-blur-sm rounded-xl border border-[#F5A623]/30 p-4 sm:p-5 w-full max-w-sm sm:max-w-md">
@@ -918,27 +1076,27 @@ const CompactMatchHero: React.FC = () => {
 
       {/* Teams Row */}
       <div className="flex items-center justify-between mb-4">
-        {/* Golden Badgers */}
+        {/* Home Team */}
         <div className="flex flex-col items-center flex-1">
-          <span className="text-white text-sm sm:text-base font-black uppercase text-center leading-tight">Golden Badgers</span>
+          <span className="text-white text-sm sm:text-base font-black uppercase text-center leading-tight">{selectedMatch.home}</span>
         </div>
 
         {/* Match Info */}
         <div className="flex flex-col items-center px-3 sm:px-4">
           <span className="text-[#F5A623] text-xl sm:text-2xl font-black">VS</span>
-          <span className="text-white/70 text-[10px]">Sat 22/02</span>
-          <span className="text-[#F5A623] text-[10px] font-bold">14:00</span>
+          <span className="text-white/70 text-[10px]">{displayDate}</span>
+          <span className="text-[#F5A623] text-[10px] font-bold">{displayTime}</span>
         </div>
 
-        {/* Eagles */}
+        {/* Away Team */}
         <div className="flex flex-col items-center flex-1">
-          <span className="text-white text-sm sm:text-base font-black uppercase text-center">Eagles RFC</span>
+          <span className="text-white text-sm sm:text-base font-black uppercase text-center">{selectedMatch.away}</span>
         </div>
       </div>
 
       {/* Venue */}
       <div className="text-center mb-3">
-        <span className="text-white/50 text-[10px] uppercase tracking-widest">📍 Mukono</span>
+        <span className="text-white/50 text-[10px] uppercase tracking-widest">{selectedMatch.venue}</span>
       </div>
 
       {/* Countdown */}
@@ -1173,62 +1331,53 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       </div>
     </section>
 
-    <Carousel title="Latest News">
-      {MOCK_NEWS.map((n) => (
-        <div key={n.id} className="flex-none w-[380px] snap-start">
-          <Card item={n} />
+    <Carousel title="X Captains">
+      {X_CAPTAINS.map((item, index) => (
+        <div key={`${item.period}-${item.name}`} className="flex-none w-[260px] snap-start">
+          <article className="relative h-[360px] overflow-hidden border border-[#cfd8e6]">
+            <img
+              src={LEGACY_SLIDE_IMAGES[index % LEGACY_SLIDE_IMAGES.length]}
+              alt={item.name}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <span className="absolute top-3 left-3 text-white/80 text-5xl font-black leading-none">{index + 1}</span>
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <p className="text-[#F5A623] text-[10px] font-black uppercase tracking-[0.2em]">{item.period}</p>
+              <p className="text-white text-base font-black uppercase tracking-tight">{item.name}</p>
+            </div>
+          </article>
         </div>
       ))}
     </Carousel>
 
-    <section className="mb-16 grid grid-cols-1 md:grid-cols-2 gap-4">
-      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
-        <h3 className="text-2xl font-black uppercase tracking-tighter text-[#081534] mb-4">X Captain</h3>
-        <div className="space-y-3">
-          {X_CAPTAINS.map((item) => (
-            <div key={`${item.period}-${item.name}`} className="flex items-center justify-between border-b border-[#edf1f7] pb-2 last:border-b-0 last:pb-0">
-              <p className="text-sm font-black text-[#081534]">{item.period}</p>
-              <p className="text-sm text-gray-700">{item.name}</p>
+    <Carousel title="X Coaches">
+      {X_COACHES.map((item, index) => (
+        <div key={`${item.period}-${item.name}`} className="flex-none w-[260px] snap-start">
+          <article className="relative h-[360px] overflow-hidden border border-[#cfd8e6]">
+            <img
+              src={LEGACY_SLIDE_IMAGES[(index + 2) % LEGACY_SLIDE_IMAGES.length]}
+              alt={item.name}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <span className="absolute top-3 left-3 text-white/80 text-5xl font-black leading-none">{index + 1}</span>
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <p className="text-[#F5A623] text-[10px] font-black uppercase tracking-[0.2em]">{item.period}</p>
+              <p className="text-white text-base font-black uppercase tracking-tight">{item.name}</p>
             </div>
-          ))}
+          </article>
         </div>
-      </article>
-      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
-        <h3 className="text-2xl font-black uppercase tracking-tighter text-[#081534] mb-4">X Coaches</h3>
-        <div className="space-y-3">
-          {X_COACHES.map((item) => (
-            <div key={`${item.period}-${item.name}`} className="flex items-center justify-between border-b border-[#edf1f7] pb-2 last:border-b-0 last:pb-0">
-              <p className="text-sm font-black text-[#081534]">{item.period}</p>
-              <p className="text-sm text-gray-700">{item.name}</p>
-            </div>
-          ))}
-        </div>
-      </article>
-    </section>
-
-    <section className="mb-16 bg-white border border-[#e2e7f0] rounded-xl p-6">
-      <SectionHeader title="Gift Vouchers" />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <article className="rounded-lg border border-[#d8deea] p-5 bg-[#f8fafc]">
-          <p className="text-[10px] font-black uppercase tracking-widest text-[#4d6185]">Voucher 01</p>
-          <h3 className="text-xl font-black uppercase text-[#081534] mt-1">Eagles Official Kit Voucher</h3>
-          <p className="text-sm text-gray-700 mt-2">Gift a full official kit package to a player or fan.</p>
-          <p className="text-[#F5A623] font-black mt-3">UGX 150,000</p>
-        </article>
-        <article className="rounded-lg border border-[#d8deea] p-5 bg-[#f8fafc]">
-          <p className="text-[10px] font-black uppercase tracking-widest text-[#4d6185]">Voucher 02</p>
-          <h3 className="text-xl font-black uppercase text-[#081534] mt-1">Membership Card Voucher</h3>
-          <p className="text-sm text-gray-700 mt-2">Gift annual club membership with member-only benefits.</p>
-          <p className="text-[#F5A623] font-black mt-3">UGX 100,000</p>
-        </article>
-      </div>
-    </section>
+      ))}
+    </Carousel>
 
     {/* Shop Section */}
     <section className="mb-16">
       <SectionHeader title="Official Shop" />
       <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
-        {MOCK_SHOP_PRODUCTS.map((product) => (
+        {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => (
           <div key={product.id} className="group cursor-pointer bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
             <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3">
               <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -1569,44 +1718,77 @@ const DonatePage: React.FC = () => (
       >
         Donate Now
       </a>
-      <p className="mt-3 text-xs text-gray-600">
-        Vanvaa Link:{' '}
-        <a href="https://tip.vanvaa.com/?q=MTcxMg==" target="_blank" rel="noopener noreferrer" className="text-[#081534] font-bold underline">
-          https://tip.vanvaa.com/?q=MTcxMg==
-        </a>
-      </p>
     </section>
   </div>
 );
 
 const PlayerSponsorPage: React.FC = () => (
-  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="bg-white border border-[#e2e7f0] rounded-xl p-8 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-      <div>
-        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Player Sponsor</h1>
-        <p className="text-gray-700">{PLAYER_SPONSOR_CONTENT.offer}</p>
-      </div>
-      <div className="h-48 rounded-lg overflow-hidden border border-[#d7deea]">
-        <img src={toAssetUrl(PAGE_IMAGES.playerSponsorHero)} alt="Player sponsor" className="w-full h-full object-cover" />
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
+    <section className="relative rounded-2xl overflow-hidden border border-[#d9e0ec] bg-[#081534]">
+      <img src={toAssetUrl(PAGE_IMAGES.playerSponsorHero)} alt="Player sponsor" className="absolute inset-0 w-full h-full object-cover opacity-35" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#081534]/95 via-[#081534]/80 to-[#081534]/45" />
+      <div className="relative z-10 p-8 sm:p-10">
+        <p className="text-[#F5A623] text-xs font-black uppercase tracking-[0.28em] mb-2">Sponsor a Player</p>
+        <h1 className="text-4xl sm:text-6xl font-black uppercase italic tracking-tighter mb-3 text-white">Player Sponsor</h1>
+        <p className="text-[#dbe4f2] max-w-3xl leading-relaxed mb-6">{PLAYER_SPONSOR_CONTENT.offer}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl">
+          <article className="rounded-lg border border-white/20 bg-white/10 backdrop-blur px-4 py-3">
+            <p className="text-[10px] uppercase tracking-widest text-[#F5A623] font-black">Package</p>
+            <p className="text-white font-black">Monthly</p>
+          </article>
+          <article className="rounded-lg border border-white/20 bg-white/10 backdrop-blur px-4 py-3">
+            <p className="text-[10px] uppercase tracking-widest text-[#F5A623] font-black">Value</p>
+            <p className="text-white font-black">UGX 200,000</p>
+          </article>
+          <article className="rounded-lg border border-white/20 bg-white/10 backdrop-blur px-4 py-3">
+            <p className="text-[10px] uppercase tracking-widest text-[#F5A623] font-black">Impact</p>
+            <p className="text-white font-black">Direct Player Support</p>
+          </article>
+        </div>
       </div>
     </section>
 
-    <section>
-      <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">What Your Sponsorship Supports</h2>
-      <div className="bg-white border border-[#e2e7f0] rounded-xl p-6 space-y-2">
-        {PLAYER_SPONSOR_CONTENT.supports.map((item) => (
-          <p key={item} className="text-sm text-gray-700">- {item}</p>
-        ))}
-      </div>
+    <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <article className="rounded-xl overflow-hidden border border-[#dce3ef] bg-white">
+        <img src="/fitness centre/any.jpeg" alt="Tyre strength action" className="w-full h-56 object-cover" />
+        <div className="p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-[#4d6185]">Action Image 01</p>
+          <h3 className="text-lg font-black uppercase tracking-tight text-[#081534] mt-1">Strength and Conditioning</h3>
+        </div>
+      </article>
+      <article className="rounded-xl overflow-hidden border border-[#dce3ef] bg-white">
+        <img src="/fitness centre/jasper.jpeg" alt="Sprint training action" className="w-full h-56 object-cover" />
+        <div className="p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-[#4d6185]">Action Image 02</p>
+          <h3 className="text-lg font-black uppercase tracking-tight text-[#081534] mt-1">Speed and Agility</h3>
+        </div>
+      </article>
+      <article className="rounded-xl overflow-hidden border border-[#dce3ef] bg-white">
+        <img src="/fitness centre/griffin.jpeg" alt="Team training action" className="w-full h-56 object-cover" />
+        <div className="p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-[#4d6185]">Action Image 03</p>
+          <h3 className="text-lg font-black uppercase tracking-tight text-[#081534] mt-1">Team Match Preparation</h3>
+        </div>
+      </article>
     </section>
 
-    <section>
-      <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Why Sponsor a Player</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {PLAYER_SPONSOR_CONTENT.reasons.map((reason) => (
-          <article key={reason} className="bg-white border border-[#e2e7f0] rounded-xl p-5 text-sm text-gray-700">{reason}</article>
-        ))}
-      </div>
+    <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+        <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">What Your Sponsorship Supports</h2>
+        <div className="space-y-2">
+          {PLAYER_SPONSOR_CONTENT.supports.map((item) => (
+            <p key={item} className="text-sm text-gray-700 font-semibold">- {item}</p>
+          ))}
+        </div>
+      </article>
+      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+        <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Why Sponsor a Player</h2>
+        <div className="space-y-3">
+          {PLAYER_SPONSOR_CONTENT.reasons.map((reason) => (
+            <article key={reason} className="rounded-lg border border-[#e2e7f0] p-4 text-sm text-gray-700 bg-[#f8fafd]">{reason}</article>
+          ))}
+        </div>
+      </article>
     </section>
 
     <ContactCtaCard title="Start a Player Sponsorship" subtitle="UGX 200,000 Monthly" />
@@ -1770,7 +1952,7 @@ const SponsorUsPage: React.FC = () => (
         </div>
       </div>
       <div className="rounded-lg overflow-hidden border border-[#d7deea]">
-        <img src={toAssetUrl(PAGE_IMAGES.sponsorUsHero)} alt="Eagles shirt sponsorship spaces" className="w-full h-[320px] object-cover" />
+        <img src="/kit sponsor/kit sponsor.jpeg" alt="Eagles shirt sponsorship spaces" className="w-full h-[360px] object-contain bg-[#0b1020]" />
       </div>
     </section>
 
@@ -2184,6 +2366,7 @@ const App: React.FC = () => {
           {/* Top Stats Bar - Corporate Sports Data */}
           <div className="border-b border-white/10">
             <div className="max-w-7xl mx-auto px-6 py-8">
+              <p className="text-[#F5A623] text-xs font-black uppercase tracking-[0.28em] mb-6">Statistics</p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div className="text-center md:text-left">
                   <span className="text-[#F5A623] text-3xl font-black">47</span>
@@ -2202,9 +2385,6 @@ const App: React.FC = () => {
                   <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Games Drawn</p>
                 </div>
               </div>
-              <div className="mt-8 flex justify-center">
-                <img src="/favicon.svg" alt="Eagles Rugby Club logo" className="h-16 w-16 object-contain" />
-              </div>
             </div>
           </div>
           
@@ -2215,12 +2395,8 @@ const App: React.FC = () => {
               {/* Brand Column - Larger */}
               <div className="lg:col-span-5">
                 <div className="flex items-center space-x-4 mb-6">
-                  <div className="w-16 h-16 bg-[#F5A623] rounded-lg flex items-center justify-center transform -rotate-6">
-                    <span className="text-black text-2xl font-black">E</span>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black uppercase tracking-tighter">Eagles RFC</h3>
-                    <p className="text-[#F5A623] text-xs uppercase tracking-widest">Rugby Club</p>
+                  <div className="rounded-xl border border-white/15 bg-white/5 p-2">
+                    <img src="/KINTANTE FUN DAY FLYER.png" alt="Eagles Rugby Club" className="h-14 w-auto object-contain" />
                   </div>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed max-w-sm mb-8">
@@ -2273,8 +2449,8 @@ const App: React.FC = () => {
                     <ul className="space-y-3">
                       <li className="text-gray-500 text-sm">Kitante Primary School</li>
                       <li className="text-gray-500 text-sm">Kampala, Uganda</li>
-                      <li><a href="mailto:info@eaglesrfc.com" className="text-[#F5A623] text-sm hover:underline">info@eaglesrfc.com</a></li>
-                      <li><a href="#" onClick={() => setCurrentPage('contact')} className="text-gray-500 text-sm hover:text-[#F5A623] transition-colors">Contact Form</a></li>
+                      <li><a href="mailto:eaglessportsfranchise@gmail.com" className="text-[#F5A623] text-sm hover:underline">eaglessportsfranchise@gmail.com</a></li>
+                      <li><a href="https://wa.me/256773207919" target="_blank" rel="noopener noreferrer" className="text-gray-500 text-sm hover:text-[#F5A623] transition-colors">WhatsApp: +256773207919</a></li>
                     </ul>
                   </div>
                 </div>

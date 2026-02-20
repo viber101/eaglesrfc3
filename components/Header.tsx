@@ -148,7 +148,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
 
               {isAboutHovered && (
-                <div className="absolute top-[calc(100%+10px)] left-0 w-56 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                <div className="absolute top-full left-0 w-56 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   <button
                     onClick={() => navigateToPage('about')}
                     className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em]"
@@ -205,7 +205,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
 
               {isOurClubHovered && (
-                <div className="absolute top-[calc(100%+10px)] left-0 w-60 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                <div className="absolute top-full left-0 w-60 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   {ourClubItems.map((item, index) => (
                     <button
                       key={item.id}
@@ -237,7 +237,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
 
               {isTvHovered && (
-                <div className="absolute top-[calc(100%+10px)] left-0 w-44 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                <div className="absolute top-full left-0 w-44 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   {tvItems.map((item, index) => (
                     <button
                       key={item.id}
