@@ -104,6 +104,10 @@ const X_COACHES = [
   { period: '2019-2023', name: 'Edmond Tumusiime' },
   { period: '2023-2025', name: 'Cherokee Sylvain Ngue' }
 ];
+const X_COACH_IMAGES = [
+  '/X Coaches/Edmond Tumusiime.jpeg',
+  '/X Coaches/Cherokee Sylvain Ngue.webp'
+];
 const LEGACY_SLIDE_IMAGES = [
   '/gallery/Eagles (1).jpeg',
   '/gallery/Eagles (3).jpeg',
@@ -1363,7 +1367,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         <div key={`${item.period}-${item.name}`} className="flex-none w-[260px] snap-start">
           <article className="relative h-[360px] overflow-hidden border border-[#cfd8e6]">
             <img
-              src={LEGACY_SLIDE_IMAGES[(index + 2) % LEGACY_SLIDE_IMAGES.length]}
+              src={toAssetUrl(X_COACH_IMAGES[index % X_COACH_IMAGES.length])}
               alt={item.name}
               className="w-full h-full object-cover"
               loading="lazy"
