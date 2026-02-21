@@ -450,8 +450,14 @@ const PlayerSponsorsSlider: React.FC<{ onNavigate: (p: string) => void }> = ({ o
 
   return (
     <div className="bg-[#081534] rounded-xl p-4 shadow-lg overflow-hidden">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-white text-[11px] font-black uppercase tracking-widest">Become a Sponsor</h3>
+      <div className="mb-3">
+        <button
+          type="button"
+          onClick={() => onNavigate('sponsor-us')}
+          className="w-full text-left text-white text-[11px] font-black uppercase tracking-widest py-1 hover:text-[#F5A623] transition-colors"
+        >
+          Become a Sponsor
+        </button>
       </div>
 
       <div className="relative group">
