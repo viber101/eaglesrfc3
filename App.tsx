@@ -188,6 +188,7 @@ const normalizeTeam = (value: string) => cleanCell(value).toLowerCase();
 const isEaglesTeam = (value: string) => normalizeTeam(value).includes('eagles');
 const toFixtureKey = (fixture: FixtureItem) => `${fixture.week}-${normalizeTeam(fixture.home)}-${normalizeTeam(fixture.away)}`;
 const FIXTURE_DATE_SHIFT_DAYS = 6;
+const SUNDAY_DAY_INDEX = 0;
 
 const getBaseFixtureDate = (fixture: FixtureItem) => {
   const dateNumber = Number(extractDateNumber(fixture.date));
@@ -205,6 +206,8 @@ const getAdjustedFixtureDate = (fixture: FixtureItem) => {
   }
   const shifted = new Date(baseDate);
   shifted.setDate(shifted.getDate() + FIXTURE_DATE_SHIFT_DAYS);
+  const daysUntilSunday = (SUNDAY_DAY_INDEX - shifted.getDay() + 7) % 7;
+  shifted.setDate(shifted.getDate() + daysUntilSunday);
   return shifted;
 };
 
@@ -224,7 +227,7 @@ const toFixtureDateLabel = (fixture: FixtureItem) => {
   }
   const monthFallback = fixture.month ? fixture.month.slice(0, 3).toUpperCase() : 'TBC';
   const dateNumber = extractDateNumber(fixture.date);
-  const dayFallback = fixture.day ? fixture.day.slice(0, 3).toUpperCase() : '';
+  const dayFallback = 'SUN';
   return `${dayFallback} ${monthFallback} ${dateNumber}`.trim();
 };
 
@@ -242,7 +245,7 @@ const toFixtureDayLabel = (fixture: FixtureItem) => {
   if (adjustedDate) {
     return adjustedDate.toLocaleDateString('en-US', { weekday: 'long' });
   }
-  return fixture.day;
+  return 'Sunday';
 };
 
 const formatScoreValue = (score?: FixtureScore) => (
@@ -320,7 +323,7 @@ const getFixtureKickoffDate = (fixture: FixtureItem) => {
 const toNextMatchDateLabel = (fixture: FixtureItem) => {
   const adjustedDate = getAdjustedFixtureDate(fixture);
   if (!adjustedDate) {
-    return `${fixture.day.slice(0, 3)} ${extractDateNumber(fixture.date)}/${fixture.month.slice(0, 3)}`;
+    return `Sun ${extractDateNumber(fixture.date)}/${fixture.month.slice(0, 3)}`;
   }
   const weekday = adjustedDate.toLocaleDateString('en-US', { weekday: 'short' });
   const day = adjustedDate.getDate().toString().padStart(2, '0');
@@ -1041,7 +1044,7 @@ const CompactMatchHero: React.FC = () => {
     week: '1',
     month: 'February',
     date: '28th',
-    day: 'Saturday',
+    day: 'Sunday',
     category: 'Men',
     venue: 'Mukono',
     time: '2:00PM',
@@ -1049,7 +1052,7 @@ const CompactMatchHero: React.FC = () => {
     away: 'Golden Badgers'
   };
   const selectedMatch = nextMatch || fallbackMatch;
-  const matchKickoff = getFixtureKickoffDate(selectedMatch) ?? new Date('2026-02-28T14:00:00+03:00');
+  const matchKickoff = getFixtureKickoffDate(selectedMatch) ?? new Date('2026-03-01T14:00:00+03:00');
   useEffect(() => {
     let isMounted = true;
     fetch('/fixtures/2026-cura-championship-fixtures.csv')
@@ -1100,7 +1103,7 @@ const CompactMatchHero: React.FC = () => {
     return { days, hours, minutes, seconds };
   };
   const [timeLeft, setTimeLeft] = useState(getTimeLeft);
-  const displayDate = 'Sun 1st Feb';
+  const displayDate = toNextMatchDateLabel(selectedMatch);
   const displayTime = cleanCell(selectedMatch.time);
 
   useEffect(() => {
