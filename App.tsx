@@ -1260,8 +1260,6 @@ const TierCard: React.FC<{ tier: SponsorshipTier }> = ({ tier }) => {
 };
 
 const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate }) => {
-  const [isPartnersPaused, setIsPartnersPaused] = useState(false);
-
   return (
   <>
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
@@ -1509,22 +1507,21 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
-        .partners-marquee:hover .partners-track {
-          animation-play-state: paused;
+        @media (hover: hover) and (pointer: fine) {
+          .partners-marquee:hover .partners-track {
+            animation-play-state: paused;
+          }
         }
       `}</style>
       <h2 className="text-white text-lg sm:text-xl font-black uppercase tracking-wider mb-5">Our Partners</h2>
       <div
         className="partners-marquee overflow-hidden py-2"
-        onMouseEnter={() => setIsPartnersPaused(true)}
-        onMouseLeave={() => setIsPartnersPaused(false)}
       >
         <div
           className="partners-track flex items-center gap-6 sm:gap-10"
           style={{
             width: 'max-content',
             animation: 'partners-rtl-marquee 22s linear infinite',
-            animationPlayState: isPartnersPaused ? 'paused' : 'running',
           }}
         >
           {[...PARTNER_LOGOS, ...PARTNER_LOGOS].map((partner, index) => (
