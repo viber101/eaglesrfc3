@@ -6,19 +6,22 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
-  const [isAboutHovered, setIsAboutHovered] = useState(false);
   const [isOurClubHovered, setIsOurClubHovered] = useState(false);
+  const [isAboutSubHovered, setIsAboutSubHovered] = useState(false);
+  const [isShopHovered, setIsShopHovered] = useState(false);
   const [isTvHovered, setIsTvHovered] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobileAboutOpen, setIsMobileAboutOpen] = useState(false);
   const [isMobileOurClubOpen, setIsMobileOurClubOpen] = useState(false);
+  const [isMobileAboutOpen, setIsMobileAboutOpen] = useState(false);
+  const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
   const [isMobileTvOpen, setIsMobileTvOpen] = useState(false);
   const promoMessage = "Buy an Eagles Membership Card for as low as 100,000 UGX & enjoy up to 20% off in 20+ departmental stores. 20% of the proceeds support a child's education.";
 
   const resetMobileMenus = () => {
     setIsMobileMenuOpen(false);
-    setIsMobileAboutOpen(false);
     setIsMobileOurClubOpen(false);
+    setIsMobileAboutOpen(false);
+    setIsMobileShopOpen(false);
     setIsMobileTvOpen(false);
   };
 
@@ -27,24 +30,58 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
     resetMobileMenus();
   };
 
-  const scrollToAboutSection = (sectionId: string) => {
-    window.setTimeout(() => {
+  const scrollToSection = (sectionId: string) => {
+    const maxAttempts = 12;
+    const headerOffset = 120;
+
+    const scrollWithOffset = (target: HTMLElement) => {
+      const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+    };
+
+    const tryScroll = (attempt = 0) => {
       const target = document.getElementById(sectionId);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (!target) {
+        if (attempt < maxAttempts) {
+          window.setTimeout(() => tryScroll(attempt + 1), 60);
+        }
+        return;
       }
-    }, 0);
+
+      scrollWithOffset(target);
+
+      if (attempt === 0) {
+        window.setTimeout(() => scrollWithOffset(target), 170);
+      }
+    };
+
+    window.setTimeout(() => tryScroll(), 120);
   };
 
   const navigateToAboutSection = (sectionId: string) => {
     onNavigate('about');
-    scrollToAboutSection(sectionId);
+    scrollToSection(sectionId);
   };
 
   const navigateToAboutSectionMobile = (sectionId: string) => {
     onNavigate('about');
     resetMobileMenus();
-    scrollToAboutSection(sectionId);
+    scrollToSection(sectionId);
+  };
+
+  const navigateToShopSection = (sectionId: string) => {
+    if (currentPage !== 'shop') {
+      onNavigate('shop');
+    }
+    scrollToSection(sectionId);
+  };
+
+  const navigateToShopSectionMobile = (sectionId: string) => {
+    if (currentPage !== 'shop') {
+      onNavigate('shop');
+    }
+    resetMobileMenus();
+    scrollToSection(sectionId);
   };
 
   useEffect(() => {
@@ -61,7 +98,6 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   const ourClubItems = [
     { name: 'Current Players', id: 'squad' },
     { name: 'Hall of Fame', id: 'hall-of-fame' },
-    { name: 'Our Shop', id: 'shop' },
     { name: 'Fitness Center', id: 'fitness-center' },
     { name: 'History', id: 'history' },
     { name: 'Our Projects', id: 'our-projects' },
@@ -79,6 +115,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   const tvItems = [
     { name: 'Eagles TV', id: 'tv' },
     { name: 'Gallery', id: 'gallery' }
+  ];
+
+  const shopItems = [
+    { name: 'Merchandise', id: 'shop-merchandise' },
+    { name: 'Footwear', id: 'shop-footwear' },
+    { name: 'Shoe Care', id: 'shop-shoe-care' }
   ];
   const getDesktopItemClass = (active: boolean) => (
     `h-[42px] flex items-center px-1 border-b-[3px] transition-colors duration-200 ${
@@ -134,57 +176,32 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
             <div
               className="relative flex items-center"
-              onMouseEnter={() => setIsAboutHovered(true)}
-              onMouseLeave={() => setIsAboutHovered(false)}
+              onMouseEnter={() => setIsShopHovered(true)}
+              onMouseLeave={() => setIsShopHovered(false)}
             >
               <button
-                onClick={() => navigateToPage('about')}
-                className={getDesktopItemClass(currentPage === 'about' || currentPage === 'history')}
+                onClick={() => navigateToPage('shop')}
+                className={getDesktopItemClass(currentPage === 'shop')}
               >
-                About
-                <svg className={`ml-1 w-3.5 h-3.5 text-[#F5A623] transition-transform ${isAboutHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                Shop
+                <svg className={`ml-1 w-3.5 h-3.5 text-[#F5A623] transition-transform ${isShopHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
-              {isAboutHovered && (
-                <div className="absolute top-full left-0 w-56 bg-[#0f172a]/95 text-white border border-[#F5A623]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
-                  <button
-                    onClick={() => navigateToPage('about')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em]"
-                  >
-                    About Us
-                  </button>
-                  <button
-                    onClick={() => navigateToAboutSection('vision')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
-                  >
-                    Vision
-                  </button>
-                  <button
-                    onClick={() => navigateToAboutSection('mission')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
-                  >
-                    Mission
-                  </button>
-                  <button
-                    onClick={() => navigateToAboutSection('core-values')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
-                  >
-                    Core Values
-                  </button>
-                  <button
-                    onClick={() => navigateToAboutSection('home-ground')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
-                  >
-                    Home Ground
-                  </button>
-                  <button
-                    onClick={() => navigateToPage('history')}
-                    className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
-                  >
-                    Our History
-                  </button>
+              {isShopHovered && (
+                <div className="absolute top-full left-0 w-52 bg-[#0f172a]/95 text-white border border-[#F5A623]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                  {shopItems.map((item, index) => (
+                    <button
+                      key={item.id}
+                      onClick={() => navigateToShopSection(item.id)}
+                      className={`w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] ${
+                        index > 0 ? 'border-t border-white/10' : ''
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
@@ -196,7 +213,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             >
               <button
                 onClick={() => navigateToPage('squad')}
-                className={getDesktopItemClass(['squad', 'hall-of-fame', 'shop', 'fitness-center', 'history', 'our-projects', 'our-foundation', 'sponsor-us'].includes(currentPage))}
+                className={getDesktopItemClass(['about', 'history', 'squad', 'hall-of-fame', 'fitness-center', 'our-projects', 'our-foundation', 'sponsor-us'].includes(currentPage))}
               >
                 Our Club
                 <svg className={`ml-1 w-3.5 h-3.5 text-[#F5A623] transition-transform ${isOurClubHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,12 +223,68 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
               {isOurClubHovered && (
                 <div className="absolute top-full left-0 w-60 bg-[#0f172a]/95 text-white border border-[#F5A623]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                  <div
+                    className="relative"
+                    onMouseEnter={() => setIsAboutSubHovered(true)}
+                    onMouseLeave={() => setIsAboutSubHovered(false)}
+                  >
+                    <button
+                      onClick={() => navigateToPage('about')}
+                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em]"
+                    >
+                      About
+                      <svg className={`ml-2 w-3.5 h-3.5 text-[#F5A623] transition-transform ${isAboutSubHovered ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    {isAboutSubHovered && (
+                      <div className="absolute top-0 left-full ml-2 w-56 bg-[#0f172a]/95 text-white border border-[#F5A623]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-left-2 duration-200 backdrop-blur">
+                        <button
+                          onClick={() => navigateToPage('about')}
+                          className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em]"
+                        >
+                          About Us
+                        </button>
+                        <button
+                          onClick={() => navigateToAboutSection('vision')}
+                          className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
+                        >
+                          Vision
+                        </button>
+                        <button
+                          onClick={() => navigateToAboutSection('mission')}
+                          className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
+                        >
+                          Mission
+                        </button>
+                        <button
+                          onClick={() => navigateToAboutSection('core-values')}
+                          className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
+                        >
+                          Core Values
+                        </button>
+                        <button
+                          onClick={() => navigateToAboutSection('home-ground')}
+                          className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
+                        >
+                          Home Ground
+                        </button>
+                        <button
+                          onClick={() => navigateToPage('history')}
+                          className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
+                        >
+                          Our History
+                        </button>
+                      </div>
+                    )}
+                  </div>
                   {ourClubItems.map((item, index) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}
                       className={`w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] ${
-                        index > 0 ? 'border-t border-white/10' : ''
+                        index > -1 ? 'border-t border-white/10' : ''
                       }`}
                     >
                       {item.name}
@@ -297,23 +370,26 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
 
               <button
-                onClick={() => setIsMobileAboutOpen((prev) => !prev)}
+                onClick={() => setIsMobileShopOpen((prev) => !prev)}
                 className="w-full flex items-center justify-between py-3 uppercase text-xs font-semibold tracking-[0.08em] text-white border-b border-white/15"
-                aria-expanded={isMobileAboutOpen}
+                aria-expanded={isMobileShopOpen}
               >
-                About
-                <svg className={`w-4 h-4 transition-transform ${isMobileAboutOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                Shop
+                <svg className={`w-4 h-4 transition-transform ${isMobileShopOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              {isMobileAboutOpen && (
+              {isMobileShopOpen && (
                 <div className="pl-3 pb-2 border-b border-white/15">
-                  <button onClick={() => navigateToPage('about')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">About Us</button>
-                  <button onClick={() => navigateToAboutSectionMobile('vision')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Vision</button>
-                  <button onClick={() => navigateToAboutSectionMobile('mission')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Mission</button>
-                  <button onClick={() => navigateToAboutSectionMobile('core-values')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Core Values</button>
-                  <button onClick={() => navigateToAboutSectionMobile('home-ground')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Home Ground</button>
-                  <button onClick={() => navigateToPage('history')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Our History</button>
+                  {shopItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => navigateToShopSectionMobile(item.id)}
+                      className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white"
+                    >
+                      {item.name}
+                    </button>
+                  ))}
                 </div>
               )}
 
@@ -329,6 +405,26 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
               {isMobileOurClubOpen && (
                 <div className="pl-3 pb-2 border-b border-white/15">
+                  <button
+                    onClick={() => setIsMobileAboutOpen((prev) => !prev)}
+                    className="w-full flex items-center justify-between py-2 uppercase text-[11px] font-semibold text-white"
+                    aria-expanded={isMobileAboutOpen}
+                  >
+                    About
+                    <svg className={`w-3.5 h-3.5 transition-transform ${isMobileAboutOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {isMobileAboutOpen && (
+                    <div className="pl-3 pb-2">
+                      <button onClick={() => navigateToPage('about')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">About Us</button>
+                      <button onClick={() => navigateToAboutSectionMobile('vision')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Vision</button>
+                      <button onClick={() => navigateToAboutSectionMobile('mission')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Mission</button>
+                      <button onClick={() => navigateToAboutSectionMobile('core-values')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Core Values</button>
+                      <button onClick={() => navigateToAboutSectionMobile('home-ground')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Home Ground</button>
+                      <button onClick={() => navigateToPage('history')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Our History</button>
+                    </div>
+                  )}
                   {ourClubItems.map((item) => (
                     <button
                       key={item.id}
@@ -385,3 +481,6 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 };
 
 export default Header;
+
+
+

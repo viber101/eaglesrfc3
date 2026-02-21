@@ -324,9 +324,10 @@ export const DONATE_CONTENT = {
 };
 
 export const SHOP_CONTENT = {
-  intro: 'Every purchase from the Eagles Shop contributes to club development and community-focused programs.'
+  intro: 'The Eagles Rugby Shop showcases products exclusively from our trusted sponsors, reinforcing the strategic partnerships and shared vision that define our commitment to excellence.'
 };
 
 export const TV_CONTENT = {
   intro: 'Eagles TV shares match highlights, behind-the-scenes stories, and club moments that connect players, fans, and community.'
 };
+

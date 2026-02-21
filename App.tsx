@@ -1,4 +1,4 @@
-﻿
+
 import React, { useRef, useState, useEffect } from 'react';
 import Header from './components/Header';
 import SectionHeader from './components/SectionHeader';
@@ -44,7 +44,7 @@ type FixtureScore = {
 
 const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-vote-v1';
 const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-token-v1';
-const POLL_MATCH_DATE_LABEL = 'SUN 1ST FEB';
+const POLL_MATCH_DATE_LABEL = 'SUN 1ST MARCH';
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
 const PLAYER_SPONSORS = [
@@ -1257,7 +1257,7 @@ const TierCard: React.FC<{ tier: SponsorshipTier }> = ({ tier }) => {
       <ul className="space-y-2 mb-3">
         {tier.keyInclusions.map((inclusion) => (
           <li key={inclusion} className="text-sm text-gray-700 flex items-start gap-2">
-            <span className="text-[#F5A623] font-black">â€¢</span>
+            <span className="text-[#F5A623] font-black">•</span>
             <span>{inclusion}</span>
           </li>
         ))}
@@ -1473,15 +1473,20 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     {/* Shop Section */}
     <section className="mb-16">
       <SectionHeader title="Official Shop" />
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-start">
         {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => (
-          <div key={product.id} className="group cursor-pointer bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+          <button
+            key={product.id}
+            type="button"
+            onClick={() => onNavigate('shop')}
+            className="group cursor-pointer bg-white p-4 shadow-sm hover:shadow-md transition-shadow w-[260px] h-[360px] text-left border border-[#cfd8e6]"
+          >
             <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3">
               <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             </div>
             <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight group-hover:text-[#F5A623] transition-colors">{product.name}</h3>
             <p className="text-[#F5A623] text-sm font-black mt-1">{product.price}</p>
-          </div>
+          </button>
         ))}
       </div>
     </section>
@@ -1728,17 +1733,49 @@ const ShopPage: React.FC = () => (
         <img src={toAssetUrl(PAGE_IMAGES.shopHero)} alt="Shop hero" className="w-full h-full object-cover" />
       </div>
     </section>
-    <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
-      {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => (
-        <article key={product.id} className="bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm">
-          <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded">
-            <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
-          </div>
-          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
-          <p className="text-[#F5A623] text-sm font-black mt-1">{product.price}</p>
-        </article>
-      ))}
-    </div>
+    <section id="shop-merchandise" className="scroll-mt-32 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black">Shop</p>
+          <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534]">Merchandise</h2>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-start">
+        {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => (
+          <article
+            key={product.id}
+            className="bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]"
+            style={{ width: 260, height: 360 }}
+          >
+            <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded">
+              <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+            </div>
+            <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
+            <p className="text-[#F5A623] text-sm font-black mt-1">{product.price}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="shop-footwear" className="scroll-mt-32 bg-white border border-[#e2e7f0] rounded-xl p-6 space-y-3">
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black">Shop</p>
+        <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534]">Footwear</h2>
+      </div>
+      <p className="text-gray-600 text-sm">
+        New boots, trainers, and game-day footwear are arriving soon. Contact us for availability and sizing.
+      </p>
+    </section>
+
+    <section id="shop-shoe-care" className="scroll-mt-32 bg-white border border-[#e2e7f0] rounded-xl p-6 space-y-3">
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black">Shop</p>
+        <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534]">Shoe Care</h2>
+      </div>
+      <p className="text-gray-600 text-sm">
+        Keep your kit sharp with polish, cleaners, and protective care products. Reach out to place an order.
+      </p>
+    </section>
   </div>
 );
 
@@ -2490,7 +2527,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="border-t border-white/10 px-6 py-4 text-xs text-white/75 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p>© 2026 Eagles Rugby Club. All rights reserved.</p>
+          <p>� 2026 Eagles Rugby Club. All rights reserved.</p>
           <div className="flex items-center gap-3">
             <a href="#" className="hover:text-[#F5A623] transition-colors">Privacy Policy</a>
             <span>|</span>
@@ -2505,6 +2542,7 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 
 
 
