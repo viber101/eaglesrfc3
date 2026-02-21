@@ -1823,7 +1823,38 @@ const HallOfFamePage: React.FC = () => (
   </div>
 );
 
-const ShopPage: React.FC = () => (
+const ShopPage: React.FC = () => {
+  const merchScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollMerchLeft, setCanScrollMerchLeft] = useState(false);
+  const [canScrollMerchRight, setCanScrollMerchRight] = useState(true);
+
+  const checkMerchScroll = () => {
+    if (!merchScrollRef.current) {
+      return;
+    }
+    const { scrollLeft, scrollWidth, clientWidth } = merchScrollRef.current;
+    setCanScrollMerchLeft(scrollLeft > 0);
+    setCanScrollMerchRight(scrollLeft < scrollWidth - clientWidth - 5);
+  };
+
+  useEffect(() => {
+    checkMerchScroll();
+    window.addEventListener('resize', checkMerchScroll);
+    return () => window.removeEventListener('resize', checkMerchScroll);
+  }, []);
+
+  const scrollMerch = (direction: 'left' | 'right') => {
+    if (!merchScrollRef.current) {
+      return;
+    }
+    const scrollAmount = merchScrollRef.current.clientWidth * 0.85;
+    merchScrollRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
+  return (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
     <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <article className="relative min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
@@ -1876,20 +1907,46 @@ const ShopPage: React.FC = () => (
           <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534]">Merchandise</h2>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-start">
-        {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => (
-          <article
-            key={product.id}
-            className="bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]"
-            style={{ width: 260, height: 360 }}
+      <div className="relative">
+        {canScrollMerchLeft && (
+          <button
+            type="button"
+            onClick={() => scrollMerch('left')}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/95 border border-[#d7deea] rounded-full flex items-center justify-center shadow-md text-[#081534] hover:bg-[#F5A623] hover:text-black transition-all -ml-2"
+            aria-label="Scroll products left"
           >
-            <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-              <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
-            </div>
-            <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
-            <p className="text-[#F5A623] text-sm font-black mt-1">{product.price}</p>
-          </article>
-        ))}
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+        )}
+        {canScrollMerchRight && (
+          <button
+            type="button"
+            onClick={() => scrollMerch('right')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/95 border border-[#d7deea] rounded-full flex items-center justify-center shadow-md text-[#081534] hover:bg-[#F5A623] hover:text-black transition-all -mr-2"
+            aria-label="Scroll products right"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
+          </button>
+        )}
+        <div
+          ref={merchScrollRef}
+          onScroll={checkMerchScroll}
+          className="flex gap-4 overflow-x-auto pb-3 pr-2 scroll-smooth snap-x"
+        >
+          {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => (
+            <article
+              key={product.id}
+              className="flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]"
+              style={{ width: 260, height: 360 }}
+            >
+              <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
+                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+              </div>
+              <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
+              <p className="text-[#F5A623] text-sm font-black mt-1">{product.price}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
 
@@ -1939,7 +1996,8 @@ const ShopPage: React.FC = () => (
       </div>
     </section>
   </div>
-);
+  );
+};
 
 const TvPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
