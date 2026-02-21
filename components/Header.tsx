@@ -143,11 +143,16 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         <div className="max-w-[1700px] mx-auto px-4 lg:px-12">
           <div className="relative h-8 flex items-center overflow-hidden">
             <div
-              className="flex items-center whitespace-nowrap font-semibold tracking-wide text-[10px]"
+              className="flex items-center whitespace-nowrap font-semibold tracking-wide text-[10px] pr-32 sm:pr-36"
               style={{ animation: 'promo-marquee 24s linear infinite', width: 'max-content' }}
             >
               <span className="mx-8">{promoMessage}</span>
               <span className="mx-8">{promoMessage}</span>
+            </div>
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 h-full flex items-center pl-3 pr-1 sm:pr-2 bg-gradient-to-l from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent">
+              <div className="rounded-md bg-[#0b1221]/85 border border-white/20 px-2 py-1">
+                <img src="/kampanis.png" alt="Kampanis" className="h-4 sm:h-5 w-auto object-contain" />
+              </div>
             </div>
           </div>
         </div>
@@ -338,11 +343,6 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
           </nav>
 
           <div className="ml-auto flex items-center space-x-3">
-            <div className="flex items-center pl-2 sm:pl-4 border-l border-white/15">
-              <div className="rounded-lg bg-white/5 border border-white/10 px-3 py-2">
-                <img src="/kampanis.png" alt="Kampanis" className="h-6 sm:h-8 w-auto object-contain" />
-              </div>
-            </div>
             <button
               className="lg:hidden text-white hover:text-[#F5A623] bg-white/5 border border-white/15 rounded-lg px-3 py-2 text-[11px] uppercase font-semibold tracking-[0.08em]"
               onClick={() => navigateToPage('shop')}
