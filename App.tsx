@@ -1322,7 +1322,6 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               onMouseEnter={() => setActiveSquadPlayerId(p.id)}
               onMouseLeave={() => setActiveSquadPlayerId((current) => (current === p.id ? null : current))}
               onClick={() => setActiveSquadPlayerId((current) => (current === p.id ? null : p.id))}
-              onTouchStart={() => setActiveSquadPlayerId(p.id)}
             >
               <div className="relative aspect-[4/5] overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#170a30] via-[#0a1224] to-black" />
