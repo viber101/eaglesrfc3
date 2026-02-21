@@ -1825,16 +1825,6 @@ const HallOfFamePage: React.FC = () => (
 
 const ShopPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-      <div>
-        <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-2 text-[#081534]">Official Shop</h1>
-        <p className="text-gray-600">{SHOP_CONTENT.intro}</p>
-      </div>
-      <div className="h-48 rounded-lg overflow-hidden border border-[#d7deea]">
-        <img src={toAssetUrl(PAGE_IMAGES.shopHero)} alt="Shop hero" className="w-full h-full object-cover" />
-      </div>
-    </section>
-
     <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <article className="relative min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
         <img src={toAssetUrl('/Merchandise/mouth guard.webp')} alt="Merchandise" className="absolute inset-0 w-full h-full object-cover" />
