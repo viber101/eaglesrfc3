@@ -1824,9 +1824,21 @@ const HallOfFamePage: React.FC = () => (
 );
 
 const ShopPage: React.FC = () => {
+  const shopCategoryScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollShopCategoryLeft, setCanScrollShopCategoryLeft] = useState(false);
+  const [canScrollShopCategoryRight, setCanScrollShopCategoryRight] = useState(true);
   const merchScrollRef = useRef<HTMLDivElement>(null);
   const [canScrollMerchLeft, setCanScrollMerchLeft] = useState(false);
   const [canScrollMerchRight, setCanScrollMerchRight] = useState(true);
+
+  const checkShopCategoryScroll = () => {
+    if (!shopCategoryScrollRef.current) {
+      return;
+    }
+    const { scrollLeft, scrollWidth, clientWidth } = shopCategoryScrollRef.current;
+    setCanScrollShopCategoryLeft(scrollLeft > 0);
+    setCanScrollShopCategoryRight(scrollLeft < scrollWidth - clientWidth - 5);
+  };
 
   const checkMerchScroll = () => {
     if (!merchScrollRef.current) {
@@ -1838,10 +1850,26 @@ const ShopPage: React.FC = () => {
   };
 
   useEffect(() => {
+    checkShopCategoryScroll();
     checkMerchScroll();
+    window.addEventListener('resize', checkShopCategoryScroll);
     window.addEventListener('resize', checkMerchScroll);
-    return () => window.removeEventListener('resize', checkMerchScroll);
+    return () => {
+      window.removeEventListener('resize', checkShopCategoryScroll);
+      window.removeEventListener('resize', checkMerchScroll);
+    };
   }, []);
+
+  const scrollShopCategory = (direction: 'left' | 'right') => {
+    if (!shopCategoryScrollRef.current) {
+      return;
+    }
+    const scrollAmount = shopCategoryScrollRef.current.clientWidth * 0.85;
+    shopCategoryScrollRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  };
 
   const scrollMerch = (direction: 'left' | 'right') => {
     if (!merchScrollRef.current) {
@@ -1856,48 +1884,74 @@ const ShopPage: React.FC = () => {
 
   return (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
-    <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <article className="relative min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
-        <img src={toAssetUrl('/Merchandise/mouth guard.webp')} alt="Merchandise" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-          <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Merchandise</h3>
-          <a
-            href="#shop-merchandise"
-            className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
+    <section className="relative">
+      {canScrollShopCategoryLeft && (
+        <button
+          type="button"
+          onClick={() => scrollShopCategory('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/95 border border-[#d7deea] rounded-full flex items-center justify-center shadow-md text-[#081534] hover:bg-[#F5A623] hover:text-black transition-all -ml-2"
+          aria-label="Scroll shop categories left"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+      )}
+      {canScrollShopCategoryRight && (
+        <button
+          type="button"
+          onClick={() => scrollShopCategory('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/95 border border-[#d7deea] rounded-full flex items-center justify-center shadow-md text-[#081534] hover:bg-[#F5A623] hover:text-black transition-all -mr-2"
+          aria-label="Scroll shop categories right"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
+        </button>
+      )}
+      <div
+        ref={shopCategoryScrollRef}
+        onScroll={checkShopCategoryScroll}
+        className="flex gap-4 overflow-x-auto pb-2 pr-2 scroll-smooth snap-x snap-mandatory scrollbar-hide"
+      >
+        <article className="relative flex-none w-[90%] sm:w-[75%] md:w-[calc((100%-2rem)/3)] min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm snap-start">
+          <img src={toAssetUrl('/Merchandise/mouth guard.webp')} alt="Merchandise" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+            <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Merchandise</h3>
+            <a
+              href="#shop-merchandise"
+              className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
           >
-            Shop Now
-          </a>
-        </div>
-      </article>
+              Shop Now
+            </a>
+          </div>
+        </article>
 
-      <article className="relative min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
-        <img src={toAssetUrl('/Merchandise/kicking tee.avif')} alt="Footwear" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-          <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Footwear</h3>
-          <a
-            href="#shop-footwear"
-            className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
+        <article className="relative flex-none w-[90%] sm:w-[75%] md:w-[calc((100%-2rem)/3)] min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm snap-start">
+          <img src={toAssetUrl('/Merchandise/kicking tee.avif')} alt="Footwear" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+            <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Footwear</h3>
+            <a
+              href="#shop-footwear"
+              className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
           >
-            Shop Now
-          </a>
-        </div>
-      </article>
+              Shop Now
+            </a>
+          </div>
+        </article>
 
-      <article className="relative min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
-        <img src={toAssetUrl('/kampanis.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-          <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Shoe Care</h3>
-          <a
-            href="#shop-shoe-care"
-            className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
+        <article className="relative flex-none w-[90%] sm:w-[75%] md:w-[calc((100%-2rem)/3)] min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm snap-start">
+          <img src={toAssetUrl('/kampanis.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+            <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Shoe Care</h3>
+            <a
+              href="#shop-shoe-care"
+              className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
           >
-            Shop Now
-          </a>
-        </div>
-      </article>
+              Shop Now
+            </a>
+          </div>
+        </article>
+      </div>
     </section>
 
     <section id="shop-merchandise" className="scroll-mt-32 space-y-4">
