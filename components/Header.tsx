@@ -81,10 +81,10 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
     { name: 'Gallery', id: 'gallery' }
   ];
   const getDesktopItemClass = (active: boolean) => (
-    `h-[44px] flex items-center px-4 rounded-full transition-all duration-200 ${
+    `h-[42px] flex items-center px-1 border-b-[3px] transition-colors duration-200 ${
       active
-        ? 'bg-[#F5A623] text-black shadow-[0_6px_16px_rgba(245,166,35,0.35)]'
-        : 'text-white/90 hover:text-white hover:bg-white/10'
+        ? 'text-white border-[#2f5bff]'
+        : 'text-white border-transparent hover:border-[#2f5bff]/70'
     }`
   );
 
@@ -111,20 +111,20 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         </div>
       </div>
 
-      <div className="bg-[#06080d]/95 backdrop-blur text-white border-b border-white/10">
-        <div className="max-w-[1700px] mx-auto px-4 lg:px-8 flex items-center h-[88px] relative">
+      <div className="bg-[#05070c] backdrop-blur text-white border-b border-white/10">
+        <div className="max-w-[1700px] mx-auto px-4 lg:px-8 flex items-center h-[72px] relative">
           <div
-            className="flex items-center justify-center px-3 sm:px-4 py-2 rounded-xl border border-white/10 bg-white/[0.03] mr-6 lg:mr-8 cursor-pointer"
+            className="flex items-center justify-center px-2 sm:px-3 py-1.5 rounded-md border border-white/10 bg-white/[0.03] mr-6 lg:mr-8 cursor-pointer"
             onClick={() => onNavigate('home')}
           >
             <img
               src="/KINTANTE FUN DAY FLYER.png"
               alt="Eagles RFC Logo"
-              className="h-12 sm:h-14 w-auto object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)]"
+              className="h-9 sm:h-10 w-auto object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)]"
             />
           </div>
 
-          <nav className="hidden lg:flex items-center gap-2 uppercase text-[12px] font-semibold tracking-[0.06em]">
+          <nav className="hidden lg:flex items-center gap-6 uppercase text-[13px] font-black tracking-[0.04em]">
             <button
               onClick={() => navigateToPage('home')}
               className={getDesktopItemClass(currentPage === 'home')}
@@ -142,13 +142,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 className={getDesktopItemClass(currentPage === 'about' || currentPage === 'history')}
               >
                 About
-                <svg className={`ml-1 w-3 h-3 transition-transform ${isAboutHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`ml-1 w-3.5 h-3.5 text-[#2f5bff] transition-transform ${isAboutHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {isAboutHovered && (
-                <div className="absolute top-full left-0 w-56 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                <div className="absolute top-full left-0 w-56 bg-[#0f172a]/95 text-white border border-[#2f5bff]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   <button
                     onClick={() => navigateToPage('about')}
                     className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em]"
@@ -199,13 +199,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 className={getDesktopItemClass(['squad', 'hall-of-fame', 'shop', 'fitness-center', 'history', 'our-projects', 'our-foundation', 'sponsor-us'].includes(currentPage))}
               >
                 Our Club
-                <svg className={`ml-1 w-3 h-3 transition-transform ${isOurClubHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`ml-1 w-3.5 h-3.5 text-[#2f5bff] transition-transform ${isOurClubHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {isOurClubHovered && (
-                <div className="absolute top-full left-0 w-60 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                <div className="absolute top-full left-0 w-60 bg-[#0f172a]/95 text-white border border-[#2f5bff]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   {ourClubItems.map((item, index) => (
                     <button
                       key={item.id}
@@ -231,13 +231,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 className={getDesktopItemClass(['tv', 'gallery'].includes(currentPage))}
               >
                 Eagles TV
-                <svg className={`ml-1 w-3 h-3 transition-transform ${isTvHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`ml-1 w-3.5 h-3.5 text-[#2f5bff] transition-transform ${isTvHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {isTvHovered && (
-                <div className="absolute top-full left-0 w-44 bg-[#0f172a]/95 text-white border border-[#F5A623]/30 rounded-xl shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                <div className="absolute top-full left-0 w-44 bg-[#0f172a]/95 text-white border border-[#2f5bff]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   {tvItems.map((item, index) => (
                     <button
                       key={item.id}
@@ -285,12 +285,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         </div>
 
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-white/10 bg-[#0b1020]">
+          <div className="lg:hidden border-t border-white/20 bg-black">
             <nav className="px-4 py-3 max-h-[70vh] overflow-y-auto">
               <button
                 onClick={() => navigateToPage('home')}
-                className={`w-full text-left py-3 uppercase text-xs font-semibold tracking-[0.08em] border-b border-white/10 ${
-                  currentPage === 'home' ? 'text-[#F5A623]' : 'text-white'
+                className={`w-full text-left py-3 uppercase text-xs font-semibold tracking-[0.08em] border-b border-white/15 ${
+                  currentPage === 'home' ? 'text-white' : 'text-white'
                 }`}
               >
                 Home
@@ -298,7 +298,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
               <button
                 onClick={() => setIsMobileAboutOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between py-3 uppercase text-xs font-semibold tracking-[0.08em] text-white border-b border-white/10"
+                className="w-full flex items-center justify-between py-3 uppercase text-xs font-semibold tracking-[0.08em] text-white border-b border-white/15"
                 aria-expanded={isMobileAboutOpen}
               >
                 About
@@ -307,19 +307,19 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 </svg>
               </button>
               {isMobileAboutOpen && (
-                <div className="pl-3 pb-2 border-b border-white/10">
-                  <button onClick={() => navigateToPage('about')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">About Us</button>
-                  <button onClick={() => navigateToAboutSectionMobile('vision')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">Vision</button>
-                  <button onClick={() => navigateToAboutSectionMobile('mission')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">Mission</button>
-                  <button onClick={() => navigateToAboutSectionMobile('core-values')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">Core Values</button>
-                  <button onClick={() => navigateToAboutSectionMobile('home-ground')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">Home Ground</button>
-                  <button onClick={() => navigateToPage('history')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85">Our History</button>
+                <div className="pl-3 pb-2 border-b border-white/15">
+                  <button onClick={() => navigateToPage('about')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">About Us</button>
+                  <button onClick={() => navigateToAboutSectionMobile('vision')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Vision</button>
+                  <button onClick={() => navigateToAboutSectionMobile('mission')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Mission</button>
+                  <button onClick={() => navigateToAboutSectionMobile('core-values')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Core Values</button>
+                  <button onClick={() => navigateToAboutSectionMobile('home-ground')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Home Ground</button>
+                  <button onClick={() => navigateToPage('history')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Our History</button>
                 </div>
               )}
 
               <button
                 onClick={() => setIsMobileOurClubOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between py-3 uppercase text-xs font-semibold tracking-[0.08em] text-white border-b border-white/10"
+                className="w-full flex items-center justify-between py-3 uppercase text-xs font-semibold tracking-[0.08em] text-white border-b border-white/15"
                 aria-expanded={isMobileOurClubOpen}
               >
                 Our Club
@@ -328,12 +328,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 </svg>
               </button>
               {isMobileOurClubOpen && (
-                <div className="pl-3 pb-2 border-b border-white/10">
+                <div className="pl-3 pb-2 border-b border-white/15">
                   {ourClubItems.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}
-                      className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85"
+                      className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white"
                     >
                       {item.name}
                     </button>
@@ -343,7 +343,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
               <button
                 onClick={() => setIsMobileTvOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between py-3 uppercase text-xs font-semibold tracking-[0.08em] text-white border-b border-white/10"
+                className="w-full flex items-center justify-between py-3 uppercase text-xs font-semibold tracking-[0.08em] text-white border-b border-white/15"
                 aria-expanded={isMobileTvOpen}
               >
                 Eagles TV
@@ -352,12 +352,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 </svg>
               </button>
               {isMobileTvOpen && (
-                <div className="pl-3 pb-2 border-b border-white/10">
+                <div className="pl-3 pb-2 border-b border-white/15">
                   {tvItems.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}
-                      className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white/85"
+                      className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white"
                     >
                       {item.name}
                     </button>
@@ -369,8 +369,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 <button
                   key={item.id}
                   onClick={() => navigateToPage(item.id)}
-                  className={`w-full text-left py-3 uppercase text-xs font-semibold tracking-[0.08em] border-b border-white/10 ${
-                    currentPage === item.id ? 'text-[#F5A623]' : 'text-white'
+                  className={`w-full text-left py-3 uppercase text-xs font-semibold tracking-[0.08em] border-b border-white/15 ${
+                    currentPage === item.id ? 'text-white' : 'text-white'
                   }`}
                 >
                   {item.name}

@@ -52,40 +52,40 @@ const PLAYER_SPONSORS = [
     name: 'Kampanis',
     role: 'Club Sponsor',
     imageUrl: '/partners/kampanis.png',
-    service: 'Kampanis offers professional shoe repair services . They also have shoe care products and designer footweal.',
-    contact: '+256 775 833 585'
+    service: 'Kampanis offers professional shoe repair services at Forest Mall Lugogo. They also sell shoe care products and the katest designer footwear.',
+    contact: '+256775833585'
   },
   {
     id: 'sponsor-2',
     name: 'Vacker',
     role: 'Kit Sponsor',
     imageUrl: '/partners/Vacker.jpeg',
-    service: 'Vacker is an out door & indoor advertising company. We pride ourselves in being one of the country’s preferred out-of-home Advertising companies',
-    contact: '+256 775 833 585'
+    service: "We are an outdoor & indoor advertising company. We pride ourselves in being one of the country's preferred out-of-home Advertising companies",
+    contact: '+256393224054'
   },
   {
     id: 'sponsor-3',
     name: 'Wina Classic',
     role: 'Supporting Sponsor',
     imageUrl: '/partners/Wina Classic.jpeg',
-    service: 'Wina Classic is a premier luxury fashion destination, delivering high-end styles that redefine elegance and elevate you to new heights.',
-    contact: '+256 775 833 585'
+    service: 'Wina Classic is a premier luxury fashion destination, delivering high-end styles that redefine elegance and elevate you to new heights =.',
+    contact: '+256787372115'
   },
   {
     id: 'sponsor-4',
     name: 'CHINT',
     role: 'Supporting Sponsor',
     imageUrl: '/partners/CHINT.jpeg',
-    service: 'Chint Electrics Company Limited has been in business for 39 years, established in 1984 in China We specialize in the production of Electric and electronic Products,',
-    contact: '+256 775 833 585'
+    service: 'Chint Electrics Company Limited was, established in 1984 in China We specialize in the production of Electric and electronic Products, amd much more',
+    contact: '+256392266552'
   },
   {
     id: 'sponsor-5',
     name: 'Caramec',
-    role: 'Official Sponsor',
+    role: 'Supporting Sponsor',
     imageUrl: '/partners/caramec.png',
-    service: 'Caramec Motors is a high-end motor garage specializing in premium automotive care for luxury and high-performance vehicles.',
-    contact: '+256 775 833 585'
+    service: 'Caramec Motors is a high-end motor garage specializing in premium automotive care for luxury and high-performance vehicles and much more',
+    contact: '+256783131839'
   }
 ];
 const X_CAPTAINS = [
@@ -477,10 +477,10 @@ const PlayerSponsorsSlider: React.FC<{ onNavigate: (p: string) => void }> = ({ o
 
               <p className="mt-2 text-xs text-[#2f4364] font-semibold leading-relaxed">{sponsor.service}</p>
               <a
-                href="tel:+256775833585"
+                href={`tel:${sponsor.contact.replace(/\s+/g, '')}`}
                 className="mt-4 w-full rounded-md border border-black bg-gradient-to-r from-[#F5A623] to-[#f8c75a] text-black py-2 text-[11px] font-black uppercase tracking-wider hover:from-black hover:to-black hover:text-[#F5A623] transition-colors flex items-center justify-center gap-2"
               >
-                <span>+256 775 833 585</span>
+                <span>{sponsor.contact}</span>
                 <svg aria-hidden="true" className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4" d="M7 17L17 7M9 7h8v8" />
                 </svg>
@@ -2569,6 +2569,7 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 
 
 
