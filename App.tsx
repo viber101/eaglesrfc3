@@ -1912,6 +1912,32 @@ const ShopPage: React.FC = () => (
         Keep your kit sharp with polish, cleaners, and protective care products. Reach out to place an order.
       </p>
     </section>
+
+    <section className="relative overflow-hidden rounded-2xl border border-[#d7deea] bg-gradient-to-br from-[#081534] via-[#0f2149] to-[#10295a] p-6 sm:p-8">
+      <div className="absolute -top-20 -right-16 w-56 h-56 rounded-full bg-[#F5A623]/20 blur-3xl" />
+      <div className="absolute -bottom-24 -left-12 w-60 h-60 rounded-full bg-white/10 blur-3xl" />
+      <div className="relative space-y-4 text-white">
+        <p className="inline-flex items-center rounded-full border border-[#F5A623]/40 bg-[#F5A623]/15 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-[#ffd88f]">
+          Eagles Shop
+        </p>
+        <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter">Official Eagles Rugby Shop</h2>
+        <p className="text-sm sm:text-base text-[#d4deef] leading-relaxed">
+          Whether you are looking for stylish casual wear, practical accessories, or exclusive merchandise, our products are designed
+          to help you stand out and show your loyalty with confidence. Each item is thoughtfully chosen to deliver real value, comfort,
+          and long-lasting performance.
+        </p>
+        <p className="text-sm sm:text-base text-[#d4deef] leading-relaxed">
+          The Eagles Rugby Shop features products exclusively supplied by our trusted sponsors, meaning every purchase directly supports
+          the strategic partnerships that strengthen and grow our club. You are not just buying a product, you are investing in the
+          future of Eagles Rugby and supporting the businesses that stand behind our success.
+        </p>
+        <p className="text-sm sm:text-base text-[#d4deef] leading-relaxed">
+          We proudly collaborate with reputable brands that share our values of integrity, excellence, and professionalism. Shop with
+          confidence, represent with pride, and be part of something bigger. If you are a genuine brand interested in reaching our
+          growing community, we welcome the opportunity to connect and build a mutually beneficial partnership.
+        </p>
+      </div>
+    </section>
   </div>
 );
 
