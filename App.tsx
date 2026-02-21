@@ -1834,6 +1834,51 @@ const ShopPage: React.FC = () => (
         <img src={toAssetUrl(PAGE_IMAGES.shopHero)} alt="Shop hero" className="w-full h-full object-cover" />
       </div>
     </section>
+
+    <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <article className="relative min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
+        <img src={toAssetUrl('/Merchandise/mouth guard.webp')} alt="Merchandise" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <h3 className="text-white text-3xl font-black uppercase tracking-tight mb-3">Merchandise</h3>
+          <a
+            href="#shop-merchandise"
+            className="inline-flex items-center justify-center bg-white text-black px-6 py-2.5 rounded-md text-lg font-medium hover:bg-[#F5A623] transition-colors"
+          >
+            Shop Now
+          </a>
+        </div>
+      </article>
+
+      <article className="relative min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
+        <img src={toAssetUrl('/Merchandise/kicking tee.avif')} alt="Footwear" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <h3 className="text-white text-3xl font-black uppercase tracking-tight mb-3">Footwear</h3>
+          <a
+            href="#shop-footwear"
+            className="inline-flex items-center justify-center bg-white text-black px-6 py-2.5 rounded-md text-lg font-medium hover:bg-[#F5A623] transition-colors"
+          >
+            Shop Now
+          </a>
+        </div>
+      </article>
+
+      <article className="relative min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
+        <img src={toAssetUrl('/kampanis.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <h3 className="text-white text-3xl font-black uppercase tracking-tight mb-3">Shoe Care</h3>
+          <a
+            href="#shop-shoe-care"
+            className="inline-flex items-center justify-center bg-white text-black px-6 py-2.5 rounded-md text-lg font-medium hover:bg-[#F5A623] transition-colors"
+          >
+            Shop Now
+          </a>
+        </div>
+      </article>
+    </section>
+
     <section id="shop-merchandise" className="scroll-mt-32 space-y-4">
       <div className="flex items-center justify-between">
         <div>
