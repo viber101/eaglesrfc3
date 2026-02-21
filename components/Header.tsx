@@ -149,9 +149,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               <span className="mx-8">{promoMessage}</span>
               <span className="mx-8">{promoMessage}</span>
             </div>
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 h-full flex items-center pl-3 sm:pl-4 pr-1 sm:pr-2 bg-gradient-to-l from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent">
-              <div className="rounded-md bg-[#0b1221]/85 border border-white/20 px-2.5 sm:px-3 py-1">
-                <img src="/kampanis.png" alt="Kampanis" className="h-5 sm:h-6 md:h-7 w-auto object-contain" />
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 h-full flex items-center pl-4 sm:pl-5 pr-1 sm:pr-2 bg-gradient-to-l from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent">
+              <div className="rounded-md bg-[#0b1221]/85 border border-white/20 px-3 sm:px-3.5 py-1">
+                <img src="/kampanis.png" alt="Kampanis" className="h-6 sm:h-7 md:h-8 w-auto object-contain" />
               </div>
             </div>
           </div>
