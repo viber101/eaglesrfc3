@@ -1100,7 +1100,7 @@ const CompactMatchHero: React.FC = () => {
     return { days, hours, minutes, seconds };
   };
   const [timeLeft, setTimeLeft] = useState(getTimeLeft);
-  const displayDate = toNextMatchDateLabel(selectedMatch);
+  const displayDate = 'Sun 1st Feb';
   const displayTime = cleanCell(selectedMatch.time);
 
   useEffect(() => {
