@@ -1826,42 +1826,42 @@ const HallOfFamePage: React.FC = () => (
 const ShopPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
     <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <article className="relative min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
+      <article className="relative min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
         <img src={toAssetUrl('/Merchandise/mouth guard.webp')} alt="Merchandise" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="text-white text-3xl font-black uppercase tracking-tight mb-3">Merchandise</h3>
+        <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+          <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Merchandise</h3>
           <a
             href="#shop-merchandise"
-            className="inline-flex items-center justify-center bg-white text-black px-6 py-2.5 rounded-md text-lg font-medium hover:bg-[#F5A623] transition-colors"
+            className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
           >
             Shop Now
           </a>
         </div>
       </article>
 
-      <article className="relative min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
+      <article className="relative min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
         <img src={toAssetUrl('/Merchandise/kicking tee.avif')} alt="Footwear" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="text-white text-3xl font-black uppercase tracking-tight mb-3">Footwear</h3>
+        <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+          <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Footwear</h3>
           <a
             href="#shop-footwear"
-            className="inline-flex items-center justify-center bg-white text-black px-6 py-2.5 rounded-md text-lg font-medium hover:bg-[#F5A623] transition-colors"
+            className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
           >
             Shop Now
           </a>
         </div>
       </article>
 
-      <article className="relative min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
+      <article className="relative min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
         <img src={toAssetUrl('/kampanis.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="text-white text-3xl font-black uppercase tracking-tight mb-3">Shoe Care</h3>
+        <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+          <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Shoe Care</h3>
           <a
             href="#shop-shoe-care"
-            className="inline-flex items-center justify-center bg-white text-black px-6 py-2.5 rounded-md text-lg font-medium hover:bg-[#F5A623] transition-colors"
+            className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
           >
             Shop Now
           </a>
