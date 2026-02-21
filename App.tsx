@@ -1740,8 +1740,6 @@ const HistoryPage: React.FC = () => (
 );
 
 const SquadPage: React.FC = () => {
-  const [activeSquadPlayerId, setActiveSquadPlayerId] = useState<string | null>(null);
-
   return (
     <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700">
       <SectionHeader title="2026 Players" />
@@ -1751,22 +1749,18 @@ const SquadPage: React.FC = () => {
           const age = 20 + (playerSeed % 13);
           const matches = player.gamesPlayed > 0 ? player.gamesPlayed : 24 + ((playerSeed * 3) % 70);
           const points = 8 + ((playerSeed * 7) % 40);
-          const isActive = activeSquadPlayerId === player.id;
 
           return (
             <article
               key={player.id}
-              className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm cursor-pointer"
-              onMouseEnter={() => setActiveSquadPlayerId(player.id)}
-              onMouseLeave={() => setActiveSquadPlayerId((current) => (current === player.id ? null : current))}
-              onClick={() => setActiveSquadPlayerId((current) => (current === player.id ? null : player.id))}
+              className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm h-full flex flex-col"
             >
               <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
-                <img src={player.imageUrl} alt={player.name} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-105' : 'scale-100'}`} />
+                <img src={player.imageUrl} alt={player.name} className="w-full h-full object-cover" />
               </div>
               <h3 className="text-sm font-black uppercase tracking-tight">{player.name}</h3>
               <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">{player.position}</p>
-              <div className={`overflow-hidden transition-all duration-300 ${isActive ? 'max-h-20 opacity-100 mt-3 pt-3 border-t border-[#e2e7f0]' : 'max-h-0 opacity-0 mt-0 pt-0 border-t-0'}`}>
+              <div className="mt-3 pt-3 border-t border-[#e2e7f0]">
                 <div className="grid grid-cols-3 gap-2 text-[#081534]">
                   <div>
                     <p className="text-xl leading-none font-black">{age}</p>
