@@ -1745,7 +1745,7 @@ const SquadPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700">
       <SectionHeader title="2026 Players" />
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 items-start">
         {MOCK_PLAYERS.map((player) => {
           const playerSeed = Number.parseInt(player.id, 10) || 0;
           const age = 20 + (playerSeed % 13);
@@ -1756,7 +1756,7 @@ const SquadPage: React.FC = () => {
           return (
             <article
               key={player.id}
-              className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm h-full flex flex-col cursor-pointer"
+              className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm flex flex-col cursor-pointer"
               onMouseEnter={() => setActiveSquadPlayerId(player.id)}
               onMouseLeave={() => setActiveSquadPlayerId((current) => (current === player.id ? null : current))}
               onClick={() => setActiveSquadPlayerId((current) => (current === player.id ? null : player.id))}
