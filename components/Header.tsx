@@ -344,6 +344,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </div>
             </div>
             <button
+              className="lg:hidden text-white hover:text-[#F5A623] bg-white/5 border border-white/15 rounded-lg px-3 py-2 text-[11px] uppercase font-semibold tracking-[0.08em]"
+              onClick={() => navigateToPage('shop')}
+            >
+              Shop
+            </button>
+            <button
               className="lg:hidden text-white hover:text-[#F5A623] bg-white/5 border border-white/15 rounded-lg p-2"
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
               aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
