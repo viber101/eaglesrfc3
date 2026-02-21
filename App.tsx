@@ -1257,7 +1257,7 @@ const TierCard: React.FC<{ tier: SponsorshipTier }> = ({ tier }) => {
       <ul className="space-y-2 mb-3">
         {tier.keyInclusions.map((inclusion) => (
           <li key={inclusion} className="text-sm text-gray-700 flex items-start gap-2">
-            <span className="text-[#F5A623] font-black">•</span>
+            <span className="text-[#F5A623] font-black">â€¢</span>
             <span>{inclusion}</span>
           </li>
         ))}
@@ -1275,6 +1275,8 @@ const TierCard: React.FC<{ tier: SponsorshipTier }> = ({ tier }) => {
 };
 
 const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate }) => {
+  const [activeSquadPlayerId, setActiveSquadPlayerId] = useState<string | null>(null);
+
   return (
   <>
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
@@ -1303,22 +1305,80 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     <CalendarSection />
 
     <Carousel title="Current Squad 2026">
-      {MOCK_PLAYERS.map((p) => (
-        <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
-          <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
-            <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-            <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
+      {MOCK_PLAYERS.map((p) => {
+        const nameParts = p.name.trim().split(/\s+/);
+        const firstName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : nameParts[0];
+        const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : nameParts[0];
+        const playerSeed = Number.parseInt(p.id, 10) || 0;
+        const age = 20 + (playerSeed % 13);
+        const matches = p.gamesPlayed > 0 ? p.gamesPlayed : 24 + ((playerSeed * 3) % 70);
+        const points = 8 + ((playerSeed * 7) % 40);
+        const isActive = activeSquadPlayerId === p.id;
+
+        return (
+          <div key={p.id} className="flex-none w-[280px] sm:w-[300px] snap-start">
+            <article
+              className="relative overflow-hidden rounded-xl bg-black border border-[#1a2238] shadow-[0_14px_30px_rgba(0,0,0,0.45)] cursor-pointer"
+              onMouseEnter={() => setActiveSquadPlayerId(p.id)}
+              onMouseLeave={() => setActiveSquadPlayerId((current) => (current === p.id ? null : current))}
+              onClick={() => setActiveSquadPlayerId((current) => (current === p.id ? null : p.id))}
+              onTouchStart={() => setActiveSquadPlayerId(p.id)}
+            >
+              <div className="relative aspect-[4/5] overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#170a30] via-[#0a1224] to-black" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(126,91,255,0.55),transparent_45%)]" />
+                <img
+                  src={p.imageUrl}
+                  alt={p.name}
+                  className={`relative z-10 w-full h-full object-cover object-top transition-transform duration-500 ${isActive ? 'scale-105' : 'scale-100'}`}
+                />
+                <div className="absolute inset-0 z-20 bg-gradient-to-t from-black via-transparent to-black/20" />
+                <div className="absolute top-4 left-4 z-30 text-white text-5xl font-black leading-none tracking-tight drop-shadow-lg">#{p.number}</div>
+              </div>
+              <div className="flex items-start justify-between gap-3 px-4 py-3.5">
+                <div className="min-w-0">
+                  <p className="text-white text-[11px] uppercase tracking-[0.18em] leading-none truncate">{firstName}</p>
+                  <p className="text-white text-[2rem] font-black uppercase tracking-tight leading-none mt-1 truncate">{lastName}</p>
+                  <p className="text-[10px] font-bold text-[#9aa7bf] uppercase tracking-wider mt-1">{p.position}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onNavigate('squad');
+                  }}
+                  className="inline-flex items-center gap-1 text-white text-[11px] font-black uppercase tracking-widest hover:text-[#F5A623] transition-colors mt-0.5"
+                >
+                  STATS
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M14 3h7v7" />
+                    <path d="M10 14L21 3" />
+                    <path d="M21 14v7h-7" />
+                    <path d="M3 10L14 21" />
+                  </svg>
+                </button>
+              </div>
+              <div className="mx-4 border-t border-white/20" />
+              <div className={`px-4 overflow-hidden transition-all duration-300 ${isActive ? 'max-h-28 opacity-100 pb-3' : 'max-h-0 opacity-0 pb-0'}`}>
+                <div className="pt-3 grid grid-cols-3 gap-3 text-white">
+                  <div>
+                    <p className="text-[2rem] font-black leading-none">{age}</p>
+                    <p className="text-[11px] uppercase tracking-wider text-white/90 font-medium">Age</p>
+                  </div>
+                  <div>
+                    <p className="text-[2rem] font-black leading-none">{matches}</p>
+                    <p className="text-[11px] uppercase tracking-wider text-white/90 font-medium">Matches</p>
+                  </div>
+                  <div>
+                    <p className="text-[2rem] font-black leading-none">{points}</p>
+                    <p className="text-[11px] uppercase tracking-wider text-white/90 font-medium">Points</p>
+                  </div>
+                </div>
+              </div>
+            </article>
           </div>
-          <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
-          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.position}</p>
-          <button
-            onClick={() => onNavigate('contact')}
-            className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
-          >
-            Sponsor Player
-          </button>
-        </div>
-      ))}
+        );
+      })}
     </Carousel>
 
     <Carousel title="Ex Players">
@@ -1472,7 +1532,15 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
 
     {/* Shop Section */}
     <section className="mb-16">
-      <SectionHeader title="Official Shop" />
+      <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-2">
+        <button
+          type="button"
+          onClick={() => onNavigate('shop')}
+          className="text-2xl font-extrabold uppercase tracking-tighter text-gray-900 hover:text-[#F5A623] transition-colors"
+        >
+          Official Shop
+        </button>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-start">
         {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => (
           <button
@@ -1481,7 +1549,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
             onClick={() => onNavigate('shop')}
             className="group cursor-pointer bg-white p-4 shadow-sm hover:shadow-md transition-shadow w-[260px] h-[360px] text-left border border-[#cfd8e6]"
           >
-            <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3">
+            <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
               <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             </div>
             <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight group-hover:text-[#F5A623] transition-colors">{product.name}</h3>
@@ -1747,7 +1815,7 @@ const ShopPage: React.FC = () => (
             className="bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]"
             style={{ width: 260, height: 360 }}
           >
-            <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded">
+            <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
               <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
             </div>
             <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
@@ -2527,7 +2595,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="border-t border-white/10 px-6 py-4 text-xs text-white/75 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p>� 2026 Eagles Rugby Club. All rights reserved.</p>
+          <p>© 2026 Eagles Rugby Club. All rights reserved.</p>
           <div className="flex items-center gap-3">
             <a href="#" className="hover:text-[#F5A623] transition-colors">Privacy Policy</a>
             <span>|</span>
@@ -2542,6 +2610,8 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+
 
 
 

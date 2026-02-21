@@ -142,7 +142,10 @@ export const MOCK_TRENDING_VIDEOS: NewsItem[] = [
 
 export const MOCK_SHOP_PRODUCTS: Product[] = [
   { id: 'p1', name: 'Eagles Official Kit', price: 'UGX 150,000', imageUrl: '/kit.jpeg' },
-  { id: 'p2', name: 'Eagles Membership Card', price: 'UGX 100,000', imageUrl: '/kampanis.png' }
+  { id: 'p2', name: 'Eagles Membership Card', price: 'UGX 100,000', imageUrl: '/kampanis.png' },
+  { id: 'p3', name: 'Mouth Guard', price: 'UGX 25,000', imageUrl: '/Merchandise/mouth%20guard.webp' },
+  { id: 'p4', name: 'Kicking Tee', price: 'UGX 120,000', imageUrl: '/Merchandise/kicking%20tee.avif' },
+  { id: 'p5', name: 'Head Guard', price: 'UGX 250,000', imageUrl: '/Merchandise/Head%20guard' }
 ];
 
 export const MOCK_NEWS: NewsItem[] = [
