@@ -83,8 +83,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   const getDesktopItemClass = (active: boolean) => (
     `h-[42px] flex items-center px-1 border-b-[3px] transition-colors duration-200 ${
       active
-        ? 'text-white border-[#2f5bff]'
-        : 'text-white border-transparent hover:border-[#2f5bff]/70'
+        ? 'text-white border-[#F5A623]'
+        : 'text-white border-transparent hover:border-[#F5A623]/70'
     }`
   );
 
@@ -142,13 +142,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 className={getDesktopItemClass(currentPage === 'about' || currentPage === 'history')}
               >
                 About
-                <svg className={`ml-1 w-3.5 h-3.5 text-[#2f5bff] transition-transform ${isAboutHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`ml-1 w-3.5 h-3.5 text-[#F5A623] transition-transform ${isAboutHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {isAboutHovered && (
-                <div className="absolute top-full left-0 w-56 bg-[#0f172a]/95 text-white border border-[#2f5bff]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                <div className="absolute top-full left-0 w-56 bg-[#0f172a]/95 text-white border border-[#F5A623]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   <button
                     onClick={() => navigateToPage('about')}
                     className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em]"
@@ -199,13 +199,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 className={getDesktopItemClass(['squad', 'hall-of-fame', 'shop', 'fitness-center', 'history', 'our-projects', 'our-foundation', 'sponsor-us'].includes(currentPage))}
               >
                 Our Club
-                <svg className={`ml-1 w-3.5 h-3.5 text-[#2f5bff] transition-transform ${isOurClubHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`ml-1 w-3.5 h-3.5 text-[#F5A623] transition-transform ${isOurClubHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {isOurClubHovered && (
-                <div className="absolute top-full left-0 w-60 bg-[#0f172a]/95 text-white border border-[#2f5bff]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                <div className="absolute top-full left-0 w-60 bg-[#0f172a]/95 text-white border border-[#F5A623]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   {ourClubItems.map((item, index) => (
                     <button
                       key={item.id}
@@ -231,13 +231,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 className={getDesktopItemClass(['tv', 'gallery'].includes(currentPage))}
               >
                 Eagles TV
-                <svg className={`ml-1 w-3.5 h-3.5 text-[#2f5bff] transition-transform ${isTvHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`ml-1 w-3.5 h-3.5 text-[#F5A623] transition-transform ${isTvHovered ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {isTvHovered && (
-                <div className="absolute top-full left-0 w-44 bg-[#0f172a]/95 text-white border border-[#2f5bff]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
+                <div className="absolute top-full left-0 w-44 bg-[#0f172a]/95 text-white border border-[#F5A623]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
                   {tvItems.map((item, index) => (
                     <button
                       key={item.id}
