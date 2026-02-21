@@ -122,13 +122,13 @@ export const MOCK_HALL_OF_FAME: HallOfFameMember[] = [
   { id: 'hf8', name: 'Osura Aaron', number: '8', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-8/300/400' },
   { id: 'hf9', name: 'Daniel Ochora', number: '9', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-9/300/400' },
   { id: 'hf10', name: 'Dan Mark Omeda', number: '10', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-10/300/400' },
-  { id: 'hf11', name: 'Shamick Mbubi', number: '11', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-11/300/400' },
+  { id: 'hf11', name: 'Shamick Mbubi', number: '11', title: 'Hall of Fame', imageUrl: '/Hall of Fame/Shamick Mbubi.jpeg' },
   { id: 'hf12', name: 'Kayondo Ronnie', number: '12', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-12/300/400' },
   { id: 'hf13', name: 'Edmond Tumusime', number: '13', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-13/300/400' }
 ];
 
 export const MOCK_BUSINESS_ATHLETES: HallOfFameMember[] = [
-  { id: 'ab1', name: 'Otim Chris', number: '1', title: 'Architect and XR Developer', imageUrl: '/gallery/Eagles (12).jpeg' }
+  { id: 'ab1', name: 'Otim Chris', number: '1', title: 'Architect and XR Developer', imageUrl: '/Our%20Athletes%20in%20Business/Otim%20Chris.jpeg' }
 ];
 
 export const MOCK_TRENDING_VIDEOS: NewsItem[] = [

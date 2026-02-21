@@ -52,7 +52,7 @@ const PLAYER_SPONSORS = [
     name: 'Kampanis',
     role: 'Club Sponsor',
     imageUrl: '/partners/kampanis.png',
-    service: 'Kampanis offers professional shoe repair services at Forest Mall Lugogo. They also have shoe care products for more information call.',
+    service: 'Kampanis offers professional shoe repair services . They also have shoe care products and designer footweal.',
     contact: '+256 775 833 585'
   },
   {
@@ -60,7 +60,7 @@ const PLAYER_SPONSORS = [
     name: 'Vacker',
     role: 'Kit Sponsor',
     imageUrl: '/partners/Vacker.jpeg',
-    service: 'Vacker provides quality apparel and support products for athletes and active teams.',
+    service: 'Vacker is an out door & indoor advertising company. We pride ourselves in being one of the country’s preferred out-of-home Advertising companies',
     contact: '+256 775 833 585'
   },
   {
@@ -68,7 +68,7 @@ const PLAYER_SPONSORS = [
     name: 'Wina Classic',
     role: 'Supporting Sponsor',
     imageUrl: '/partners/Wina Classic.jpeg',
-    service: 'Wina Classic supports match-day operations, team coordination, and event partnerships.',
+    service: 'Wina Classic is a premier luxury fashion destination, delivering high-end styles that redefine elegance and elevate you to new heights.',
     contact: '+256 775 833 585'
   },
   {
@@ -76,7 +76,7 @@ const PLAYER_SPONSORS = [
     name: 'CHINT',
     role: 'Supporting Sponsor',
     imageUrl: '/partners/CHINT.jpeg',
-    service: 'CHINT offers dependable electrical and power solutions for organizations and communities.',
+    service: 'Chint Electrics Company Limited has been in business for 39 years, established in 1984 in China We specialize in the production of Electric and electronic Products,',
     contact: '+256 775 833 585'
   },
   {
@@ -84,7 +84,7 @@ const PLAYER_SPONSORS = [
     name: 'Caramec',
     role: 'Official Sponsor',
     imageUrl: '/partners/caramec.png',
-    service: 'Caramec delivers practical engineering and project support across sports and community initiatives.',
+    service: 'Caramec Motors is a high-end motor garage specializing in premium automotive care for luxury and high-performance vehicles.',
     contact: '+256 775 833 585'
   }
 ];
@@ -104,6 +104,26 @@ const X_COACHES = [
   { period: '2019-2023', name: 'Edmond Tumusiime' },
   { period: '2023-2025', name: 'Cherokee Sylvain Ngue' }
 ];
+const HOME_HALL_OF_FAME_IMAGE_BY_NAME: Record<string, string> = {
+  'Henry Rwoth': '/Hall of Fame/Henry Rwoth.jpeg',
+  'Bogere Francis': '/Hall of Fame/Bogere Francis.jpeg',
+  'Liam Sewanyana': '/Hall of Fame/Liam Sewanyana.jpeg',
+  'Araptai Willy': '/Hall of Fame/Araptai Willy.jpeg',
+  'Ateng Robert': '/Hall of Fame/Ateng Robert.jpeg',
+  'Ojara Emmanuel': '/Hall of Fame/Ojara Emmanuel.jpeg',
+  'Regan Origi': '/Hall of Fame/Regan Kitara.jpeg',
+  'Osura Aaron': '/Hall of Fame/Osura Aaron.jpeg',
+  'Daniel Ochora': '/Hall of Fame/Daniel Ochora.jpeg',
+  'Dan Mark Omeda': '/Hall of Fame/Danmark Omeda.jpeg',
+  'Shamick Mbubi': '/Hall of Fame/Shamick Mbubi.jpeg',
+  'Kayondo Ronnie': '/Hall of Fame/Kayondo Ronnie.jpeg',
+  'Edmond Tumusime': '/Hall of Fame/Edmond Tumusiime.jpeg',
+};
+const FOUNDER_MESSAGE_PARAGRAPHS = [
+  "When Eagles Rugby Club came to life in 2019, it was more than the birth of a team - it was the beginning of a brotherhood built on belief, sacrifice, and ambition. At the center of that new journey stood Edmond Tumusime, our very first coach, whose leadership laid the foundation of discipline, unity, and resilience that still defines the club today. With vision and determination, he helped shape not just a squad, but a culture - one that demanded commitment and inspired loyalty from every player who wore the badge.",
+  "Standing alongside him from the very start were Kayondo Ronnie, Shamick Mbubi, Dan Mark Omeda, Daniel Ochora, Osura Aaron, Regan Origi, Ojara Emmanuel, Ateng Robert, Araptai Willy, Liam Sewanyana, Bogere Francis, and Henry Rwoth - men who chose to stand firm in every situation, through challenges and triumphs alike. Together, they carried the dream of Eagles Rugby Club on their shoulders, turning obstacles into stepping stones and building a legacy that continues to inspire new generations. The Hall of Fame proudly honors these pioneers - not just for what they achieved on the pitch, but for the spirit, loyalty, and courage that gave life to the Eagles story."
+];
+const FOUNDER_MESSAGE_PREVIEW = FOUNDER_MESSAGE_PARAGRAPHS.join(' ');
 const X_COACH_IMAGES = [
   '/X Coaches/Edmond Tumusiime.jpeg',
   '/X Coaches/Cherokee Sylvain Ngue.webp'
@@ -940,7 +960,7 @@ const StandingsWidget: React.FC = () => (
   </div>
 );
 
-const Carousel: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
+const Carousel: React.FC<{ title: string; children: React.ReactNode; preContent?: React.ReactNode }> = ({ title, children, preContent }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -972,6 +992,7 @@ const Carousel: React.FC<{ title: string; children: React.ReactNode }> = ({ titl
   return (
     <section className="mb-16 relative">
       <SectionHeader title={title} />
+      {preContent}
       <div className="relative group">
         {canScrollLeft && (
           <button onClick={() => scroll('left')} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 border border-gray-200 rounded-full flex items-center justify-center shadow-lg text-[#F5A623] hover:bg-[#F5A623] hover:text-white transition-all -ml-6">
@@ -1011,8 +1032,8 @@ const CompactMatchHero: React.FC = () => {
     category: 'Men',
     venue: 'Mukono',
     time: '2:00PM',
-    home: 'Life Guard Rams',
-    away: 'Eagles RFC'
+    home: 'Eagles RFC',
+    away: 'Golden Badgers'
   };
   const selectedMatch = nextMatch || fallbackMatch;
   const matchKickoff = getFixtureKickoffDate(selectedMatch) ?? new Date('2026-02-28T14:00:00+03:00');
@@ -1292,17 +1313,63 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       ))}
     </Carousel>
 
-    <Carousel title="Hall of Fame">
-      {MOCK_HALL_OF_FAME.map((p) => (
-        <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
-          <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
-            <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-            <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
+    <Carousel
+      title="Hall of Fame"
+      preContent={(
+        <section className="mb-6 relative border border-[#d8dfeb] rounded-2xl overflow-hidden shadow-md bg-gradient-to-br from-white via-[#f8faff] to-[#edf3ff]">
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#F5A623] via-[#f8bf5f] to-[#F5A623]" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
+            <div className="lg:col-span-8 p-6 lg:p-8">
+              <p className="inline-flex items-center rounded-full bg-[#fff3da] text-[#a86700] border border-[#f3c66f] px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-black mb-3">Founder Message</p>
+              <h3 className="text-3xl lg:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Arthur Kampani</h3>
+              <p
+                className="text-sm lg:text-base text-[#1f355f] leading-relaxed max-w-3xl bg-white/80 border border-[#dde5f2] rounded-xl p-4"
+                style={{
+                  display: '-webkit-box',
+                  WebkitLineClamp: 4,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}
+              >
+                {FOUNDER_MESSAGE_PREVIEW}
+              </p>
+              <button
+                onClick={() => onNavigate('hall-of-fame')}
+                className="mt-5 inline-flex items-center gap-2 bg-[#081534] text-white font-black uppercase text-xs tracking-[0.18em] px-5 py-2.5 rounded-full border border-[#081534] hover:bg-[#F5A623] hover:text-[#081534] hover:border-[#e09a1f] transition-colors"
+              >
+                Read More
+                <span aria-hidden="true">{'->'}</span>
+              </button>
+            </div>
+            <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-[#d8dfeb] p-5 flex items-center justify-center bg-[radial-gradient(circle_at_top,#f7fbff,#edf3ff)]">
+              <div className="relative w-[280px] max-w-full aspect-[3/4] overflow-hidden rounded-lg border border-[#d8dfeb] bg-gray-100 shadow-sm">
+                <img src={toAssetUrl('/ceo.jpeg')} alt="Arthur Kampani" className="w-full h-full object-cover object-top" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#081534]/70 via-[#081534]/20 to-transparent" />
+                <div className="absolute left-3 right-3 bottom-3 flex items-center justify-between">
+                  <p className="text-[10px] uppercase tracking-[0.18em] font-black text-white/90">Founder</p>
+                  <p className="text-[9px] uppercase tracking-[0.14em] font-bold text-white/80">Since 2019</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
-          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.title}</p>
-        </div>
-      ))}
+        </section>
+      )}
+    >
+      {MOCK_HALL_OF_FAME.map((p) => {
+        const homeHallImage = HOME_HALL_OF_FAME_IMAGE_BY_NAME[p.name] ?? '';
+        return (
+          <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
+            <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
+              {homeHallImage ? (
+                <img src={toAssetUrl(homeHallImage)} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              ) : null}
+              <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
+            </div>
+            <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.title}</p>
+          </div>
+        );
+      })}
     </Carousel>
 
     <Carousel title="Our Athletes in Business">
@@ -1314,12 +1381,9 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
           </div>
           <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
           <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.title}</p>
-          <a
-            href={CONTACT_INFO.phoneHref}
-            className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors text-center block"
-          >
-            Contact Player
-          </a>
+          <p className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-center">
+            +256786616953
+          </p>
         </div>
       ))}
     </Carousel>
@@ -1630,17 +1694,32 @@ const SquadPage: React.FC = () => (
 
 const HallOfFamePage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700">
+    <section className="mb-8 bg-white border border-[#e2e7f0] rounded-xl p-6 lg:p-8 shadow-sm">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black mb-2">Founder Message</p>
+      <h2 className="text-3xl lg:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-1">Arthur Kampani</h2>
+      <p className="text-xs uppercase tracking-[0.18em] text-gray-500 font-bold mb-5">Eagles Rugby Club Founder</p>
+      <div className="space-y-4 text-sm text-gray-700 leading-relaxed">
+        {FOUNDER_MESSAGE_PARAGRAPHS.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
+      </div>
+    </section>
     <section>
       <SectionHeader title="Hall of Fame" />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {MOCK_HALL_OF_FAME.map((member) => (
-          <article key={member.id} className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm">
-            <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
-              <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" />
-            </div>
-            <h3 className="text-sm font-black uppercase tracking-tight">{member.name}</h3>
-          </article>
-        ))}
+        {MOCK_HALL_OF_FAME.map((member) => {
+          const hallImage = HOME_HALL_OF_FAME_IMAGE_BY_NAME[member.name] ?? member.imageUrl ?? '';
+          return (
+            <article key={member.id} className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm">
+              <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
+                {hallImage ? (
+                  <img src={toAssetUrl(hallImage)} alt={member.name} className="w-full h-full object-cover" />
+                ) : null}
+              </div>
+              <h3 className="text-sm font-black uppercase tracking-tight">{member.name}</h3>
+            </article>
+          );
+        })}
       </div>
     </section>
   </div>
