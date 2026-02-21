@@ -122,6 +122,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
     { name: 'Footwear', id: 'shop-footwear' },
     { name: 'Shoe Care', id: 'shop-shoe-care' }
   ];
+
+  const sortByShortestLabel = <T extends { name: string }>(items: T[]) =>
+    [...items].sort((a, b) => a.name.length - b.name.length || a.name.localeCompare(b.name));
+
+  const sortedShopItems = sortByShortestLabel(shopItems);
+  const sortedOurClubItems = sortByShortestLabel(ourClubItems);
+  const sortedTvItems = sortByShortestLabel(tvItems);
   const getDesktopItemClass = (active: boolean) => (
     `h-[42px] flex items-center px-1 border-b-[3px] transition-colors duration-200 ${
       active
@@ -196,7 +203,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
               {isShopHovered && (
                 <div className="absolute top-full left-0 w-52 bg-[#0f172a]/95 text-white border border-[#F5A623]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
-                  {shopItems.map((item, index) => (
+                  {sortedShopItems.map((item, index) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToShopSection(item.id)}
@@ -246,12 +253,6 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                     {isAboutSubHovered && (
                       <div className="absolute top-0 left-full ml-2 w-56 bg-[#0f172a]/95 text-white border border-[#F5A623]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-left-2 duration-200 backdrop-blur">
                         <button
-                          onClick={() => navigateToPage('about')}
-                          className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em]"
-                        >
-                          About Us
-                        </button>
-                        <button
                           onClick={() => navigateToAboutSection('vision')}
                           className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
                         >
@@ -262,6 +263,18 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                           className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
                         >
                           Mission
+                        </button>
+                        <button
+                          onClick={() => navigateToPage('about')}
+                          className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
+                        >
+                          About Us
+                        </button>
+                        <button
+                          onClick={() => navigateToPage('history')}
+                          className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
+                        >
+                          Our History
                         </button>
                         <button
                           onClick={() => navigateToAboutSection('core-values')}
@@ -275,16 +288,10 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                         >
                           Home Ground
                         </button>
-                        <button
-                          onClick={() => navigateToPage('history')}
-                          className="w-full text-left px-4 py-3 hover:bg-white/10 font-semibold uppercase text-[10px] tracking-[0.08em] border-t border-white/10"
-                        >
-                          Our History
-                        </button>
                       </div>
                     )}
                   </div>
-                  {ourClubItems.map((item, index) => (
+                  {sortedOurClubItems.map((item, index) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}
@@ -316,7 +323,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
               {isTvHovered && (
                 <div className="absolute top-full left-0 w-44 bg-[#0f172a]/95 text-white border border-[#F5A623]/40 rounded-md shadow-2xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur">
-                  {tvItems.map((item, index) => (
+                  {sortedTvItems.map((item, index) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}
@@ -344,7 +351,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
           <div className="ml-auto flex items-center space-x-3">
             <button
-              className="lg:hidden text-white hover:text-[#F5A623] bg-white/5 border border-white/15 rounded-lg px-3 py-2 text-[11px] uppercase font-semibold tracking-[0.08em]"
+              className="lg:hidden text-[#F5A623] hover:text-white bg-white/5 border border-white/15 rounded-lg px-3 py-2 text-[11px] uppercase font-semibold tracking-[0.08em]"
               onClick={() => navigateToPage('shop')}
             >
               Shop
@@ -387,7 +394,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
               {isMobileShopOpen && (
                 <div className="pl-3 pb-2 border-b border-white/15">
-                  {shopItems.map((item) => (
+                  {sortedShopItems.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToShopSectionMobile(item.id)}
@@ -423,15 +430,15 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   </button>
                   {isMobileAboutOpen && (
                     <div className="pl-3 pb-2">
-                      <button onClick={() => navigateToPage('about')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">About Us</button>
                       <button onClick={() => navigateToAboutSectionMobile('vision')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Vision</button>
                       <button onClick={() => navigateToAboutSectionMobile('mission')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Mission</button>
+                      <button onClick={() => navigateToPage('about')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">About Us</button>
+                      <button onClick={() => navigateToPage('history')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Our History</button>
                       <button onClick={() => navigateToAboutSectionMobile('core-values')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Core Values</button>
                       <button onClick={() => navigateToAboutSectionMobile('home-ground')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Home Ground</button>
-                      <button onClick={() => navigateToPage('history')} className="w-full text-left py-2 uppercase text-[11px] font-semibold text-white">Our History</button>
                     </div>
                   )}
-                  {ourClubItems.map((item) => (
+                  {sortedOurClubItems.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}
@@ -455,7 +462,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
               {isMobileTvOpen && (
                 <div className="pl-3 pb-2 border-b border-white/15">
-                  {tvItems.map((item) => (
+                  {sortedTvItems.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => navigateToPage(item.id)}

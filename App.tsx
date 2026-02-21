@@ -1540,21 +1540,51 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
           Official Shop
         </button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-start">
-        {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => (
-          <button
-            key={product.id}
-            type="button"
-            onClick={() => onNavigate('shop')}
-            className="group cursor-pointer bg-white p-4 shadow-sm hover:shadow-md transition-shadow w-[260px] h-[360px] text-left border border-[#cfd8e6]"
-          >
-            <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-              <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-            </div>
-            <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight group-hover:text-[#F5A623] transition-colors">{product.name}</h3>
-            <p className="text-[#F5A623] text-sm font-black mt-1">{product.price}</p>
-          </button>
-        ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <article className="relative min-h-[280px] md:min-h-[340px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
+          <img src={toAssetUrl('/kit.jpeg')} alt="Merchandise" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+            <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Merchandise</h3>
+            <button
+              type="button"
+              onClick={() => onNavigate('shop#shop-merchandise')}
+              className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
+            >
+              Shop Now
+            </button>
+          </div>
+        </article>
+
+        <article className="relative min-h-[280px] md:min-h-[340px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
+          <img src={toAssetUrl('/Footwear/cole haan one.png')} alt="Footwear" className="absolute inset-0 w-full h-full object-contain object-center" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+            <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Footwear</h3>
+            <button
+              type="button"
+              onClick={() => onNavigate('shop#shop-footwear')}
+              className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
+            >
+              Shop Now
+            </button>
+          </div>
+        </article>
+
+        <article className="relative min-h-[280px] md:min-h-[340px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
+          <img src={toAssetUrl('/Shoe Care/shoe care 1.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-contain object-center" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+            <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Shoe Care</h3>
+            <button
+              type="button"
+              onClick={() => onNavigate('shop#shop-shoe-care')}
+              className="inline-flex items-center justify-center bg-white text-black px-5 md:px-6 py-2 md:py-2.5 rounded-md text-base md:text-lg font-medium hover:bg-[#F5A623] transition-colors"
+            >
+              Shop Now
+            </button>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -1830,6 +1860,9 @@ const ShopPage: React.FC = () => {
   const merchScrollRef = useRef<HTMLDivElement>(null);
   const [canScrollMerchLeft, setCanScrollMerchLeft] = useState(false);
   const [canScrollMerchRight, setCanScrollMerchRight] = useState(true);
+  const footwearScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollFootwearLeft, setCanScrollFootwearLeft] = useState(false);
+  const [canScrollFootwearRight, setCanScrollFootwearRight] = useState(true);
 
   const checkShopCategoryScroll = () => {
     if (!shopCategoryScrollRef.current) {
@@ -1849,14 +1882,26 @@ const ShopPage: React.FC = () => {
     setCanScrollMerchRight(scrollLeft < scrollWidth - clientWidth - 5);
   };
 
+  const checkFootwearScroll = () => {
+    if (!footwearScrollRef.current) {
+      return;
+    }
+    const { scrollLeft, scrollWidth, clientWidth } = footwearScrollRef.current;
+    setCanScrollFootwearLeft(scrollLeft > 0);
+    setCanScrollFootwearRight(scrollLeft < scrollWidth - clientWidth - 5);
+  };
+
   useEffect(() => {
     checkShopCategoryScroll();
     checkMerchScroll();
+    checkFootwearScroll();
     window.addEventListener('resize', checkShopCategoryScroll);
     window.addEventListener('resize', checkMerchScroll);
+    window.addEventListener('resize', checkFootwearScroll);
     return () => {
       window.removeEventListener('resize', checkShopCategoryScroll);
       window.removeEventListener('resize', checkMerchScroll);
+      window.removeEventListener('resize', checkFootwearScroll);
     };
   }, []);
 
@@ -1877,6 +1922,17 @@ const ShopPage: React.FC = () => {
     }
     const scrollAmount = merchScrollRef.current.clientWidth * 0.85;
     merchScrollRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
+  const scrollFootwear = (direction: 'left' | 'right') => {
+    if (!footwearScrollRef.current) {
+      return;
+    }
+    const scrollAmount = footwearScrollRef.current.clientWidth * 0.85;
+    footwearScrollRef.current.scrollBy({
       left: direction === 'left' ? -scrollAmount : scrollAmount,
       behavior: 'smooth'
     });
@@ -1925,7 +1981,7 @@ const ShopPage: React.FC = () => {
         </article>
 
         <article className="relative flex-none w-[90%] sm:w-[75%] md:w-[calc((100%-2rem)/3)] min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm snap-start">
-          <img src={toAssetUrl('/Merchandise/kicking tee.avif')} alt="Footwear" className="absolute inset-0 w-full h-full object-cover" />
+          <img src={toAssetUrl('/Footwear/cole haan one.png')} alt="Footwear" className="absolute inset-0 w-full h-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
             <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Footwear</h3>
@@ -1939,7 +1995,7 @@ const ShopPage: React.FC = () => {
         </article>
 
         <article className="relative flex-none w-[90%] sm:w-[75%] md:w-[calc((100%-2rem)/3)] min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm snap-start">
-          <img src={toAssetUrl('/kampanis.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-cover" />
+          <img src={toAssetUrl('/Shoe Care/shoe care 1.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
             <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Shoe Care</h3>
@@ -1997,7 +2053,17 @@ const ShopPage: React.FC = () => {
                 <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
               </div>
               <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
-              <p className="text-[#F5A623] text-sm font-black mt-1">{product.price}</p>
+              <div className="mt-1 flex items-center justify-between gap-2">
+                <p className="text-[#F5A623] text-sm font-black">{product.price}</p>
+                <a
+                  href={`https://wa.me/256773207919?text=${encodeURIComponent(`Hi Eagles RFC, I want to buy ${product.name}.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
+                >
+                  Buy Now
+                </a>
+              </div>
             </article>
           ))}
         </div>
@@ -2009,9 +2075,105 @@ const ShopPage: React.FC = () => {
         <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black">Shop</p>
         <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534]">Footwear</h2>
       </div>
-      <p className="text-gray-600 text-sm">
-        New boots, trainers, and game-day footwear are arriving soon. Contact us for availability and sizing.
-      </p>
+      <div className="relative">
+        {canScrollFootwearLeft && (
+          <button
+            type="button"
+            onClick={() => scrollFootwear('left')}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/95 border border-[#d7deea] rounded-full flex items-center justify-center shadow-md text-[#081534] hover:bg-[#F5A623] hover:text-black transition-all -ml-2"
+            aria-label="Scroll footwear left"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+        )}
+        {canScrollFootwearRight && (
+          <button
+            type="button"
+            onClick={() => scrollFootwear('right')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/95 border border-[#d7deea] rounded-full flex items-center justify-center shadow-md text-[#081534] hover:bg-[#F5A623] hover:text-black transition-all -mr-2"
+            aria-label="Scroll footwear right"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
+          </button>
+        )}
+        <div
+          ref={footwearScrollRef}
+          onScroll={checkFootwearScroll}
+          className="flex gap-4 overflow-x-auto pb-3 pr-2 scroll-smooth snap-x"
+        >
+        <article className="flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]" style={{ width: 260, height: 360 }}>
+          <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
+            <img src={toAssetUrl('/Footwear/cole haan two.jpeg')} alt="Cole Haan Two" className="w-full h-full object-cover" />
+          </div>
+          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">Cole Haan Two</h3>
+          <div className="mt-1 flex items-center justify-between gap-2">
+            <p className="text-[#F5A623] text-sm font-black">UGX 1,300,000</p>
+            <a
+              href={`https://wa.me/256773207919?text=${encodeURIComponent('Hi Eagles RFC, I want to buy Cole Haan Two.')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
+            >
+              Buy Now
+            </a>
+          </div>
+        </article>
+
+        <article className="flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]" style={{ width: 260, height: 360 }}>
+          <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
+            <img src={toAssetUrl('/Footwear/cole haan three.webp')} alt="Cole Haan 3" className="w-full h-full object-cover" />
+          </div>
+          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">Cole Haan 3</h3>
+          <div className="mt-1 flex items-center justify-between gap-2">
+            <p className="text-[#F5A623] text-sm font-black">UGX 1,250,000</p>
+            <a
+              href={`https://wa.me/256773207919?text=${encodeURIComponent('Hi Eagles RFC, I want to buy Cole Haan 3.')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
+            >
+              Buy Now
+            </a>
+          </div>
+        </article>
+
+        <article className="flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]" style={{ width: 260, height: 360 }}>
+          <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
+            <img src={toAssetUrl('/Footwear/cole haan four.webp')} alt="Cole Haan Four" className="w-full h-full object-cover" />
+          </div>
+          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">Cole Haan Four</h3>
+          <div className="mt-1 flex items-center justify-between gap-2">
+            <p className="text-[#F5A623] text-sm font-black">UGX 1,350,000</p>
+            <a
+              href={`https://wa.me/256773207919?text=${encodeURIComponent('Hi Eagles RFC, I want to buy Cole Haan Four.')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
+            >
+              Buy Now
+            </a>
+          </div>
+        </article>
+
+        <article className="flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]" style={{ width: 260, height: 360 }}>
+          <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
+            <img src={toAssetUrl('/Footwear/cole haan five.webp')} alt="Cole Haan Five" className="w-full h-full object-cover" />
+          </div>
+          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">Cole Haan Five</h3>
+          <div className="mt-1 flex items-center justify-between gap-2">
+            <p className="text-[#F5A623] text-sm font-black">UGX 1,250,000</p>
+            <a
+              href={`https://wa.me/256773207919?text=${encodeURIComponent('Hi Eagles RFC, I want to buy Cole Haan Five.')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
+            >
+              Buy Now
+            </a>
+          </div>
+        </article>
+        </div>
+      </div>
     </section>
 
     <section id="shop-shoe-care" className="scroll-mt-32 bg-white border border-[#e2e7f0] rounded-xl p-6 space-y-3">
@@ -2708,17 +2870,42 @@ const GalleryPage: React.FC = () => {
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
+  const [pendingShopSectionId, setPendingShopSectionId] = useState<string | null>(null);
+
+  const navigateToPage = (target: string) => {
+    const [page, sectionId] = target.split('#');
+    setCurrentPage(page);
+    if (page === 'shop' && sectionId) {
+      setPendingShopSectionId(sectionId);
+      return;
+    }
+    setPendingShopSectionId(null);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentPage]);
 
+  useEffect(() => {
+    if (currentPage !== 'shop' || !pendingShopSectionId) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      const section = document.getElementById(pendingShopSectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      setPendingShopSectionId(null);
+    }, 60);
+    return () => window.clearTimeout(timer);
+  }, [currentPage, pendingShopSectionId]);
+
   return (
     <div className="min-h-screen bg-[#f4f4f4]">
-      <Header currentPage={currentPage} onNavigate={setCurrentPage} />
+      <Header currentPage={currentPage} onNavigate={navigateToPage} />
       
       <main className="max-w-[1700px] mx-auto px-4 lg:px-12 mt-6">
-        {currentPage === 'home' ? <HomePage onNavigate={setCurrentPage} /> : null}
+        {currentPage === 'home' ? <HomePage onNavigate={navigateToPage} /> : null}
         {currentPage === 'about' ? <AboutPage /> : null}
         {currentPage === 'history' ? <HistoryPage /> : null}
         {currentPage === 'squad' ? <SquadPage /> : null}
