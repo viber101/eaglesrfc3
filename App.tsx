@@ -44,6 +44,7 @@ type FixtureScore = {
 
 const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-vote-v1';
 const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-token-v1';
+const POLL_MATCH_DATE_LABEL = 'SUN 1ST FEB';
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
 const PLAYER_SPONSORS = [
@@ -865,6 +866,11 @@ const MatchPollWidget: React.FC = () => {
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-[11px] font-black uppercase tracking-[0.2em]">Match Poll</h3>
         <p aria-live="polite" className="text-xs font-black uppercase tracking-wide">TOTAL VOTES: {totalVotes}</p>
+      </div>
+
+      <div className="mb-3 border-2 border-black bg-[#F5A623] text-black rounded-md px-3 py-2 text-center shadow-[2px_2px_0_#000]">
+        <p className="text-[10px] font-black uppercase tracking-[0.12em]">Match Date</p>
+        <p className="text-sm font-black uppercase tracking-wide">{POLL_MATCH_DATE_LABEL}</p>
       </div>
 
       <p className="text-xs font-black uppercase tracking-wide mb-3"><span className="text-[#F5A623]">Eagles</span> vs Golden Badgers</p>
