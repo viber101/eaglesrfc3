@@ -1209,17 +1209,33 @@ const StatTiles: React.FC<{ stats: Array<{ label: string; value: string; descrip
   </div>
 );
 
-const ContactCtaCard: React.FC<{ title: string; subtitle: string }> = ({ title, subtitle }) => (
+const ContactCtaCard: React.FC<{ title: string; subtitle: string; showDonateButton?: boolean }> = ({
+  title,
+  subtitle,
+  showDonateButton = false
+}) => (
   <div className="bg-black text-white rounded-xl p-6 border border-[#F5A623]/40">
     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623] mb-2">{subtitle}</p>
     <h3 className="text-2xl font-black uppercase tracking-tight mb-3">{title}</h3>
     <p className="text-sm text-gray-300 mb-4">{CONTACT_INFO.name} | {CONTACT_INFO.role}</p>
-    <a
-      href={CONTACT_INFO.phoneHref}
-      className="inline-flex items-center justify-center bg-[#F5A623] text-black px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest hover:bg-white transition-colors"
-    >
-      Call {CONTACT_INFO.phone}
-    </a>
+    <div className="flex flex-wrap items-center gap-3">
+      <a
+        href={CONTACT_INFO.phoneHref}
+        className="inline-flex items-center justify-center bg-[#F5A623] text-black px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest hover:bg-white transition-colors"
+      >
+        Call {CONTACT_INFO.phone}
+      </a>
+      {showDonateButton ? (
+        <a
+          href="https://tip.vanvaa.com/?q=MTcxMg=="
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center border border-[#F5A623] text-[#F5A623] px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest hover:bg-[#F5A623] hover:text-black transition-colors"
+        >
+          Donate
+        </a>
+      ) : null}
+    </div>
   </div>
 );
 
@@ -1254,12 +1270,9 @@ const TierCard: React.FC<{ tier: SponsorshipTier }> = ({ tier }) => {
         </button>
       </div>
 
-      <ul className="space-y-2 mb-3">
+      <ul className="space-y-2 mb-3 list-disc pl-5 marker:text-[#F5A623]">
         {tier.keyInclusions.map((inclusion) => (
-          <li key={inclusion} className="text-sm text-gray-700 flex items-start gap-2">
-            <span className="text-[#F5A623] font-black">â€¢</span>
-            <span>{inclusion}</span>
-          </li>
+          <li key={inclusion} className="text-sm text-gray-700">{inclusion}</li>
         ))}
       </ul>
 
@@ -1348,7 +1361,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                   }}
                   className="inline-flex items-center gap-1 text-white text-[11px] font-black uppercase tracking-widest hover:text-[#F5A623] transition-colors mt-0.5"
                 >
-                  STATS
+                  PROFILE
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M14 3h7v7" />
                     <path d="M10 14L21 3" />
@@ -1359,18 +1372,18 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               </div>
               <div className="mx-4 border-t border-white/20" />
               <div className={`px-4 overflow-hidden transition-all duration-300 ${isActive ? 'max-h-28 opacity-100 pb-3' : 'max-h-0 opacity-0 pb-0'}`}>
-                <div className="pt-3 grid grid-cols-3 gap-3 text-white">
-                  <div>
+                <div className="pt-3 flex items-start text-white text-center">
+                  <div className="flex-1">
                     <p className="text-[2rem] font-black leading-none">{age}</p>
-                    <p className="text-[11px] uppercase tracking-wider text-white/90 font-medium">Age</p>
+                    <p className="text-[11px] leading-none uppercase tracking-wider text-white/90 font-medium">Age</p>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-[2rem] font-black leading-none">{matches}</p>
-                    <p className="text-[11px] uppercase tracking-wider text-white/90 font-medium">Matches</p>
+                    <p className="text-[11px] leading-none uppercase tracking-wider text-white/90 font-medium">KGS</p>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-[2rem] font-black leading-none">{points}</p>
-                    <p className="text-[11px] uppercase tracking-wider text-white/90 font-medium">Points</p>
+                    <p className="text-[11px] leading-none uppercase tracking-wider text-white/90 font-medium">CM</p>
                   </div>
                 </div>
               </div>
@@ -1650,15 +1663,29 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       </div>
     </section>
 
-    <section className="mb-16">
-      <SectionHeader title="Why Support Eagles" />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {HOME_CONTENT.whySupport.map((item) => (
-          <article key={item.title} className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
-            <h3 className="text-[#081534] text-xl font-black uppercase tracking-tight mb-2">{item.title}</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
-          </article>
-        ))}
+    <section className="mb-16 relative overflow-hidden rounded-2xl border border-[#d9e1ef] bg-[linear-gradient(145deg,#f8fbff_0%,#f2f6fd_45%,#eef3fb_100%)] px-4 sm:px-6 lg:px-8 py-7 sm:py-8">
+      <div className="absolute -top-14 -right-10 w-56 h-56 rounded-full bg-[#F5A623]/10 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-16 -left-10 w-52 h-52 rounded-full bg-[#0b1f4a]/10 blur-3xl pointer-events-none" />
+      <div className="relative">
+        <div className="mb-5 sm:mb-6">
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.22em] font-black text-[#F5A623] mb-2">Partnership Impact</p>
+          <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] leading-none">Why Support Eagles</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+          {HOME_CONTENT.whySupport.map((item, index) => (
+            <article
+              key={item.title}
+              className="group rounded-xl border border-[#dbe4f1] bg-white/95 backdrop-blur-sm p-5 sm:p-6 shadow-[0_10px_24px_rgba(8,21,52,0.08)] hover:shadow-[0_14px_28px_rgba(8,21,52,0.14)] hover:-translate-y-1 transition-all duration-300"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-black text-[#F5A623] text-[11px] font-black">{index + 1}</span>
+                <span className="text-[10px] uppercase tracking-[0.18em] text-[#6a7790] font-black">Strategic Priority</span>
+              </div>
+              <h3 className="text-[#081534] text-xl font-black uppercase tracking-tight mb-2.5">{item.title}</h3>
+              <p className="text-[#4d5f7d] text-sm leading-relaxed">{item.description}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   </>
@@ -1797,18 +1824,18 @@ const SquadPage: React.FC = () => {
               <h3 className="text-sm font-black uppercase tracking-tight">{player.name}</h3>
               <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">{player.position}</p>
               <div className={`overflow-hidden transition-all duration-300 ${isActive ? 'max-h-20 opacity-100 mt-3 pt-3 border-t border-[#e2e7f0]' : 'max-h-0 opacity-0 mt-0 pt-0 border-t-0'}`}>
-                <div className="grid grid-cols-3 gap-2 text-[#081534]">
-                  <div>
+                <div className="flex items-start text-[#081534] text-center">
+                  <div className="flex-1">
                     <p className="text-xl leading-none font-black">{age}</p>
-                    <p className="text-[10px] uppercase tracking-wider font-bold text-gray-500">Age</p>
+                    <p className="text-[10px] leading-none uppercase tracking-wider font-bold text-gray-500">Age</p>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-xl leading-none font-black">{matches}</p>
-                    <p className="text-[10px] uppercase tracking-wider font-bold text-gray-500">Matches</p>
+                    <p className="text-[10px] leading-none uppercase tracking-wider font-bold text-gray-500">KGS</p>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-xl leading-none font-black">{points}</p>
-                    <p className="text-[10px] uppercase tracking-wider font-bold text-gray-500">Points</p>
+                    <p className="text-[10px] leading-none uppercase tracking-wider font-bold text-gray-500">CM</p>
                   </div>
                 </div>
               </div>
@@ -2279,7 +2306,7 @@ const DonatePage: React.FC = () => (
 const PlayerSponsorPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
     <section className="relative rounded-2xl overflow-hidden border border-[#d9e0ec] bg-[#081534]">
-      <img src={toAssetUrl(PAGE_IMAGES.playerSponsorHero)} alt="Player sponsor" className="absolute inset-0 w-full h-full object-cover opacity-35" />
+      <img src={toAssetUrl('/Player Sponsor/winners.jpeg')} alt="Player sponsor" className="absolute inset-0 w-full h-full object-cover opacity-35" />
       <div className="absolute inset-0 bg-gradient-to-r from-[#081534]/95 via-[#081534]/80 to-[#081534]/45" />
       <div className="relative z-10 p-8 sm:p-10">
         <p className="text-[#F5A623] text-xs font-black uppercase tracking-[0.28em] mb-2">Sponsor a Player</p>
@@ -2303,35 +2330,31 @@ const PlayerSponsorPage: React.FC = () => (
     </section>
 
     <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <article className="rounded-xl overflow-hidden border border-[#dce3ef] bg-white">
-        <img src="/fitness centre/any.jpeg" alt="Tyre strength action" className="w-full h-56 object-cover" />
-        <div className="p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-[#4d6185]">Action Image 01</p>
-          <h3 className="text-lg font-black uppercase tracking-tight text-[#081534] mt-1">Strength and Conditioning</h3>
-        </div>
-      </article>
-      <article className="rounded-xl overflow-hidden border border-[#dce3ef] bg-white">
-        <img src="/fitness centre/jasper.jpeg" alt="Sprint training action" className="w-full h-56 object-cover" />
-        <div className="p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-[#4d6185]">Action Image 02</p>
-          <h3 className="text-lg font-black uppercase tracking-tight text-[#081534] mt-1">Speed and Agility</h3>
-        </div>
-      </article>
-      <article className="rounded-xl overflow-hidden border border-[#dce3ef] bg-white">
-        <img src="/fitness centre/griffin.jpeg" alt="Team training action" className="w-full h-56 object-cover" />
-        <div className="p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-[#4d6185]">Action Image 03</p>
-          <h3 className="text-lg font-black uppercase tracking-tight text-[#081534] mt-1">Team Match Preparation</h3>
-        </div>
-      </article>
+      {[
+        { src: '/Player Sponsor/griffin.jpeg', title: 'Strength and Conditioning', alt: 'Strength and conditioning action', badge: 'Griffin Paul' },
+        { src: '/Player Sponsor/pele.jpeg', title: 'Speed and Agility', alt: 'Speed and agility action', badge: 'Julius Omongin' },
+        { src: '/Player Sponsor/team 1.jpeg', title: 'Team Match Preparation', alt: 'Team match preparation action', badge: 'Team Eagles' }
+      ].map((item) => (
+        <article key={item.src} className="relative overflow-hidden rounded-2xl border border-[#1f2a44] bg-[#070b16] h-[270px] group shadow-[0_14px_32px_rgba(0,0,0,0.35)]">
+          <img src={toAssetUrl(item.src)} alt={item.alt} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_88%_8%,rgba(245,166,35,0.35),transparent_30%)] pointer-events-none" />
+          <div className="absolute top-3 left-3 inline-flex items-center rounded-full bg-black/70 border border-white/20 px-2.5 py-1">
+            <span className="text-[10px] text-[#F5A623] font-black uppercase tracking-[0.16em]">{item.badge}</span>
+          </div>
+          <h3 className="absolute bottom-3 left-3 right-3 text-white text-xl sm:text-2xl font-black uppercase tracking-tight leading-tight drop-shadow-md">
+            {item.title}
+          </h3>
+        </article>
+      ))}
     </section>
 
     <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
       <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
         <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">What Your Sponsorship Supports</h2>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {PLAYER_SPONSOR_CONTENT.supports.map((item) => (
-            <p key={item} className="text-sm text-gray-700 font-semibold">- {item}</p>
+            <article key={item} className="rounded-lg border border-[#e2e7f0] p-4 text-sm text-gray-700 bg-[#f8fafd]">{item}</article>
           ))}
         </div>
       </article>
@@ -2345,80 +2368,167 @@ const PlayerSponsorPage: React.FC = () => (
       </article>
     </section>
 
-    <ContactCtaCard title="Start a Player Sponsorship" subtitle="UGX 200,000 Monthly" />
-  </div>
-);
-
-const FitnessCenterPage: React.FC = () => (
-  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
-    <section className="relative rounded-2xl overflow-hidden border border-[#d9e0ec] bg-[#081534]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,166,35,0.2),transparent_45%)]" />
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 lg:p-8">
-        <div className="lg:col-span-6 flex flex-col justify-center">
-          <p className="text-[#F5A623] text-xs font-black uppercase tracking-[0.25em] mb-2">Eagles Performance</p>
-          <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter text-white mb-3">Fitness Center</h1>
-          <p className="text-[#dbe4f2] max-w-2xl leading-relaxed mb-4">{FITNESS_CONTENT.intro}</p>
-          <div className="inline-flex items-center gap-2 bg-[#F5A623] text-black rounded-full px-4 py-2 text-xs font-black uppercase tracking-widest w-fit">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
-            <span>{FITNESS_CONTENT.schedule}</span>
-          </div>
-        </div>
-        <div className="lg:col-span-6 grid grid-cols-2 gap-3">
-          <article className="col-span-2 rounded-xl overflow-hidden border border-white/15 bg-black/15 h-[320px]">
-            <img src={toAssetUrl('/fitness centre/any.jpeg')} alt="Athlete carrying tyres" className="w-full h-full object-contain object-center bg-black/20" />
-          </article>
-          <article className="rounded-xl overflow-hidden border border-white/15 bg-black/15 h-[150px]">
-            <img src={toAssetUrl('/fitness centre/jasper.jpeg')} alt="Speed drill" className="w-full h-full object-cover" />
-          </article>
-          <article className="rounded-xl overflow-hidden border border-white/15 bg-black/15 h-[150px]">
-            <img src={toAssetUrl('/fitness centre/griffin.jpeg')} alt="Team fitness drill" className="w-full h-full object-cover" />
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
-        <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534] mb-3">Pricing and Access</h2>
-        <div className="space-y-2">
-          {FITNESS_CONTENT.pricing.map((item) => (
-            <p key={item} className="text-sm text-gray-700 font-semibold">- {item}</p>
-          ))}
-        </div>
-      </article>
-      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
-        <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534] mb-3">Program Benefits</h2>
-        <div className="space-y-2">
-          {FITNESS_CONTENT.benefits.map((item) => (
-            <p key={item} className="text-sm text-gray-700 font-semibold">- {item}</p>
-          ))}
-        </div>
-      </article>
-    </section>
-
     <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
-      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Where Session Fees Go</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        {FITNESS_CONTENT.feeUse.map((item) => (
-          <article key={item} className="bg-[#f6f8fb] border border-[#dce3ef] rounded-lg p-4 text-sm text-gray-700 font-semibold">
-            {item}
+      <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Sponsor Benefits (UGX 200,000 / Month)</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {[
+          'Official sponsor recognition on club digital platforms.',
+          'Sponsor mention in selected matchday and campaign communications.',
+          'Brand visibility through player-linked content opportunities.',
+          'Invitation to selected club activities and networking opportunities.',
+          'Contribution acknowledgment for direct athlete development support.',
+          'Partnership profile as a youth and community impact supporter.'
+        ].map((benefit) => (
+          <article key={benefit} className="rounded-lg border border-[#e2e7f0] p-4 text-sm text-gray-700 bg-[#f8fafd]">
+            {benefit}
           </article>
         ))}
       </div>
     </section>
 
-    <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <article className="rounded-xl overflow-hidden border border-[#dce3ef] h-[260px]">
-        <img src={toAssetUrl('/fitness centre/paul.jpeg')} alt="Tyre strength training" className="w-full h-full object-contain bg-[#0b1020]" />
+    <ContactCtaCard title="Start a Player Sponsorship" subtitle="UGX 200,000 Monthly" />
+  </div>
+);
+
+const FitnessCenterPage: React.FC = () => {
+  const drillScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollDrillLeft, setCanScrollDrillLeft] = useState(false);
+  const [canScrollDrillRight, setCanScrollDrillRight] = useState(false);
+
+  const checkDrillScroll = () => {
+    if (!drillScrollRef.current) {
+      return;
+    }
+    const { scrollLeft, scrollWidth, clientWidth } = drillScrollRef.current;
+    setCanScrollDrillLeft(scrollLeft > 0);
+    setCanScrollDrillRight(scrollLeft < scrollWidth - clientWidth - 5);
+  };
+
+  useEffect(() => {
+    checkDrillScroll();
+    window.addEventListener('resize', checkDrillScroll);
+    return () => window.removeEventListener('resize', checkDrillScroll);
+  }, []);
+
+  const scrollDrills = (direction: 'left' | 'right') => {
+    if (!drillScrollRef.current) {
+      return;
+    }
+    const scrollAmount = drillScrollRef.current.clientWidth * 0.85;
+    drillScrollRef.current.scrollBy({
+      left: direction === 'right' ? scrollAmount : -scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
+  return (
+  <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
+    <section className="relative overflow-hidden rounded-2xl border border-[#1f2e52] bg-[#050a14] text-white">
+      <img src={toAssetUrl('/fitness centre/jasper.jpeg')} alt="Fitness training session" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#040913] via-[#050a14]/92 to-[#050a14]/70" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(245,166,35,0.3),transparent_40%)]" />
+      <div className="relative z-10 p-6 sm:p-8 lg:p-10">
+        <p className="text-[#F5A623] text-[10px] sm:text-xs font-black uppercase tracking-[0.26em] mb-3">Eagles Performance</p>
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase italic tracking-tighter leading-none mb-4">Fitness Center</h1>
+        <p className="max-w-3xl text-[#dce5f5] text-sm sm:text-base leading-relaxed mb-6">{FITNESS_CONTENT.intro}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-4xl">
+          <article className="rounded-lg border border-white/15 bg-white/5 px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#9db0d0] font-black">Schedule</p>
+            <p className="text-sm font-bold text-white leading-relaxed">{FITNESS_CONTENT.schedule}</p>
+          </article>
+          <article className="rounded-lg border border-white/15 bg-white/5 px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#9db0d0] font-black">Price Point</p>
+            <p className="text-sm font-bold text-white leading-relaxed">{FITNESS_CONTENT.pricing[0]}</p>
+          </article>
+          <article className="rounded-lg border border-white/15 bg-white/5 px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#9db0d0] font-black">Member Benefit</p>
+            <p className="text-sm font-bold text-white leading-relaxed">{FITNESS_CONTENT.pricing[1]}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-5">
+      <article className="bg-white border border-[#dbe4f1] rounded-xl p-6 sm:p-7 shadow-[0_12px_28px_rgba(8,21,52,0.07)]">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Program Benefits</p>
+        <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Why Train With Eagles</h2>
+        <ul className="space-y-3 list-disc pl-5 marker:text-[#F5A623]">
+          {FITNESS_CONTENT.benefits.map((item) => (
+            <li key={item} className="text-sm sm:text-base text-[#1f2f4d] leading-relaxed">{item}</li>
+          ))}
+        </ul>
       </article>
-      <article className="rounded-xl overflow-hidden border border-[#dce3ef] h-[260px]">
-        <img src={toAssetUrl('/fitness centre/griffin.jpeg')} alt="Team conditioning" className="w-full h-full object-cover" />
+      <article className="bg-[#081534] border border-[#1d3468] rounded-xl p-6 sm:p-7 text-white">
+        <p className="text-[#F5A623] text-[10px] uppercase tracking-[0.2em] font-black mb-2">Pricing and Access</p>
+        <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter mb-4">Simple and Clear</h2>
+        <div className="space-y-3">
+          {FITNESS_CONTENT.pricing.map((item) => (
+            <article key={item} className="rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold text-[#e5ecf9]">
+              {item}
+            </article>
+          ))}
+        </div>
+        <p className="mt-5 text-xs uppercase tracking-[0.15em] text-[#a8b7d3] font-black">Train consistently. Progress safely. Stay accountable.</p>
       </article>
+    </section>
+
+    <section className="rounded-xl border border-[#dbe4f1] bg-white p-6 sm:p-7 shadow-sm">
+      <div className="mb-5">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Operational Transparency</p>
+        <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534]">Where Session Fees Go</h2>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {FITNESS_CONTENT.feeUse.map((item) => (
+          <article key={item} className="rounded-lg border border-[#dde5f1] bg-[#f8fafd] p-4">
+            <p className="text-sm text-[#233455] font-semibold leading-relaxed">{item}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section className="relative">
+      {canScrollDrillLeft ? (
+        <button
+          onClick={() => scrollDrills('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 bg-white/95 border border-[#d8e1ef] rounded-full flex items-center justify-center shadow-md text-[#081534] hover:bg-white transition-colors -ml-3"
+          aria-label="Scroll drills left"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+      ) : null}
+      {canScrollDrillRight ? (
+        <button
+          onClick={() => scrollDrills('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 bg-white/95 border border-[#d8e1ef] rounded-full flex items-center justify-center shadow-md text-[#081534] hover:bg-white transition-colors -mr-3"
+          aria-label="Scroll drills right"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4" d="M9 5l7 7-7 7" /></svg>
+        </button>
+      ) : null}
+      <div
+        ref={drillScrollRef}
+        onScroll={checkDrillScroll}
+        className="flex gap-4 overflow-x-auto pb-2 pr-2 scroll-smooth snap-x snap-mandatory scrollbar-hide"
+      >
+        {[
+          { src: '/fitness centre/chin up 2.png', label: 'Chin Up' },
+          { src: '/fitness centre/push up planks.png', label: 'Push Up Planks' },
+          { src: '/fitness centre/shuttle rans.png', label: 'Shuttle Runs' },
+          { src: '/fitness centre/tyre flip.png', label: 'Tyre Flip' }
+        ].map((item) => (
+          <article key={item.src} className="relative overflow-hidden rounded-xl border border-[#dce3ef] h-[250px] min-w-[280px] sm:min-w-[320px] lg:min-w-[360px] snap-start group">
+            <img src={toAssetUrl(item.src)} alt={item.label} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+            <p className="absolute bottom-3 left-3 text-white text-lg sm:text-xl font-black uppercase tracking-wide">{item.label}</p>
+          </article>
+        ))}
+      </div>
     </section>
 
     <ContactCtaCard title="Register for Fitness Sessions" subtitle="UGX 20,000 Per Session" />
   </div>
-);
+  );
+};
 
 const ProjectsPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
@@ -2473,11 +2583,60 @@ const FoundationPage: React.FC = () => (
       ))}
     </div>
 
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 lg:p-8 shadow-sm">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">How The Foundation Works</p>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Support Model</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <article className="rounded-lg border border-[#e2e7f0] bg-[#f8fafd] p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black mb-2">Step 01</p>
+          <h3 className="text-sm font-black uppercase tracking-wide text-[#081534] mb-2">Identification</h3>
+          <p className="text-sm text-gray-700 leading-relaxed">We work with families, schools, and community partners to identify children most at risk of dropping out due to financial barriers.</p>
+        </article>
+        <article className="rounded-lg border border-[#e2e7f0] bg-[#f8fafd] p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black mb-2">Step 02</p>
+          <h3 className="text-sm font-black uppercase tracking-wide text-[#081534] mb-2">Targeted Support</h3>
+          <p className="text-sm text-gray-700 leading-relaxed">Resources are directed to priority needs including school fees support, learning continuity, and youth development pathways through sport.</p>
+        </article>
+        <article className="rounded-lg border border-[#e2e7f0] bg-[#f8fafd] p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black mb-2">Step 03</p>
+          <h3 className="text-sm font-black uppercase tracking-wide text-[#081534] mb-2">Follow-up and Impact</h3>
+          <p className="text-sm text-gray-700 leading-relaxed">We monitor participation, retention, and progress to ensure assistance translates into sustained education and healthier long-term outcomes.</p>
+        </article>
+      </div>
+    </section>
+
+    <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+        <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Priority Areas</h2>
+        <div className="space-y-3">
+          {[
+            'School fees and education continuity support',
+            'Youth mentorship and character development through rugby',
+            'Basic learning and welfare support for vulnerable children',
+            'Community partnerships for inclusive youth participation',
+            'Sustainable pathways from school to life opportunities'
+          ].map((item) => (
+            <article key={item} className="rounded-lg border border-[#e2e7f0] p-4 text-sm text-gray-700 bg-[#f8fafd]">{item}</article>
+          ))}
+        </div>
+      </article>
+      <article className="bg-[#081534] border border-[#1a2f5d] rounded-xl p-6 shadow-sm text-white">
+        <h2 className="text-3xl font-black uppercase italic tracking-tighter mb-4">Governance and Accountability</h2>
+        <div className="space-y-3 text-sm leading-relaxed text-[#d9e3f4]">
+          <p>Foundation support is implemented with clear purpose and practical oversight to ensure funds are directed to genuine needs.</p>
+          <p>We prioritize transparent partner engagement, responsible resource use, and measurable social outcomes for every supported program.</p>
+          <p>Our commitment is to long-term impact, not one-off relief, by strengthening education access and youth development systems over time.</p>
+        </div>
+      </article>
+    </section>
+
     <InfoSection title="Partnership">
       <p>{FOUNDATION_CONTENT.partnership}</p>
+      <p className="mt-2">Partners can support through direct sponsorship, annual commitments, in-kind support, or collaborative community programs aligned to education and youth wellbeing goals.</p>
+      <p className="mt-2 font-black uppercase tracking-wider text-[#081534]">Support Education. Build Resilience. Empower Futures.</p>
     </InfoSection>
     <PhotoStrip images={PAGE_IMAGES.foundationGallery} label="Foundation Impact" />
-    <ContactCtaCard title="Partner With Eagles Foundation" subtitle="Education and Opportunity" />
+    <ContactCtaCard title="Partner With Eagles Foundation" subtitle="Education and Opportunity" showDonateButton />
   </div>
 );
 
@@ -2623,86 +2782,119 @@ const ServiceImageCard: React.FC<{
 
 const OtherServicesPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
-    <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
-      <img src="/other%20services/web%20design.png" alt="Other services" className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-[#081534]/80" />
-      <div className="relative z-10">
-        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Other Services</h1>
-        <p className="text-[#d4deef] max-w-4xl">
+    <section className="relative overflow-hidden rounded-2xl border border-[#1f2a44] bg-[#050a14] text-white">
+      <img src="/other%20services/web%20design.png" alt="Other services" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#040913] via-[#050a14]/92 to-[#050a14]/70" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_18%,rgba(245,166,35,0.25),transparent_42%)]" />
+      <div className="relative z-10 p-6 sm:p-8 lg:p-10">
+        <p className="text-[#F5A623] text-[10px] sm:text-xs font-black uppercase tracking-[0.24em] mb-3">Digital Services Unit</p>
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase italic tracking-tighter leading-none mb-4">Other Services</h1>
+        <p className="text-[#d4deef] max-w-3xl text-sm sm:text-base leading-relaxed">
           Eagles Rugby Club offers professional digital services as part of our sustainability and innovation strategy.
         </p>
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-4xl">
+          <article className="rounded-lg border border-white/20 bg-white/5 px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#9db0d0] font-black">Delivery Focus</p>
+            <p className="text-sm font-bold text-white">Practical and Reliable Solutions</p>
+          </article>
+          <article className="rounded-lg border border-white/20 bg-white/5 px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#9db0d0] font-black">Client Segments</p>
+            <p className="text-sm font-bold text-white">Business, Schools, NGOs, Sports</p>
+          </article>
+          <article className="rounded-lg border border-white/20 bg-white/5 px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#9db0d0] font-black">Service Scope</p>
+            <p className="text-sm font-bold text-white">Web, App, SMS, Design</p>
+          </article>
+        </div>
       </div>
     </section>
 
-    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <ServiceImageCard
-        title="Web Services"
-        subtitle="Modern websites for organizations and businesses."
-        imageUrl="/other%20services/web%20design.png"
-        fallbackImageUrl="/other%20services/web%20design.png"
-        badge="Web"
-      />
-      <ServiceImageCard
-        title="App Development"
-        subtitle="Scalable Android, iOS, and cross-platform solutions."
-        imageUrl="/other%20services/app%20development.png"
-        fallbackImageUrl="/other%20services/app%20development.png"
-        badge="App"
-      />
-      <ServiceImageCard
-        title="SMS Marketing"
-        subtitle="Bulk SMS campaigns with targeted communication."
-        imageUrl="/other%20services/sms%20marketing.png"
-        fallbackImageUrl="/other%20services/sms%20marketing.png"
-        badge="SMS"
-      />
-      <ServiceImageCard
-        title="Poster Design"
-        subtitle="Professional poster designs for promotions and events."
-        imageUrl="/other%20services/poster%20design.png"
-        fallbackImageUrl="/other%20services/poster%20design.png"
-        badge="Design"
-      />
+    <section>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Core Service Offers</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <ServiceImageCard
+          title="Web Services"
+          subtitle="Modern websites for organizations and businesses."
+          imageUrl="/other%20services/web%20design.png"
+          fallbackImageUrl="/other%20services/web%20design.png"
+          badge="Web"
+        />
+        <ServiceImageCard
+          title="App Development"
+          subtitle="Scalable Android, iOS, and cross-platform solutions."
+          imageUrl="/other%20services/app%20development.png"
+          fallbackImageUrl="/other%20services/app%20development.png"
+          badge="App"
+        />
+        <ServiceImageCard
+          title="SMS Marketing"
+          subtitle="Bulk SMS campaigns with targeted communication."
+          imageUrl="/other%20services/sms%20marketing.png"
+          fallbackImageUrl="/other%20services/sms%20marketing.png"
+          badge="SMS"
+        />
+        <ServiceImageCard
+          title="Poster Design"
+          subtitle="Professional poster designs for promotions and events."
+          imageUrl="/other%20services/poster%20design.png"
+          fallbackImageUrl="/other%20services/poster%20design.png"
+          badge="Design"
+        />
+      </div>
     </section>
 
-    <InfoSection title="Eagles Rugby Club - Web Design Services">
-      <p>We offer professional web design services for businesses, schools, NGOs, and sports organizations, delivering modern, functional, and results-driven websites.</p>
-      <p><strong>Services include:</strong> Corporate/business websites, school websites, NGO/community websites, e-commerce platforms, sports/event websites, redesign/modernization, maintenance/support, and domain/hosting guidance.</p>
-      <p><strong>Why choose us:</strong> responsive design, affordable pricing, tailored solutions, and ongoing support.</p>
-    </InfoSection>
+    <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+        <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Web and App Solutions</h2>
+        <div className="space-y-3 text-sm text-gray-700 leading-relaxed">
+          <p>We offer professional web design services for businesses, schools, NGOs, and sports organizations, delivering modern, functional, and results-driven websites.</p>
+          <p><strong>Services include:</strong> Corporate/business websites, school websites, NGO/community websites, e-commerce platforms, sports/event websites, redesign/modernization, maintenance/support, and domain/hosting guidance.</p>
+          <p>We provide Android, iOS, cross-platform, and custom enterprise app development for practical, scalable digital transformation.</p>
+          <p><strong>Services include:</strong> business apps, school management systems, sports club management apps, e-commerce apps, and maintenance/upgrades.</p>
+          <p><strong>Why choose us:</strong> responsive design, user-centered implementation, tailored solutions, affordable pricing, and reliable technical support.</p>
+        </div>
+      </article>
+      <article className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+        <h2 className="text-3xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">SMS and Design Services</h2>
+        <div className="space-y-3 text-sm text-gray-700 leading-relaxed">
+          <p>We deliver professional SMS campaigns for businesses, schools, NGOs, and organizations with direct, high-engagement communication.</p>
+          <p><strong>Services include:</strong> bulk SMS campaigns, promotions, event reminders, school alerts, product announcements, customer engagement, awareness messaging, and full campaign management.</p>
+          <p>Eagles Rugby Club offers professional poster design services for organizations and individuals at <strong>UGX 50,000 per poster</strong>.</p>
+          <p><strong>Benefits:</strong> professionally designed visuals for campaigns, product promotions, school communication, event publicity, and social media awareness.</p>
+          <p><strong>Why choose us:</strong> instant delivery, wide reach, cost-effective campaigns, targeted communication, and strategy support.</p>
+        </div>
+      </article>
+    </section>
 
-    <InfoSection title="Eagles Rugby Club - App Development Services">
-      <p>We provide Android, iOS, cross-platform, and custom enterprise app development for practical, scalable digital transformation.</p>
-      <p><strong>Services include:</strong> business apps, school management systems, sports club management apps, e-commerce apps, and maintenance/upgrades.</p>
-      <p><strong>Why choose us:</strong> scalable solutions, user-centered design, affordable pricing, and reliable technical support.</p>
-    </InfoSection>
+    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 shadow-sm">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Service Standards</p>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Why Clients Work With Us</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {[
+          'Professional delivery with practical outcomes',
+          'Affordable pricing models and clear scope',
+          'Tailored solutions aligned to each organization',
+          'Reliable support and continuous improvement'
+        ].map((item) => (
+          <article key={item} className="rounded-lg border border-[#e2e7f0] p-4 bg-[#f8fafd]">
+            <p className="text-sm text-[#233455] font-semibold leading-relaxed">{item}</p>
+          </article>
+        ))}
+      </div>
+    </section>
 
-    <InfoSection title="Eagles Rugby Club - SMS Marketing Services">
-      <p>We deliver professional SMS campaigns for businesses, schools, NGOs, and organizations with direct, high-engagement communication.</p>
-      <p><strong>Services include:</strong> bulk SMS campaigns, promotions, event reminders, school alerts, product announcements, customer engagement, awareness messaging, and full campaign management.</p>
-      <p><strong>Why choose us:</strong> instant delivery, wide reach, cost-effective campaigns, targeted communication, and strategy support.</p>
-    </InfoSection>
-
-    <InfoSection title="Poster Design Service">
-      <p>
-        Eagles Rugby Club offers professional poster design services for organizations and individuals at
-        <strong> UGX 50,000 per poster</strong>.
-      </p>
-      <p>
-        <strong>Benefits:</strong> professionally designed posters to organizations and individuals for campaigns,
-        product promotions, school communication, event publicity, and social media awareness.
-      </p>
-    </InfoSection>
-
-    <InfoSection title="Social Impact Through Your Project">
-      <p>
+    <section className="bg-[#081534] border border-[#1b2d55] rounded-xl p-6 text-white">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-[#a7b6d4] font-black mb-2">Social Impact Through Your Project</p>
+      <p className="text-sm sm:text-base text-[#dce6f7] leading-relaxed mb-4">
         Choosing Eagles Rugby Club digital services supports player development, club operations, equipment and infrastructure,
         and education support for children from struggling families.
       </p>
-      <p className="font-black uppercase tracking-wider text-[#081534]">Building Websites. Building Youth. Building the Future.</p>
-      <p className="font-black uppercase tracking-wider text-[#081534]">Innovating Digitally. Empowering Socially. Building the Future.</p>
-      <p className="font-black uppercase tracking-wider text-[#081534]">Reach Faster. Market Smarter. Empower Stronger.</p>
-    </InfoSection>
+      <div className="space-y-1 text-[#F5A623] text-xs sm:text-sm font-black uppercase tracking-[0.14em]">
+        <p>Building Websites. Building Youth. Building the Future.</p>
+        <p>Innovating Digitally. Empowering Socially. Building the Future.</p>
+        <p>Reach Faster. Market Smarter. Empower Stronger.</p>
+      </div>
+    </section>
 
     <ContactCtaCard title="Request a Service Quote" subtitle="Web, App and SMS Solutions" />
   </div>
@@ -2710,82 +2902,102 @@ const OtherServicesPage: React.FC = () => (
 
 const MembershipPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
-    <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
-      <img src={toAssetUrl(PAGE_IMAGES.sponsorHero)} alt="Eagles membership" className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-[#081534]/80" />
-      <div className="relative z-10">
-        <p className="text-[#F5A623] text-xs uppercase tracking-[0.3em] font-black mb-2">Eagles Rugby Club</p>
-        <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Investor Membership Card</h1>
-        <p className="text-[#d4deef] max-w-4xl">
-          The Eagles Rugby Club Annual Membership Card is a strategic investment in sport, youth development, and community progress.
+    <section className="relative overflow-hidden rounded-2xl border border-[#1f2a44] bg-[#050a14] text-white">
+      <img src={toAssetUrl(PAGE_IMAGES.sponsorHero)} alt="Eagles membership" className="absolute inset-0 w-full h-full object-cover opacity-35" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,166,35,0.22),transparent_42%)]" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#03060f] via-[#050a14]/95 to-[#050a14]/70" />
+      <div className="relative z-10 p-6 sm:p-8 lg:p-10">
+        <p className="text-[#F5A623] text-[10px] sm:text-xs uppercase tracking-[0.25em] font-black mb-3">Eagles Rugby Membership</p>
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase italic tracking-tighter leading-none mb-4">Train Hard. Belong Fully.</h1>
+        <p className="text-[#d5deee] max-w-3xl text-sm sm:text-base leading-relaxed">
+          The Eagles Investor Membership Card gives you practical savings and direct impact. Your annual membership supports player development, club operations, and education support for children.
         </p>
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="rounded-lg border border-white/15 bg-white/5 px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#9fb0ce] font-black">Annual Fee</p>
+            <p className="text-2xl font-black text-white">UGX 100,000</p>
+          </div>
+          <div className="rounded-lg border border-white/15 bg-white/5 px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#9fb0ce] font-black">Member Savings</p>
+            <p className="text-2xl font-black text-white">Up to 20%</p>
+          </div>
+          <div className="rounded-lg border border-white/15 bg-white/5 px-4 py-3">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#9fb0ce] font-black">Community Impact</p>
+            <p className="text-2xl font-black text-white">Education + Sport</p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <InfoSection title="Annual Membership">
-      <p>
-        For <strong>UGX 100,000 per year</strong>, members receive exclusive benefits while directly supporting
-        sustainable club growth and social impact programs.
-      </p>
-    </InfoSection>
-
-    <section>
-      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">Exclusive Member Benefits</h2>
-      <BulletGrid
-        items={[
-          { name: 'Program Discounts', description: 'Up to 20% discount on selected club programs and activities.' },
-          { name: 'Fitness Centre Savings', description: '20% discount every time you train at our Fitness Centre.' },
-          { name: 'Priority Access', description: 'Priority access to club events and initiatives.' },
-          { name: 'Official Recognition', description: 'Recognition as a valued club supporter and partner.' },
-          { name: 'Affordable Training', description: 'Every visit to our fitness centre becomes more affordable within a structured and professionally guided environment.' }
-        ]}
-      />
-    </section>
-
-    <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 space-y-5">
-      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534]">Why This Membership Is a Valuable Investment</h2>
-      <article>
-        <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mb-2">1. Direct Financial Advantage</h3>
-        <p className="text-gray-700">
-          Frequent use of our fitness centre and programs allows members to recover significant value through the 20% discount benefit.
-        </p>
+    <section className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-5">
+      <article className="bg-white border border-[#dce4f1] rounded-xl p-6 sm:p-7">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Membership Benefits</p>
+        <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-4">What You Get</h2>
+        <ul className="space-y-3 text-sm sm:text-base text-[#1f2f4d] list-disc pl-5 marker:text-[#F5A623]">
+          <li>Up to 20% discount from our discount partners.</li>
+          <li>Up to 20% discount on selected club programs and activities.</li>
+          <li>20% discount whenever you train at the Eagles Fitness Centre.</li>
+          <li>Priority access to selected club events and initiatives.</li>
+          <li>Recognition as an active supporter of youth and community development.</li>
+          <li>A professional and structured environment for affordable training.</li>
+        </ul>
       </article>
-      <article>
-        <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mb-2">2. Sustainable Club Operations</h3>
-        <p className="text-gray-700 mb-2">Membership contributions help cover:</p>
-        <BulletGrid
-          items={[
-            { name: 'Equipment', description: 'Equipment maintenance and upgrades.' },
-            { name: 'Facilities', description: 'Facility management and utilities.' },
-            { name: 'Coaching', description: 'Coaching and program development.' },
-            { name: 'Operations', description: 'Administrative and operational costs.' }
-          ]}
-        />
-        <p className="text-gray-700 mt-2">Your support ensures professionalism, safety, and continuous improvement.</p>
-      </article>
-      <article>
-        <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mb-2">3. Education and Community Impact</h3>
-        <p className="text-gray-700">
-          A portion of membership proceeds contributes to maintaining children in school and assisting families facing financial challenges.
-          Your membership supports both sport and long-term youth empowerment.
-        </p>
+      <article className="rounded-xl border border-[#d9a74a] bg-[linear-gradient(180deg,#161616_0%,#0a0a0a_100%)] text-white p-6 sm:p-7 flex flex-col">
+        <p className="text-[#F5A623] text-[10px] uppercase tracking-[0.2em] font-black mb-2">Membership Plan</p>
+        <h3 className="text-3xl font-black uppercase tracking-tight mb-1">Investor Card</h3>
+        <p className="text-[#d8e1f0] text-sm mb-5">Annual card designed for personal value and long-term social impact.</p>
+        <p className="text-5xl font-black leading-none mb-4">100,000<span className="text-base align-top ml-1 text-[#a4b2cb]">UGX / Year</span></p>
+        <div className="space-y-2 text-sm text-[#dbe5f5] mb-6">
+          <p className="flex items-start gap-2"><span className="text-[#F5A623] font-black">+</span><span>Club and fitness discounts</span></p>
+          <p className="flex items-start gap-2"><span className="text-[#F5A623] font-black">+</span><span>Contribution to player and youth development</span></p>
+          <p className="flex items-start gap-2"><span className="text-[#F5A623] font-black">+</span><span>Direct support for education continuity programs</span></p>
+        </div>
+        <a
+          href="https://wa.me/256773207919"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-auto inline-flex items-center justify-center rounded-md bg-[#F5A623] text-black px-5 py-3 text-xs font-black uppercase tracking-[0.16em] hover:bg-[#d4921a] transition-colors"
+        >
+          Join via WhatsApp
+        </a>
       </article>
     </section>
 
-    <InfoSection title="A Partnership with Purpose">
-      <BulletGrid
-        items={[
-          { name: 'Personal Fitness', description: 'Investing in your personal fitness.' },
-          { name: 'Youth Development', description: 'Supporting youth development.' },
-          { name: 'Education Access', description: 'Promoting education access.' },
-          { name: 'Community Strength', description: 'Strengthening a growing community institution.' }
-        ]}
-      />
-      <p className="mt-4">
-        The Eagles Rugby Club Membership Card represents value, responsibility, and meaningful impact.
-      </p>
-      <p className="mt-2 font-black uppercase tracking-wider text-[#081534]">Train Smarter. Support Stronger. Build the Future.</p>
-    </InfoSection>
+    <section className="bg-white border border-[#dce4f1] rounded-xl p-6 sm:p-7">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Member Value</p>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Why This Membership Works</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <article className="rounded-lg border border-[#e2e7f0] p-4">
+          <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mb-2">1. Financial Return</h3>
+          <p className="text-sm text-gray-700 leading-relaxed">Frequent training and program participation allow members to recover meaningful value through discounts.</p>
+        </article>
+        <article className="rounded-lg border border-[#e2e7f0] p-4">
+          <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mb-2">2. Better Club Standards</h3>
+          <p className="text-sm text-gray-700 leading-relaxed">Membership supports equipment quality, facility upkeep, coaching structure, and safe operations.</p>
+        </article>
+        <article className="rounded-lg border border-[#e2e7f0] p-4">
+          <h3 className="text-sm font-black uppercase tracking-wider text-[#081534] mb-2">3. Youth and Education Impact</h3>
+          <p className="text-sm text-gray-700 leading-relaxed">A portion of proceeds helps children remain in school while building long-term community opportunity.</p>
+        </article>
+      </div>
+    </section>
+
+    <section className="bg-[#081534] border border-[#1b2d55] rounded-xl p-6 sm:p-7 text-white">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-[#a7b6d4] font-black mb-2">Use of Funds</p>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter mb-5">Where Membership Funds Go</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {[
+          'Equipment and training resources',
+          'Facility management and utilities',
+          'Coaching and program development',
+          'Operations and welfare support'
+        ].map((item) => (
+          <article key={item} className="rounded-lg border border-white/15 bg-white/5 p-4">
+            <p className="text-sm leading-relaxed text-[#dce6f7]">{item}</p>
+          </article>
+        ))}
+      </div>
+    </section>
 
     <section className="bg-white border border-[#e2e7f0] rounded-xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
@@ -2881,6 +3093,22 @@ const App: React.FC = () => {
     }
     setPendingShopSectionId(null);
   };
+
+  useEffect(() => {
+    const handleExternalNavigate = (event: Event) => {
+      const customEvent = event as CustomEvent<{ page?: string }>;
+      const targetPage = customEvent.detail?.page;
+      if (!targetPage) {
+        return;
+      }
+      setCurrentPage(targetPage);
+      setPendingShopSectionId(null);
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener('eagles:navigate', handleExternalNavigate as EventListener);
+    return () => window.removeEventListener('eagles:navigate', handleExternalNavigate as EventListener);
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);

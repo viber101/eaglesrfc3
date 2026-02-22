@@ -25,7 +25,15 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
     setIsMobileTvOpen(false);
   };
 
+  const resetDesktopMenus = () => {
+    setIsOurClubHovered(false);
+    setIsAboutSubHovered(false);
+    setIsShopHovered(false);
+    setIsTvHovered(false);
+  };
+
   const navigateToPage = (page: string) => {
+    resetDesktopMenus();
     onNavigate(page);
     resetMobileMenus();
   };
@@ -59,17 +67,20 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   };
 
   const navigateToAboutSection = (sectionId: string) => {
+    resetDesktopMenus();
     onNavigate('about');
     scrollToSection(sectionId);
   };
 
   const navigateToAboutSectionMobile = (sectionId: string) => {
+    resetDesktopMenus();
     onNavigate('about');
     resetMobileMenus();
     scrollToSection(sectionId);
   };
 
   const navigateToShopSection = (sectionId: string) => {
+    resetDesktopMenus();
     if (currentPage !== 'shop') {
       onNavigate('shop');
     }
@@ -77,6 +88,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   };
 
   const navigateToShopSectionMobile = (sectionId: string) => {
+    resetDesktopMenus();
     if (currentPage !== 'shop') {
       onNavigate('shop');
     }
@@ -129,6 +141,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   const sortedShopItems = sortByShortestLabel(shopItems);
   const sortedOurClubItems = sortByShortestLabel(ourClubItems);
   const sortedTvItems = sortByShortestLabel(tvItems);
+  const sortedMenuItems = sortByShortestLabel(menuItems);
   const getDesktopItemClass = (active: boolean) => (
     `h-[42px] flex items-center px-1 border-b-[3px] transition-colors duration-200 ${
       active
@@ -148,9 +161,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
       <div className="bg-[linear-gradient(90deg,#0a0a0a,#111827,#0a0a0a)] text-white border-b border-[#F5A623]/30 overflow-hidden">
         <div className="max-w-[1700px] mx-auto px-4 lg:px-12">
-          <div className="relative h-8 flex items-center overflow-hidden">
+          <div className="relative h-9 sm:h-10 flex items-center overflow-hidden">
             <div
-              className="flex items-center whitespace-nowrap font-semibold tracking-wide text-[10px] pr-32 sm:pr-36"
+              className="flex items-center whitespace-nowrap font-semibold tracking-wide text-xs sm:text-sm pr-32 sm:pr-36"
               style={{ animation: 'promo-marquee 24s linear infinite', width: 'max-content' }}
             >
               <span className="mx-8">{promoMessage}</span>
@@ -217,6 +230,13 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 </div>
               )}
             </div>
+
+            <button
+              onClick={() => navigateToPage('donate')}
+              className={getDesktopItemClass(currentPage === 'donate')}
+            >
+              Donate
+            </button>
 
             <div
               className="relative flex items-center"
@@ -338,7 +358,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               )}
             </div>
 
-            {menuItems.map((item) => (
+            {sortedMenuItems.filter((item) => item.id !== 'donate').map((item) => (
               <button
                 key={item.id}
                 onClick={() => navigateToPage(item.id)}
@@ -405,6 +425,15 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   ))}
                 </div>
               )}
+
+              <button
+                onClick={() => navigateToPage('donate')}
+                className={`w-full text-left py-3 uppercase text-xs font-semibold tracking-[0.08em] border-b border-white/15 ${
+                  currentPage === 'donate' ? 'text-white' : 'text-white'
+                }`}
+              >
+                Donate
+              </button>
 
               <button
                 onClick={() => setIsMobileOurClubOpen((prev) => !prev)}
@@ -474,7 +503,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 </div>
               )}
 
-              {menuItems.map((item) => (
+              {sortedMenuItems.filter((item) => item.id !== 'donate').map((item) => (
                 <button
                   key={item.id}
                   onClick={() => navigateToPage(item.id)}
