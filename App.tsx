@@ -1,4 +1,4 @@
-
+﻿
 import React, { useRef, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
@@ -1814,7 +1814,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
   return (
   <>
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
-      <div className="lg:col-span-8 relative rounded-2xl overflow-hidden min-h-[400px]">
+      <div className="lg:col-span-8 relative rounded-2xl overflow-hidden min-h-[300px] sm:min-h-[380px] lg:min-h-[400px]">
         <img src="/homehero.jpeg" alt="Eagles Rugby" className="w-full h-full object-cover absolute inset-0" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
         
@@ -3923,7 +3923,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#f4f4f4]">
       <Header currentPage={currentPage} onNavigate={navigateToPage} />
       
-      <main className="max-w-[1700px] mx-auto px-4 lg:px-12 mt-6">
+      <main className="max-w-[1700px] mx-auto px-3 sm:px-4 lg:px-12 mt-4 sm:mt-6">
         {currentPage === 'home' ? <HomePage onNavigate={navigateToPage} /> : null}
         {currentPage === 'about' ? <AboutPage /> : null}
         {currentPage === 'history' ? <HistoryPage /> : null}
@@ -3947,7 +3947,7 @@ const App: React.FC = () => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with Eagles RFC on WhatsApp"
-        className="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full bg-[#25D366] text-white shadow-xl flex items-center justify-center hover:scale-105 transition-transform"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[60] w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#25D366] text-white shadow-xl flex items-center justify-center hover:scale-105 transition-transform"
       >
         <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M19.05 4.91A9.82 9.82 0 0 0 12.03 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.74.45 3.44 1.3 4.94L2 22l5.33-1.39a9.85 9.85 0 0 0 4.7 1.2h.01c5.46 0 9.9-4.44 9.9-9.9a9.82 9.82 0 0 0-2.89-7zm-7.02 15.23h-.01a8.15 8.15 0 0 1-4.15-1.14l-.3-.18-3.16.82.84-3.08-.2-.31a8.16 8.16 0 0 1-1.25-4.34c0-4.5 3.66-8.17 8.17-8.17a8.1 8.1 0 0 1 5.78 2.4 8.12 8.12 0 0 1 2.4 5.77c0 4.5-3.66 8.17-8.16 8.17zm4.48-6.12c-.25-.12-1.48-.73-1.7-.82-.23-.08-.39-.12-.56.13-.16.25-.64.82-.78.99-.14.16-.28.18-.53.06-.25-.13-1.04-.38-1.98-1.22-.73-.65-1.22-1.45-1.36-1.69-.14-.25-.01-.38.11-.5.11-.11.25-.28.37-.42.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.44-.06-.12-.56-1.35-.76-1.84-.2-.49-.4-.42-.56-.43h-.48c-.16 0-.42.06-.64.31-.22.25-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.09 3.61.57.25 1.02.4 1.37.51.58.18 1.11.16 1.52.1.46-.07 1.48-.6 1.69-1.18.21-.59.21-1.09.15-1.19-.06-.1-.23-.16-.48-.28z" />
@@ -3957,12 +3957,12 @@ const App: React.FC = () => {
       {/* Footer */}
       <footer className="mt-16 w-full bg-black text-white">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5">
-          <div className="bg-[#111111] min-h-[240px] flex items-center justify-center p-8 border-r border-white/10">
-            <img src="/KINTANTE FUN DAY FLYER.png" alt="Eagles Rugby Club" className="h-24 w-auto object-contain" />
+          <div className="bg-[#111111] min-h-[200px] sm:min-h-[240px] flex items-center justify-center p-6 sm:p-8 border-r border-white/10">
+            <img src="/KINTANTE FUN DAY FLYER.png" alt="Eagles Rugby Club" className="h-20 sm:h-24 w-auto object-contain" />
           </div>
 
-          <div className="bg-[#141414] min-h-[240px] p-8 border-r border-white/10">
-            <ul className="space-y-8 text-sm uppercase tracking-wide">
+          <div className="bg-[#141414] min-h-[200px] sm:min-h-[240px] p-6 sm:p-8 border-r border-white/10">
+            <ul className="space-y-5 sm:space-y-8 text-sm uppercase tracking-wide">
               <li><button onClick={() => navigateToPage('about')} className="hover:text-[#F5A623] transition-colors">About Us</button></li>
               <li><button onClick={() => navigateToPage('history')} className="hover:text-[#F5A623] transition-colors">History</button></li>
               <li><button onClick={() => navigateToPage('squad')} className="hover:text-[#F5A623] transition-colors">Squad</button></li>
@@ -3970,8 +3970,8 @@ const App: React.FC = () => {
             </ul>
           </div>
 
-          <div className="bg-[#171717] min-h-[240px] p-8 border-r border-white/10">
-            <ul className="space-y-8 text-sm uppercase tracking-wide">
+          <div className="bg-[#171717] min-h-[200px] sm:min-h-[240px] p-6 sm:p-8 border-r border-white/10">
+            <ul className="space-y-5 sm:space-y-8 text-sm uppercase tracking-wide">
               <li><button onClick={() => navigateToPage('shop')} className="hover:text-[#F5A623] transition-colors">Shop</button></li>
               <li><button onClick={() => navigateToPage('tv')} className="hover:text-[#F5A623] transition-colors">Eagles TV</button></li>
               <li><button onClick={() => navigateToPage('other-services')} className="hover:text-[#F5A623] transition-colors">Other Services</button></li>
@@ -3979,7 +3979,7 @@ const App: React.FC = () => {
             </ul>
           </div>
 
-          <div className="bg-[#141414] min-h-[240px] p-8 border-r border-white/10">
+          <div className="bg-[#141414] min-h-[200px] sm:min-h-[240px] p-6 sm:p-8 border-r border-white/10">
             <ul className="space-y-5 text-sm tracking-wide">
               <li className="uppercase">Kitante Primary School</li>
               <li className="uppercase">Kampala, Uganda</li>
@@ -3988,25 +3988,25 @@ const App: React.FC = () => {
             </ul>
           </div>
 
-          <div className="bg-[#101010] min-h-[240px] p-8 flex flex-col items-start justify-start">
-            <div className="flex items-center gap-3 mb-10">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full border border-white/80 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
+          <div className="bg-[#101010] min-h-[200px] sm:min-h-[240px] p-6 sm:p-8 flex flex-col items-start justify-start">
+            <div className="flex items-center gap-3 mb-8 sm:mb-10">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/80 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
                 <span className="text-sm font-bold">f</span>
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full border border-white/80 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/80 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
                 <span className="text-sm font-bold">t</span>
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full border border-white/80 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/80 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
                 <span className="text-sm font-bold">i</span>
               </a>
             </div>
-            <button className="px-6 py-3 border border-white text-white uppercase tracking-wider text-sm hover:bg-white hover:text-black transition-colors">
+            <button className="px-5 sm:px-6 py-2.5 sm:py-3 border border-white text-white uppercase tracking-wider text-sm hover:bg-white hover:text-black transition-colors">
               Subscribe
             </button>
           </div>
         </div>
 
-        <div className="border-t border-white/10 px-6 py-4 text-xs text-white/75 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="border-t border-white/10 px-4 sm:px-6 py-4 text-xs text-white/75 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p>© 2026 Eagles Rugby Club. All rights reserved.</p>
           <div className="flex items-center gap-3">
             <a href="#" className="hover:text-[#F5A623] transition-colors">Privacy Policy</a>
@@ -4022,6 +4022,8 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+
 
 
 
