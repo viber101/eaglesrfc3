@@ -29,18 +29,19 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_POLL_KEY: ${{ secrets.VITE_POLL_KEY }}
 
-      - name: Deploy to VPS via SSH
+      - name: Prepare VPS directories
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
-            mkdir -p /var/www/eaglesrfc
+            mkdir -p /var/www/eaglesrfc/dist
+            mkdir -p /var/www/certbot
             cd /var/www/eaglesrfc
             docker compose down || true
 
-      - name: Copy dist files to VPS
+      - name: Copy dist and config files to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -50,7 +51,7 @@ jobs:
           target: "/var/www/eaglesrfc"
           strip_components: 0
 
-      - name: Start Docker container on VPS
+      - name: Setup SSL and start Docker container
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -58,5 +59,25 @@ jobs:
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
             cd /var/www/eaglesrfc
+
+            # Install certbot if not already installed
+            if ! command -v certbot &> /dev/null; then
+              apt-get update -qq
+              apt-get install -y -qq certbot
+            fi
+
+            # Get SSL certificate if it doesn't exist yet
+            if [ ! -d "/etc/letsencrypt/live/eaglesrugbyug.com" ]; then
+              echo "Getting SSL certificate for the first time..."
+              certbot certonly --standalone \
+                -d eaglesrugbyug.com \
+                -d www.eaglesrugbyug.com \
+                --non-interactive \
+                --agree-tos \
+                --email ${{ secrets.SSL_EMAIL }} \
+                --http-01-port=80
+            fi
+
+            # Start Nginx with SSL
             docker compose up -d --build
-            echo "✅ Deployment complete!"
+            echo "✅ Deployment complete! Site live at https://eaglesrugbyug.com"
