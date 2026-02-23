@@ -20,7 +20,8 @@ export class PollApiConfigError extends Error {
   }
 }
 
-const POLL_KEY = (import.meta.env.VITE_POLL_KEY ?? 'eagles-vs-golden-badgers').trim();
+const configuredPollKey = (import.meta.env.VITE_POLL_KEY ?? '').trim();
+const POLL_KEY = configuredPollKey || 'eagles-vs-golden-badgers';
 const configuredApiBase = (import.meta.env.VITE_POLL_API_BASE ?? '').trim();
 const API_BASE = configuredApiBase ? configuredApiBase.replace(/\/+$/, '') : '/api';
 
