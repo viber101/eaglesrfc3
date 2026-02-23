@@ -1066,10 +1066,17 @@ const StandingsWidget: React.FC = () => (
   </div>
 );
 
-const Carousel: React.FC<{ title: string; children: React.ReactNode; preContent?: React.ReactNode }> = ({ title, children, preContent }) => {
+const Carousel: React.FC<{
+  title: string;
+  children: React.ReactNode;
+  preContent?: React.ReactNode;
+  activeItemDataAttr?: string;
+  onActiveItemChange?: (id: string) => void;
+}> = ({ title, children, preContent, activeItemDataAttr, onActiveItemChange }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const activeRafRef = useRef<number | null>(null);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -1084,6 +1091,60 @@ const Carousel: React.FC<{ title: string; children: React.ReactNode; preContent?
     window.addEventListener('resize', checkScroll);
     return () => window.removeEventListener('resize', checkScroll);
   }, []);
+
+  useEffect(() => {
+    if (!activeItemDataAttr || !onActiveItemChange || !scrollContainerRef.current) {
+      return;
+    }
+
+    const root = scrollContainerRef.current;
+    const selector = `[${activeItemDataAttr}]`;
+    const updateActiveFromCenter = () => {
+      const targets = Array.from(root.querySelectorAll<HTMLElement>(selector));
+      if (!targets.length) {
+        return;
+      }
+      const rootRect = root.getBoundingClientRect();
+      const rootCenterX = rootRect.left + rootRect.width / 2;
+      let nearest: { id: string; distance: number } | null = null;
+
+      targets.forEach((node) => {
+        const id = node.getAttribute(activeItemDataAttr);
+        if (!id) {
+          return;
+        }
+        const rect = node.getBoundingClientRect();
+        const itemCenterX = rect.left + rect.width / 2;
+        const distance = Math.abs(itemCenterX - rootCenterX);
+        if (!nearest || distance < nearest.distance) {
+          nearest = { id, distance };
+        }
+      });
+
+      if (nearest) {
+        onActiveItemChange(nearest.id);
+      }
+    };
+
+    const onScroll = () => {
+      if (activeRafRef.current !== null) {
+        cancelAnimationFrame(activeRafRef.current);
+      }
+      activeRafRef.current = requestAnimationFrame(updateActiveFromCenter);
+    };
+
+    updateActiveFromCenter();
+    root.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', updateActiveFromCenter);
+
+    return () => {
+      root.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', updateActiveFromCenter);
+      if (activeRafRef.current !== null) {
+        cancelAnimationFrame(activeRafRef.current);
+      }
+    };
+  }, [activeItemDataAttr, onActiveItemChange, children]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -1129,11 +1190,12 @@ const CountdownUnit: React.FC<{ value: number; label: string }> = ({ value, labe
 
 const CompactMatchHero: React.FC = () => {
   const [nextMatch, setNextMatch] = useState<FixtureItem | null>(null);
+  const fixedNextKickoff = new Date('2026-03-01T14:00:00+03:00');
   const fallbackMatch: FixtureItem = {
     id: 'fallback-next-match',
     week: '1',
-    month: 'February',
-    date: '28th',
+    month: 'March',
+    date: '1st',
     day: 'Sunday',
     category: 'Men',
     venue: 'Mukono',
@@ -1142,7 +1204,7 @@ const CompactMatchHero: React.FC = () => {
     away: 'Golden Badgers'
   };
   const selectedMatch = nextMatch || fallbackMatch;
-  const matchKickoff = getFixtureKickoffDate(selectedMatch) ?? new Date('2026-03-01T14:00:00+03:00');
+  const matchKickoff = getFixtureKickoffDate(selectedMatch) ?? fixedNextKickoff;
   useEffect(() => {
     let isMounted = true;
     fetch('/fixtures/2026-cura-championship-fixtures.csv')
@@ -1163,11 +1225,15 @@ const CompactMatchHero: React.FC = () => {
           return getTimeSortValue(a.time) - getTimeSortValue(b.time);
         });
         const now = new Date();
+        const fixedUpcoming = sortedFixtures.find((fixture) => {
+          const kickoff = getFixtureKickoffDate(fixture);
+          return kickoff ? kickoff.getTime() >= fixedNextKickoff.getTime() : false;
+        });
         const upcoming = sortedFixtures.find((fixture) => {
           const kickoff = getFixtureKickoffDate(fixture);
           return kickoff ? kickoff.getTime() >= now.getTime() : false;
         });
-        setNextMatch(upcoming || sortedFixtures[0] || null);
+        setNextMatch(fixedUpcoming || upcoming || sortedFixtures[0] || null);
       })
       .catch(() => {
         if (isMounted) {
@@ -1401,7 +1467,11 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
 
     <CalendarSection />
 
-    <Carousel title="Current Squad 2026">
+    <Carousel
+      title="Current Squad 2026"
+      activeItemDataAttr="data-player-id"
+      onActiveItemChange={(id) => setActiveSquadPlayerId(id)}
+    >
       {MOCK_PLAYERS.map((p) => {
         const playerProfile = getPlayerProfile(p.id, p.name);
         const nameParts = playerProfile.name.trim().split(/\s+/);
@@ -1412,6 +1482,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         return (
           <div key={p.id} className="flex-none w-[280px] sm:w-[300px] snap-start">
             <article
+              data-player-id={p.id}
               className="relative overflow-hidden rounded-xl bg-black border border-[#1a2238] shadow-[0_14px_30px_rgba(0,0,0,0.45)] cursor-pointer"
               onMouseEnter={() => setActiveSquadPlayerId(p.id)}
               onMouseLeave={() => setActiveSquadPlayerId((current) => (current === p.id ? null : current))}
@@ -1884,6 +1955,32 @@ const HistoryPage: React.FC = () => (
 
 const SquadPage: React.FC = () => {
   const [activeSquadPlayerId, setActiveSquadPlayerId] = useState<string | null>(null);
+  const squadPlayerCardRefs = useRef<Record<string, HTMLArticleElement | null>>({});
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+          const id = entry.target.getAttribute('data-player-id');
+          if (id) {
+            setActiveSquadPlayerId(id);
+          }
+        });
+      },
+      { threshold: 0.55 }
+    );
+
+    Object.values(squadPlayerCardRefs.current).forEach((node) => {
+      if (node) {
+        observer.observe(node);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700">
@@ -1895,6 +1992,10 @@ const SquadPage: React.FC = () => {
 
           return (
             <article
+              ref={(node) => {
+                squadPlayerCardRefs.current[player.id] = node;
+              }}
+              data-player-id={player.id}
               key={player.id}
               className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm flex flex-col cursor-pointer"
               onMouseEnter={() => setActiveSquadPlayerId(player.id)}
