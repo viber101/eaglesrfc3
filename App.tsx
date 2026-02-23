@@ -1856,7 +1856,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
             <div className="relative px-4 py-3 sm:px-5 sm:py-4 bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#143a8a] text-white border-t-4 border-[#F5A623]">
               <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.1),transparent_45%)]" />
               <p className="relative text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">Man of the Match</p>
-              <h4 className="relative mt-1 text-lg sm:text-2xl font-black tracking-tight leading-tight">EAGLES VS {getOpponentName(fixture)}</h4>
+              <h4 className="relative mt-1 text-lg sm:text-2xl font-black tracking-tight leading-tight">{fixture.home} VS {fixture.away}</h4>
               <p className="relative mt-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#b2bdd5]">
                 Week {fixture.week} | {toFixtureMonthDayLabel(fixture)} | {fixture.time}
               </p>
