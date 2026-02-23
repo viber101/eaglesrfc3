@@ -131,6 +131,7 @@ type ScorerSpotlight = {
   statLabel: string;
   statValue: string;
   note: string;
+  imageUrl: string;
 };
 
 const PLAYER_PROFILE_OVERRIDES: Record<string, PlayerProfileOverride> = {
@@ -262,18 +263,20 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
   {
     id: 'top-try',
     label: 'Top Try Scorer',
-    player: 'Ojara Emmanuel',
+    player: 'To Be Announced',
     statLabel: 'Tries',
-    statValue: '14',
-    note: 'Explosive finisher with consistent match-winning impact.'
+    statValue: '--',
+    note: 'Official top try scorer will be published soon.',
+    imageUrl: '/gallery/Eagles (2).jpeg'
   },
   {
     id: 'top-points',
     label: 'Top Points Scorer',
-    player: 'Wasula Gerry Peter',
+    player: 'To Be Announced',
     statLabel: 'Points',
-    statValue: '98',
-    note: 'Reliable points machine from open play and set pieces.'
+    statValue: '--',
+    note: 'Official top points scorer will be published soon.',
+    imageUrl: '/gallery/Eagles (4).jpeg'
   }
 ];
 
@@ -1840,6 +1843,9 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               <h4 className="mt-1 text-2xl sm:text-3xl font-black tracking-tight leading-none">{item.player}</h4>
             </div>
             <div className="px-5 py-5 bg-[#f7f9fd]">
+              <div className="mb-4 rounded-lg overflow-hidden border border-[#d6deeb] h-40 bg-[#dfe6f3]">
+                <img src={toAssetUrl(item.imageUrl)} alt={`${item.label} preview`} className="w-full h-full object-cover" />
+              </div>
               <div className="flex items-end justify-between gap-4">
                 <p className="text-[#0d245b] text-5xl sm:text-6xl font-black leading-none">{item.statValue}</p>
                 <p className="text-[#1f3f78] text-sm sm:text-base font-black uppercase tracking-wider">{item.statLabel}</p>
