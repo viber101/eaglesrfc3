@@ -43,10 +43,7 @@ type FixtureScore = {
   status: string;
 };
 
-const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-vote-v2';
-const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-token-v2';
-const POLL_COUNTS_CACHE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-counts-cache-v1';
-const POLL_MATCH_DATE_LABEL = 'SUN 1ST MARCH';
+const POLL_STORAGE_PREFIX = 'eagles-poll';
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
 const PLAYER_SPONSORS = [
@@ -408,6 +405,26 @@ const toNextMatchDateLabel = (fixture: FixtureItem) => {
   const month = (adjustedDate.getMonth() + 1).toString().padStart(2, '0');
   return `${weekday} ${day}/${month}`;
 };
+
+const toTeamSlug = (teamName: string) => cleanCell(teamName)
+  .toLowerCase()
+  .replace(/[^a-z0-9\s-]/g, ' ')
+  .replace(/\b(rfc|rugby|club)\b/g, ' ')
+  .replace(/\s+/g, '-')
+  .replace(/-+/g, '-')
+  .replace(/^-|-$/g, '');
+
+const toPollKeyFromFixture = (fixture: FixtureItem) => {
+  const homeSlug = toTeamSlug(fixture.home);
+  const awaySlug = toTeamSlug(fixture.away);
+  const safeHomeSlug = homeSlug || 'home-team';
+  const safeAwaySlug = awaySlug || 'away-team';
+  return `${safeHomeSlug}-vs-${safeAwaySlug}`;
+};
+
+const toPollMatchLabel = (fixture: FixtureItem) => `${cleanCell(fixture.home)} vs ${cleanCell(fixture.away)}`;
+
+const getStorageKeyForPoll = (pollKey: string, suffix: 'vote' | 'token' | 'counts-cache') => `${POLL_STORAGE_PREFIX}-${pollKey}-${suffix}-v1`;
 
 const parseFixturesCsv = (csvText: string): FixtureItem[] => {
   const fixtures: FixtureItem[] = [];
@@ -829,7 +846,7 @@ const getBarWidth = (percentage: number, rawCount: number) => {
   return Math.max(4, percentage);
 };
 
-const MatchPollWidget: React.FC = () => {
+const MatchPollWidget: React.FC<{ fixture: FixtureItem }> = ({ fixture }) => {
   const [counts, setCounts] = useState<PollCounts>({ win: 0, draw: 0, loss: 0 });
   const [totalVotes, setTotalVotes] = useState(0);
   const [activePollsTotal, setActivePollsTotal] = useState(0);
@@ -837,6 +854,12 @@ const MatchPollWidget: React.FC = () => {
   const [storageStatus, setStorageStatus] = useState<'ready' | 'blocked'>('ready');
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'sending' | 'sent' | 'failed'>('idle');
   const [countsStatus, setCountsStatus] = useState<'loading' | 'live' | 'offline' | 'unconfigured'>('loading');
+  const pollKey = toPollKeyFromFixture(fixture);
+  const pollMatchLabel = toPollMatchLabel(fixture);
+  const pollDateLabel = toNextMatchDateLabel(fixture);
+  const pollVoteStorageKey = getStorageKeyForPoll(pollKey, 'vote');
+  const pollTokenStorageKey = getStorageKeyForPoll(pollKey, 'token');
+  const pollCountsCacheStorageKey = getStorageKeyForPoll(pollKey, 'counts-cache');
 
   const getBrowserStorage = (): Storage | null => {
     try {
@@ -862,7 +885,7 @@ const MatchPollWidget: React.FC = () => {
     }
 
     try {
-      const existingToken = storage.getItem(POLL_SESSION_TOKEN_STORAGE_KEY);
+      const existingToken = storage.getItem(pollTokenStorageKey);
       if (existingToken) {
         return existingToken;
       }
@@ -871,7 +894,7 @@ const MatchPollWidget: React.FC = () => {
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
-      storage.setItem(POLL_SESSION_TOKEN_STORAGE_KEY, createdToken);
+      storage.setItem(pollTokenStorageKey, createdToken);
       return createdToken;
     } catch {
       setStorageStatus('blocked');
@@ -881,19 +904,19 @@ const MatchPollWidget: React.FC = () => {
 
   const fetchSharedCounts = async () => {
     try {
-      const nextSnapshot = await getPollCounts();
+      const nextSnapshot = await getPollCounts(pollKey);
       setCounts(nextSnapshot.counts);
       setTotalVotes(nextSnapshot.total);
       setActivePollsTotal(nextSnapshot.activePollsTotal);
       const storage = getBrowserStorage();
       if (storage) {
-        storage.setItem(POLL_COUNTS_CACHE_STORAGE_KEY, JSON.stringify(nextSnapshot));
+        storage.setItem(pollCountsCacheStorageKey, JSON.stringify(nextSnapshot));
       }
       setCountsStatus('live');
     } catch (error) {
       const storage = getBrowserStorage();
       if (storage) {
-        const cachedRaw = storage.getItem(POLL_COUNTS_CACHE_STORAGE_KEY);
+        const cachedRaw = storage.getItem(pollCountsCacheStorageKey);
         if (cachedRaw) {
           try {
             const cached = JSON.parse(cachedRaw) as {
@@ -938,7 +961,7 @@ const MatchPollWidget: React.FC = () => {
     try {
       setStorageStatus('ready');
 
-      const sessionChoice = storage.getItem(POLL_SESSION_VOTE_STORAGE_KEY) as PollChoice | null;
+      const sessionChoice = storage.getItem(pollVoteStorageKey) as PollChoice | null;
       if (sessionChoice === 'win' || sessionChoice === 'loss' || sessionChoice === 'draw') {
         setSelectedChoice(sessionChoice);
       }
@@ -954,7 +977,7 @@ const MatchPollWidget: React.FC = () => {
     fetchSharedCounts();
     const intervalId = window.setInterval(fetchSharedCounts, 30000);
     return () => window.clearInterval(intervalId);
-  }, []);
+  }, [pollKey, pollCountsCacheStorageKey, pollTokenStorageKey, pollVoteStorageKey]);
   const percentages = getCategoryPercentages(counts);
 
   const vote = async (choice: PollChoice) => {
@@ -972,7 +995,7 @@ const MatchPollWidget: React.FC = () => {
     try {
       const storage = getBrowserStorage();
       if (storage) {
-        storage.setItem(POLL_SESSION_VOTE_STORAGE_KEY, choice);
+        storage.setItem(pollVoteStorageKey, choice);
       }
       setStorageStatus('ready');
     } catch {
@@ -981,7 +1004,7 @@ const MatchPollWidget: React.FC = () => {
 
     try {
       const sessionToken = getOrCreateSessionToken();
-      const voteResult = await castPollVote(choice, sessionToken);
+      const voteResult = await castPollVote(choice, sessionToken, pollKey);
       setCounts(voteResult.counts);
       setTotalVotes(voteResult.total);
       setActivePollsTotal(voteResult.activePollsTotal);
@@ -1005,6 +1028,14 @@ const MatchPollWidget: React.FC = () => {
 
   const buttonBase = 'border-2 border-black rounded-md py-2 text-xs sm:text-[11px] font-black uppercase tracking-wider transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#f6f2e8]';
 
+  useEffect(() => {
+    setCounts({ win: 0, draw: 0, loss: 0 });
+    setTotalVotes(0);
+    setSelectedChoice(null);
+    setSubmitStatus('idle');
+    setCountsStatus('loading');
+  }, [pollKey]);
+
   return (
     <section className="rounded-xl border-2 border-black bg-[#f6f2e8] text-black p-4 shadow-[4px_4px_0_#000]">
       <div className="flex items-center justify-between mb-3 gap-2">
@@ -1017,10 +1048,10 @@ const MatchPollWidget: React.FC = () => {
 
       <div className="mb-3 border-2 border-black bg-[#F5A623] text-black rounded-md px-3 py-2 text-center shadow-[2px_2px_0_#000]">
         <p className="text-[10px] font-black uppercase tracking-[0.12em]">Match Date</p>
-        <p className="text-sm font-black uppercase tracking-wide">{POLL_MATCH_DATE_LABEL}</p>
+        <p className="text-sm font-black uppercase tracking-wide">{pollDateLabel}</p>
       </div>
 
-      <p className="text-xs font-black uppercase tracking-wide mb-3"><span className="text-[#F5A623]">Eagles</span> vs Golden Badgers</p>
+      <p className="text-xs font-black uppercase tracking-wide mb-3">{pollMatchLabel}</p>
 
       <div className="grid grid-cols-3 gap-2 mb-4">
         <button
@@ -1259,62 +1290,10 @@ const CountdownUnit: React.FC<{ value: number; label: string }> = ({ value, labe
   </div>
 );
 
-const CompactMatchHero: React.FC = () => {
-  const [nextMatch, setNextMatch] = useState<FixtureItem | null>(null);
-  const fixedNextKickoff = new Date('2026-03-01T14:00:00+03:00');
-  const fallbackMatch: FixtureItem = {
-    id: 'fallback-next-match',
-    week: '1',
-    month: 'March',
-    date: '1st',
-    day: 'Sunday',
-    category: 'Men',
-    venue: 'Mukono',
-    time: '2:00PM',
-    home: 'Eagles RFC',
-    away: 'Golden Badgers'
-  };
-  const selectedMatch = nextMatch || fallbackMatch;
-  const matchKickoff = getFixtureKickoffDate(selectedMatch) ?? fixedNextKickoff;
-  useEffect(() => {
-    let isMounted = true;
-    fetch('/fixtures/2026-cura-championship-fixtures.csv')
-      .then((response) => response.text())
-      .then((csvText) => {
-        if (!isMounted) {
-          return;
-        }
-        const parsedFixtures = parseFixturesCsv(csvText).filter(
-          (fixture) => isEaglesTeam(fixture.home) || isEaglesTeam(fixture.away)
-        );
-        const sortedFixtures = [...parsedFixtures].sort((a, b) => {
-          const kickoffA = getFixtureKickoffDate(a);
-          const kickoffB = getFixtureKickoffDate(b);
-          if (kickoffA && kickoffB) {
-            return kickoffA.getTime() - kickoffB.getTime();
-          }
-          return getTimeSortValue(a.time) - getTimeSortValue(b.time);
-        });
-        const now = new Date();
-        const fixedUpcoming = sortedFixtures.find((fixture) => {
-          const kickoff = getFixtureKickoffDate(fixture);
-          return kickoff ? kickoff.getTime() >= fixedNextKickoff.getTime() : false;
-        });
-        const upcoming = sortedFixtures.find((fixture) => {
-          const kickoff = getFixtureKickoffDate(fixture);
-          return kickoff ? kickoff.getTime() >= now.getTime() : false;
-        });
-        setNextMatch(fixedUpcoming || upcoming || sortedFixtures[0] || null);
-      })
-      .catch(() => {
-        if (isMounted) {
-          setNextMatch(null);
-        }
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+const CompactMatchHero: React.FC<{ fixture: FixtureItem }> = ({ fixture }) => {
+  const selectedMatch = fixture;
+  const fallbackKickoff = new Date('2026-03-01T14:00:00+03:00');
+  const matchKickoff = getFixtureKickoffDate(selectedMatch) ?? fallbackKickoff;
 
   const getTimeLeft = () => {
     const now = new Date();
@@ -1510,6 +1489,60 @@ const TierCard: React.FC<{ tier: SponsorshipTier }> = ({ tier }) => {
 
 const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate }) => {
   const [activeSquadPlayerId, setActiveSquadPlayerId] = useState<string | null>(null);
+  const [nextMatch, setNextMatch] = useState<FixtureItem | null>(null);
+  const fallbackMatch: FixtureItem = {
+    id: 'fallback-next-match',
+    week: '1',
+    month: 'March',
+    date: '1st',
+    day: 'Sunday',
+    category: 'Men',
+    venue: 'Mukono',
+    time: '2:00PM',
+    home: 'Eagles RFC',
+    away: 'Golden Badgers'
+  };
+  const selectedMatch = nextMatch || fallbackMatch;
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/fixtures/2026-cura-championship-fixtures.csv')
+      .then((response) => response.text())
+      .then((csvText) => {
+        if (!isMounted) {
+          return;
+        }
+
+        const parsedFixtures = parseFixturesCsv(csvText).filter(
+          (fixture) => isEaglesTeam(fixture.home) || isEaglesTeam(fixture.away)
+        );
+        const sortedFixtures = [...parsedFixtures].sort((a, b) => {
+          const kickoffA = getFixtureKickoffDate(a);
+          const kickoffB = getFixtureKickoffDate(b);
+          if (kickoffA && kickoffB) {
+            return kickoffA.getTime() - kickoffB.getTime();
+          }
+          return getTimeSortValue(a.time) - getTimeSortValue(b.time);
+        });
+
+        const now = new Date();
+        const upcoming = sortedFixtures.find((fixture) => {
+          const kickoff = getFixtureKickoffDate(fixture);
+          return kickoff ? kickoff.getTime() >= now.getTime() : false;
+        });
+
+        setNextMatch(upcoming || sortedFixtures[0] || null);
+      })
+      .catch(() => {
+        if (isMounted) {
+          setNextMatch(null);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
   <>
@@ -1520,7 +1553,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         
         {/* Compact Match Overlay - Centered */}
         <div className="absolute inset-0 flex items-center justify-center p-4">
-          <CompactMatchHero />
+          <CompactMatchHero fixture={selectedMatch} />
         </div>
       </div>
       <div className="lg:col-span-4 flex flex-col space-y-4">
@@ -1531,7 +1564,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
           ))}
         </div>
         <StandingsWidget />
-        <MatchPollWidget />
+        <MatchPollWidget fixture={selectedMatch} />
         <PlayerSponsorsSlider onNavigate={onNavigate} />
       </div>
     </section>

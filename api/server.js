@@ -48,6 +48,28 @@ if (!existingPoll) {
     );
 }
 
+const toTitleFromKey = (key) => key
+    .split('-vs-')
+    .map((chunk) => chunk.replace(/-/g, ' ').trim())
+    .map((chunk) => chunk.replace(/\b\w/g, (ch) => ch.toUpperCase()))
+    .join(' vs ');
+
+const ensurePoll = (pollKey) => {
+    const existing = db.prepare('SELECT id FROM polls WHERE poll_key = ?').get(pollKey);
+    if (existing) {
+        return existing;
+    }
+
+    const tx = db.transaction(() => {
+        db.prepare('UPDATE polls SET is_active = 0').run();
+        db.prepare('INSERT INTO polls (poll_key, match_title, is_active) VALUES (?, ?, 1)')
+            .run(pollKey, toTitleFromKey(pollKey));
+    });
+    tx();
+
+    return db.prepare('SELECT id FROM polls WHERE poll_key = ?').get(pollKey);
+};
+
 // Middleware
 app.use(cors({
     origin: ['https://eaglesrugbyug.com', 'http://eaglesrugbyug.com', 'http://localhost:3000'],
@@ -80,11 +102,10 @@ app.get('/api/health', (req, res) => {
 // GET /api/poll/:key/counts — get win/draw/loss counts
 app.get('/api/poll/:key/counts', (req, res) => {
     const { key } = req.params;
-
-    const poll = db.prepare('SELECT id FROM polls WHERE poll_key = ?').get(key);
-    if (!poll) {
-        return res.status(404).json({ error: 'Poll not found', code: 'POLL_NOT_FOUND' });
+    if (!key || typeof key !== 'string') {
+        return res.status(400).json({ error: 'Invalid poll key.', code: 'INVALID_POLL_KEY' });
     }
+    ensurePoll(key);
 
     const counts = db.prepare(`
     SELECT
@@ -109,6 +130,9 @@ app.get('/api/poll/:key/counts', (req, res) => {
 app.post('/api/poll/:key/vote', (req, res) => {
     const { key } = req.params;
     const { choice, session_token } = req.body;
+    if (!key || typeof key !== 'string') {
+        return res.status(400).json({ error: 'Invalid poll key.', code: 'INVALID_POLL_KEY' });
+    }
 
     if (!choice || !['win', 'draw', 'loss'].includes(choice)) {
         return res.status(400).json({ error: 'Invalid choice. Must be win, draw, or loss.', code: 'INVALID_CHOICE' });
@@ -118,10 +142,7 @@ app.post('/api/poll/:key/vote', (req, res) => {
         return res.status(400).json({ error: 'Invalid session token.', code: 'INVALID_SESSION_TOKEN' });
     }
 
-    const poll = db.prepare('SELECT id FROM polls WHERE poll_key = ?').get(key);
-    if (!poll) {
-        return res.status(404).json({ error: 'Poll not found', code: 'POLL_NOT_FOUND' });
-    }
+    ensurePoll(key);
 
     // Try to insert vote (UNIQUE constraint prevents double voting)
     let accepted = false;

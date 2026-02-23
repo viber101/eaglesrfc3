@@ -21,12 +21,12 @@ export class PollApiConfigError extends Error {
 }
 
 const configuredPollKey = (import.meta.env.VITE_POLL_KEY ?? '').trim();
-const POLL_KEY = configuredPollKey || 'eagles-vs-golden-badgers';
+const DEFAULT_POLL_KEY = configuredPollKey || 'eagles-vs-golden-badgers';
 const configuredApiBase = (import.meta.env.VITE_POLL_API_BASE ?? '').trim();
 const API_BASE = configuredApiBase ? configuredApiBase.replace(/\/+$/, '') : '/api';
 
-export const getPollCounts = async (): Promise<PollCountsSnapshot> => {
-  const res = await fetch(`${API_BASE}/poll/${POLL_KEY}/counts`);
+export const getPollCounts = async (pollKey = DEFAULT_POLL_KEY): Promise<PollCountsSnapshot> => {
+  const res = await fetch(`${API_BASE}/poll/${pollKey}/counts`);
 
   if (!res.ok) {
     throw new Error(`Failed to fetch poll counts: ${res.status}`);
@@ -44,8 +44,8 @@ export const getPollCounts = async (): Promise<PollCountsSnapshot> => {
   return { counts, total, activePollsTotal };
 };
 
-export const castVote = async (choice: PollChoice, sessionToken: string): Promise<CastVoteResult> => {
-  const res = await fetch(`${API_BASE}/poll/${POLL_KEY}/vote`, {
+export const castVote = async (choice: PollChoice, sessionToken: string, pollKey = DEFAULT_POLL_KEY): Promise<CastVoteResult> => {
+  const res = await fetch(`${API_BASE}/poll/${pollKey}/vote`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ choice, session_token: sessionToken })
