@@ -780,7 +780,7 @@ const CalendarSection: React.FC = () => {
             <div className="mb-4 flex items-center justify-between gap-2">
               <h3 className="text-[#081534] text-lg sm:text-xl font-black tracking-tight">{selectedMonth} {calendarYear}</h3>
               <span className={`text-[10px] sm:text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                isMonthActive(selectedMonth) ? 'bg-[#e7f6ed] text-[#1f7a3f]' : 'bg-[#f3f4f6] text-[#6b7280]'
+                isMonthActive(selectedMonth) ? 'bg-[#e7f6ed] text-[#1f7a3f]' : 'bg-[#F5A623] text-black'
               }`}>
                 {isMonthActive(selectedMonth) ? 'Activities Available' : 'No Activities This Month'}
               </span>
