@@ -1835,8 +1835,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     <section className="mb-12">
       <div className="flex items-end justify-between mb-4">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black mb-1">Performace Bord 2028</p>
-          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Performace Bord 2028</h3>
+          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Performace Bord 2026</h3>
         </div>
         <p className="hidden sm:block text-xs font-bold uppercase tracking-wider text-[#5c6e8d]">Swipe to view</p>
       </div>
