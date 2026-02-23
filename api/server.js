@@ -56,9 +56,25 @@ app.use(cors({
 }));
 app.use(express.json());
 
+const getActivePollsTotal = () => {
+    const row = db.prepare('SELECT COUNT(*) AS total FROM polls WHERE is_active = 1').get();
+    return Number(row?.total) || 0;
+};
+
 // Health check
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok' });
+    try {
+        const dbReady = Boolean(db.prepare('SELECT 1 AS ok').get()?.ok);
+        res.json({
+            status: 'ok',
+            db: {
+                ready: dbReady,
+                path: path.join(dataDir, 'polls.db')
+            }
+        });
+    } catch (error) {
+        res.status(503).json({ status: 'error', error: 'Database unavailable', code: 'DB_UNAVAILABLE' });
+    }
 });
 
 // GET /api/poll/:key/counts — get win/draw/loss counts
@@ -67,7 +83,7 @@ app.get('/api/poll/:key/counts', (req, res) => {
 
     const poll = db.prepare('SELECT id FROM polls WHERE poll_key = ?').get(key);
     if (!poll) {
-        return res.status(404).json({ error: 'Poll not found' });
+        return res.status(404).json({ error: 'Poll not found', code: 'POLL_NOT_FOUND' });
     }
 
     const counts = db.prepare(`
@@ -84,7 +100,8 @@ app.get('/api/poll/:key/counts', (req, res) => {
         win: counts.win || 0,
         draw: counts.draw || 0,
         loss: counts.loss || 0,
-        total: counts.total || 0
+        total: counts.total || 0,
+        active_polls_total: getActivePollsTotal()
     });
 });
 
@@ -94,16 +111,16 @@ app.post('/api/poll/:key/vote', (req, res) => {
     const { choice, session_token } = req.body;
 
     if (!choice || !['win', 'draw', 'loss'].includes(choice)) {
-        return res.status(400).json({ error: 'Invalid choice. Must be win, draw, or loss.' });
+        return res.status(400).json({ error: 'Invalid choice. Must be win, draw, or loss.', code: 'INVALID_CHOICE' });
     }
 
     if (!session_token || typeof session_token !== 'string' || session_token.length < 8) {
-        return res.status(400).json({ error: 'Invalid session token.' });
+        return res.status(400).json({ error: 'Invalid session token.', code: 'INVALID_SESSION_TOKEN' });
     }
 
     const poll = db.prepare('SELECT id FROM polls WHERE poll_key = ?').get(key);
     if (!poll) {
-        return res.status(404).json({ error: 'Poll not found' });
+        return res.status(404).json({ error: 'Poll not found', code: 'POLL_NOT_FOUND' });
     }
 
     // Try to insert vote (UNIQUE constraint prevents double voting)
@@ -132,7 +149,8 @@ app.post('/api/poll/:key/vote', (req, res) => {
         win: counts.win || 0,
         draw: counts.draw || 0,
         loss: counts.loss || 0,
-        total: counts.total || 0
+        total: counts.total || 0,
+        active_polls_total: getActivePollsTotal()
     });
 });
 

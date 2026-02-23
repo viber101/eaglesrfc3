@@ -1,10 +1,16 @@
 export type PollChoice = 'win' | 'draw' | 'loss';
 export type PollCounts = Record<PollChoice, number>;
+export type PollCountsSnapshot = {
+  counts: PollCounts;
+  total: number;
+  activePollsTotal: number;
+};
 
 export type CastVoteResult = {
   accepted: boolean;
   counts: PollCounts;
   total: number;
+  activePollsTotal: number;
 };
 
 export class PollApiConfigError extends Error {
@@ -19,7 +25,7 @@ const POLL_KEY = (import.meta.env.VITE_POLL_KEY ?? 'eagles-vs-golden-badgers').t
 // Use relative /api path so it works on both localhost and production
 const API_BASE = '/api';
 
-export const getPollCounts = async (): Promise<PollCounts> => {
+export const getPollCounts = async (): Promise<PollCountsSnapshot> => {
   const res = await fetch(`${API_BASE}/poll/${POLL_KEY}/counts`);
 
   if (!res.ok) {
@@ -27,11 +33,15 @@ export const getPollCounts = async (): Promise<PollCounts> => {
   }
 
   const data = await res.json();
-  return {
+  const counts = {
     win: Number(data.win) || 0,
     draw: Number(data.draw) || 0,
     loss: Number(data.loss) || 0
   };
+  const total = Number(data.total) || counts.win + counts.draw + counts.loss;
+  const activePollsTotal = Number(data.active_polls_total) || 0;
+
+  return { counts, total, activePollsTotal };
 };
 
 export const castVote = async (choice: PollChoice, sessionToken: string): Promise<CastVoteResult> => {
@@ -53,6 +63,7 @@ export const castVote = async (choice: PollChoice, sessionToken: string): Promis
       draw: Number(data.draw) || 0,
       loss: Number(data.loss) || 0
     },
-    total: Number(data.total) || 0
+    total: Number(data.total) || 0,
+    activePollsTotal: Number(data.active_polls_total) || 0
   };
 };

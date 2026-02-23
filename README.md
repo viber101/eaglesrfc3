@@ -14,27 +14,32 @@ Setup:
 4. Start dev server:
    `npm run dev`
 
-## Match Poll Backend (Supabase Postgres)
+## Match Poll Backend (Express + SQLite)
 
-This project now uses Supabase Postgres as the only source of truth for the match poll.
+The match poll uses the local API server in `api/server.js` with SQLite (`better-sqlite3`) as the source of truth.
 
-### 1) Create database objects
-1. Open your Supabase project.
-2. Go to SQL Editor.
-3. Run `supabase/poll_schema.sql`.
+### 1) API endpoints
+- `GET /api/poll/:key/counts`
+- `POST /api/poll/:key/vote`
 
-### 2) Configure frontend env
-Set these values in `.env.local` (and in your production host):
+Counts response includes:
+- `win`, `draw`, `loss`, `total`
+- `active_polls_total`
 
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
-- `VITE_POLL_KEY` (default key used by schema seed: `eagles-vs-golden-badgers`)
+Vote response includes:
+- `accepted`, `win`, `draw`, `loss`, `total`
+- `active_polls_total`
+
+### 2) Persistence requirements
+- SQLite file path: `/data/polls.db`
+- `docker-compose.yml` mounts persistent volume `poll_data` to `/data`
+- This volume is required so poll data survives container/site restarts
 
 ### 3) Behavior provided
 - In-app voting (no redirects)
-- One vote per browser session
-- Shared counts across devices
-- Win/Draw/Loss totals and overall total votes
+- One vote per browser/device token per poll key
+- Shared counts across browsers/devices
+- Win/Draw/Loss percentage bars with totals in UI
 
 ## Build
 

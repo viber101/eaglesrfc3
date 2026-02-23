@@ -43,8 +43,8 @@ type FixtureScore = {
   status: string;
 };
 
-const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-vote-v1';
-const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-session-token-v1';
+const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-vote-v2';
+const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-token-v2';
 const POLL_MATCH_DATE_LABEL = 'SUN 1ST MARCH';
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
@@ -830,14 +830,38 @@ const getBarWidth = (percentage: number, rawCount: number) => {
 
 const MatchPollWidget: React.FC = () => {
   const [counts, setCounts] = useState<PollCounts>({ win: 0, draw: 0, loss: 0 });
+  const [totalVotes, setTotalVotes] = useState(0);
+  const [activePollsTotal, setActivePollsTotal] = useState(0);
   const [selectedChoice, setSelectedChoice] = useState<PollChoice | null>(null);
   const [storageStatus, setStorageStatus] = useState<'ready' | 'blocked'>('ready');
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'sending' | 'sent' | 'failed'>('idle');
   const [countsStatus, setCountsStatus] = useState<'loading' | 'live' | 'offline' | 'unconfigured'>('loading');
 
-  const getOrCreateSessionToken = () => {
+  const getBrowserStorage = (): Storage | null => {
     try {
-      const existingToken = sessionStorage.getItem(POLL_SESSION_TOKEN_STORAGE_KEY);
+      localStorage.setItem('__poll_storage_test__', 'ok');
+      localStorage.removeItem('__poll_storage_test__');
+      return localStorage;
+    } catch {
+      try {
+        sessionStorage.setItem('__poll_storage_test__', 'ok');
+        sessionStorage.removeItem('__poll_storage_test__');
+        return sessionStorage;
+      } catch {
+        return null;
+      }
+    }
+  };
+
+  const getOrCreateSessionToken = () => {
+    const storage = getBrowserStorage();
+    if (!storage) {
+      setStorageStatus('blocked');
+      return `volatile-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    try {
+      const existingToken = storage.getItem(POLL_SESSION_TOKEN_STORAGE_KEY);
       if (existingToken) {
         return existingToken;
       }
@@ -846,7 +870,7 @@ const MatchPollWidget: React.FC = () => {
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
-      sessionStorage.setItem(POLL_SESSION_TOKEN_STORAGE_KEY, createdToken);
+      storage.setItem(POLL_SESSION_TOKEN_STORAGE_KEY, createdToken);
       return createdToken;
     } catch {
       setStorageStatus('blocked');
@@ -856,8 +880,10 @@ const MatchPollWidget: React.FC = () => {
 
   const fetchSharedCounts = async () => {
     try {
-      const nextCounts = await getPollCounts();
-      setCounts(nextCounts);
+      const nextSnapshot = await getPollCounts();
+      setCounts(nextSnapshot.counts);
+      setTotalVotes(nextSnapshot.total);
+      setActivePollsTotal(nextSnapshot.activePollsTotal);
       setCountsStatus('live');
     } catch (error) {
       if (error instanceof PollApiConfigError) {
@@ -869,19 +895,30 @@ const MatchPollWidget: React.FC = () => {
   };
 
   useEffect(() => {
+    const storage = getBrowserStorage();
+    if (!storage) {
+      setCounts({ win: 0, draw: 0, loss: 0 });
+      setTotalVotes(0);
+      setActivePollsTotal(0);
+      setSelectedChoice(null);
+      setStorageStatus('blocked');
+      fetchSharedCounts();
+      const intervalId = window.setInterval(fetchSharedCounts, 30000);
+      return () => window.clearInterval(intervalId);
+    }
+
     try {
-      const testKey = '__poll_storage_test__';
-      sessionStorage.setItem(testKey, 'ok');
-      sessionStorage.removeItem(testKey);
       setStorageStatus('ready');
 
-      const sessionChoice = sessionStorage.getItem(POLL_SESSION_VOTE_STORAGE_KEY) as PollChoice | null;
+      const sessionChoice = storage.getItem(POLL_SESSION_VOTE_STORAGE_KEY) as PollChoice | null;
       if (sessionChoice === 'win' || sessionChoice === 'loss' || sessionChoice === 'draw') {
         setSelectedChoice(sessionChoice);
       }
       getOrCreateSessionToken();
     } catch {
       setCounts({ win: 0, draw: 0, loss: 0 });
+      setTotalVotes(0);
+      setActivePollsTotal(0);
       setSelectedChoice(null);
       setStorageStatus('blocked');
     }
@@ -890,8 +927,6 @@ const MatchPollWidget: React.FC = () => {
     const intervalId = window.setInterval(fetchSharedCounts, 30000);
     return () => window.clearInterval(intervalId);
   }, []);
-
-  const totalVotes = counts.win + counts.draw + counts.loss;
   const percentages = getCategoryPercentages(counts);
 
   const vote = async (choice: PollChoice) => {
@@ -907,7 +942,10 @@ const MatchPollWidget: React.FC = () => {
     setSelectedChoice(choice);
     setSubmitStatus('sending');
     try {
-      sessionStorage.setItem(POLL_SESSION_VOTE_STORAGE_KEY, choice);
+      const storage = getBrowserStorage();
+      if (storage) {
+        storage.setItem(POLL_SESSION_VOTE_STORAGE_KEY, choice);
+      }
       setStorageStatus('ready');
     } catch {
       setStorageStatus('blocked');
@@ -917,6 +955,8 @@ const MatchPollWidget: React.FC = () => {
       const sessionToken = getOrCreateSessionToken();
       const voteResult = await castPollVote(choice, sessionToken);
       setCounts(voteResult.counts);
+      setTotalVotes(voteResult.total);
+      setActivePollsTotal(voteResult.activePollsTotal);
       setSubmitStatus('sent');
       window.setTimeout(fetchSharedCounts, 2000);
     } catch (error) {
@@ -939,9 +979,12 @@ const MatchPollWidget: React.FC = () => {
 
   return (
     <section className="rounded-xl border-2 border-black bg-[#f6f2e8] text-black p-4 shadow-[4px_4px_0_#000]">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 gap-2">
         <h3 className="text-[11px] font-black uppercase tracking-[0.2em]">Match Poll</h3>
-        <p aria-live="polite" className="text-xs font-black uppercase tracking-wide">TOTAL VOTES: {totalVotes}</p>
+        <div className="text-right">
+          <p aria-live="polite" className="text-[10px] font-black uppercase tracking-wide">TOTAL VOTES: {totalVotes}</p>
+          <p aria-live="polite" className="text-[10px] font-black uppercase tracking-wide">TOTAL ACTIVE POLLS: {activePollsTotal}</p>
+        </div>
       </div>
 
       <div className="mb-3 border-2 border-black bg-[#F5A623] text-black rounded-md px-3 py-2 text-center shadow-[2px_2px_0_#000]">
@@ -994,7 +1037,7 @@ const MatchPollWidget: React.FC = () => {
                 style={{ width: `${getBarWidth(row.percentage, row.value)}%` }}
               />
             </div>
-            <span className="w-8 text-right text-xs font-black">{row.value}</span>
+            <span className="w-24 text-right text-xs font-black">{Math.round(row.percentage)}% | {row.value}</span>
           </div>
         ))}
       </div>
