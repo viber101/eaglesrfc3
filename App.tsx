@@ -862,14 +862,12 @@ const CalendarSection: React.FC = () => {
                       const isToday = today.getFullYear() === cellDate.getFullYear()
                         && today.getMonth() === cellDate.getMonth()
                         && today.getDate() === cellDate.getDate();
-                      const shortDateLabel = cellDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                       return (
                         <div key={dayNumber} className={`min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] p-2 ${isToday ? 'bg-[#F5A623]/25' : 'bg-white'}`}>
                           <div className="flex items-start justify-between gap-1">
                             <p className="text-base sm:text-lg font-black text-[#081534] leading-none">{dayNumber}</p>
                             {isToday ? <span className="text-[10px] font-black uppercase tracking-wide text-white bg-[#F5A623] px-1.5 py-0.5 rounded">Today</span> : null}
                           </div>
-                          <p className="mt-1 text-[10px] sm:text-[11px] font-bold text-[#66758f] leading-tight">{shortDateLabel}</p>
                         </div>
                       );
                     })}
