@@ -1887,9 +1887,12 @@ const ShopPage: React.FC = () => {
   const merchScrollRef = useRef<HTMLDivElement>(null);
   const [canScrollMerchLeft, setCanScrollMerchLeft] = useState(false);
   const [canScrollMerchRight, setCanScrollMerchRight] = useState(true);
+  const [activeMerchId, setActiveMerchId] = useState<string | number | null>(null);
   const footwearScrollRef = useRef<HTMLDivElement>(null);
   const [canScrollFootwearLeft, setCanScrollFootwearLeft] = useState(false);
   const [canScrollFootwearRight, setCanScrollFootwearRight] = useState(true);
+  const [activeFootwearCode, setActiveFootwearCode] = useState<string | null>(null);
+  const [activeShoeCareKey, setActiveShoeCareKey] = useState<string | null>(null);
 
   const checkShopCategoryScroll = () => {
     if (!shopCategoryScrollRef.current) {
@@ -1964,6 +1967,112 @@ const ShopPage: React.FC = () => {
       behavior: 'smooth'
     });
   };
+
+  const footwearProducts = [
+    { code: 'ksbc1', price: 1250000 },
+    { code: 'ksbc2', price: 1250000 },
+    { code: 'ksbc3', price: 1200000 },
+    { code: 'ksbc4', price: 1500000 },
+    { code: 'ksbc5', price: 1150000 },
+    { code: 'ksbc6', price: 1250000 },
+    { code: 'ksbc7', price: 1250000 },
+    { code: 'ksbc8', price: 1250000 },
+    { code: 'ksbc9', price: 1300000 },
+    { code: 'ksbc10', price: 1250000 },
+    { code: 'ksbc11', price: 1100000 },
+    { code: 'ksbc12', price: 1550000 },
+    { code: 'ksbc13', price: 1050000 },
+    { code: 'ksbc14', price: 1050000 },
+    { code: 'ksbc15', price: 700000 },
+    { code: 'ksbc16', price: 700000 },
+    { code: 'ksbc17', price: 1350000 },
+    { code: 'ksbc18', price: 1050000 },
+    { code: 'ksbc19', price: 1150000 },
+    { code: 'ksbc20', price: 1200000 },
+    { code: 'ksbc21', price: 1050000 },
+    { code: 'ksbc22', price: 1250000 },
+    { code: 'ksbc23', price: 1050000 },
+    { code: 'ksbc24', price: 1050000 },
+    { code: 'ksbc25', price: 700000 },
+    { code: 'ksbc26', price: 700000 },
+    { code: 'ksbc27', price: 1100000 },
+    { code: 'ksbc28', price: 900000 },
+    { code: 'ksbc29', price: 900000 },
+    { code: 'ksbc30', price: 1150000 },
+    { code: 'ksbc31', price: 1500000 },
+    { code: 'ksbc32', price: 1250000 },
+    { code: 'ksbc33', price: 1200000 },
+    { code: 'ksbc34', price: 900000 },
+    { code: 'ksbc35', price: 1250000 },
+    { code: 'ksbc36', price: 1150000 },
+    { code: 'ksbc37', price: 1100000 },
+    { code: 'ksbc38', price: 1110000 },
+    { code: 'ksbc39', price: 1120000 },
+    { code: 'ksbc40', price: 1120000 },
+    { code: 'ksbc41', price: 1300000 },
+    { code: 'ksbc42', price: 1100000 },
+    { code: 'ksbc43', price: 1200000 },
+    { code: 'ksbc44', price: 1200000 },
+    { code: 'ksbc45', price: 1200000 },
+    { code: 'ksbc46', price: 1250000 },
+    { code: 'ksbc47', price: 1100000 },
+    { code: 'ksbc48', price: 1300000 }
+  ];
+
+  const shoeCareProducts = [
+    { code: 'sc1', image: 'sc1', price: 50000 },
+    { code: 'sc2', image: 'sc2', price: 100000 },
+    { code: 'sc3', image: 'sc3', price: 80000 },
+    { code: 'sc4', image: 'sc4', price: 50000 },
+    { code: 'sc5', image: 'sc5', price: 50000 },
+    { code: 'sc6', image: 'sc6', price: 50000 },
+    { code: 'sc7', image: 'sc7', price: 100000 },
+    { code: 'sc8', image: 'sc8', price: 100000 },
+    { code: 'sc9', image: 'sc9', price: 150000 },
+    { code: 'sc10', image: 'sc10', price: 50000 },
+    { code: 'sc11', image: 'sc11', price: 50000 },
+    { code: 'sc12', image: 'sc12', price: 50000 },
+    { code: 'sc13', image: 'sc13', price: 50000 },
+    { code: 'sc14', image: 'sc14', price: 50000 },
+    { code: 'sc55', image: 'sc15', price: 50000 },
+    { code: 'sc16', image: 'sc16', price: 50000 },
+    { code: 'sc17', image: 'sc17', price: 50000 },
+    { code: 'sc18', image: 'sc18', price: 50000 },
+    { code: 'sc19', image: 'sc19', price: 50000 },
+    { code: 'sc20', image: 'sc20', price: 50000 },
+    { code: 'sc21', image: 'sc21', price: 50000 },
+    { code: 'sc22', image: 'sc22', price: 50000 },
+    { code: 'sc33', image: 'sc33', price: 50000 },
+    { code: 'sc24', image: 'sc24', price: 50000 },
+    { code: 'sc25', image: 'sc25', price: 80000 },
+    { code: 'sc26', image: 'sc26', price: 80000 },
+    { code: 'sc27', image: 'sc27', price: 50000 },
+    { code: 'sc28', image: 'sc28', price: 150000 },
+    { code: 'sc29', image: 'sc29', price: 50000 },
+    { code: 'sc30', image: 'sc30', price: 100000 },
+    { code: 'sc31', image: 'sc31', price: 100000 },
+    { code: 'sc32', image: 'sc32', price: 150000 },
+    { code: 'sc33', image: 'sc33', price: 50000 },
+    { code: 'sc34', image: 'sc34', price: 100000 },
+    { code: 'sc35', image: 'sc35', price: 400000 },
+    { code: 'sc36', image: 'sc36', price: 400000 },
+    { code: 'sc37', image: 'sc37', price: 400000 },
+    { code: 'sc38', image: 'sc38', price: 400000 },
+    { code: 'sc39', image: 'sc39', price: 400000 },
+    { code: 'sc40', image: 'sc40', price: 400000 },
+    { code: 'sc41', image: 'sc41', price: 35000 },
+    { code: 'sc42', image: 'sc42', price: 35000 },
+    { code: 'sc43', image: 'sc43', price: 200000 },
+    { code: 'sc44', image: 'sc44', price: 30000 },
+    { code: 'sc45', image: 'sc45', price: 80000 },
+    { code: 'sc46', image: 'sc46', price: 150000 },
+    { code: 'sc47', image: 'sc47', price: 150000 },
+    { code: 'sc48', image: 'sc48', price: 150000 },
+    { code: 'sc49', image: 'sc49', price: 150000 },
+    { code: 'sc50', image: 'sc50', price: 150000 },
+    { code: 'sc51', image: 'sc51', price: 50000 },
+    { code: 'sc52', image: 'sc52', price: 50000 }
+  ];
 
   return (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
@@ -2068,31 +2177,40 @@ const ShopPage: React.FC = () => {
         <div
           ref={merchScrollRef}
           onScroll={checkMerchScroll}
-          className="flex gap-4 overflow-x-auto pb-3 pr-2 scroll-smooth snap-x"
+          className="flex gap-4 overflow-x-auto overflow-y-visible pt-2 pb-5 pr-2 scroll-smooth snap-x"
         >
-          {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => (
-            <article
-              key={product.id}
-              className="flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]"
-              style={{ width: 260, height: 360 }}
-            >
-              <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
-              </div>
-              <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
-              <div className="mt-1 flex items-center justify-between gap-2">
-                <p className="text-[#F5A623] text-sm font-black">{product.price}</p>
-                <a
-                  href={`https://wa.me/256773207919?text=${encodeURIComponent(`Hi Eagles RFC, I want to buy ${product.name}.`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
-                >
-                  Buy Now
-                </a>
-              </div>
-            </article>
-          ))}
+          {MOCK_SHOP_PRODUCTS.filter((product) => product.name !== 'Eagles Membership Card').map((product) => {
+            const isActive = activeMerchId === product.id;
+
+            return (
+              <article
+                key={product.id}
+                onMouseEnter={() => setActiveMerchId(product.id)}
+                onMouseLeave={() => setActiveMerchId((current) => (current === product.id ? null : current))}
+                onTouchStart={() => setActiveMerchId(product.id)}
+                onTouchEnd={() => setActiveMerchId((current) => (current === product.id ? null : current))}
+                onTouchCancel={() => setActiveMerchId((current) => (current === product.id ? null : current))}
+                className={`group relative flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 w-[260px] h-[360px] transition-all duration-300 ${isActive ? '-translate-y-3 scale-[1.04] shadow-2xl z-20' : 'shadow-sm z-0'}`}
+                style={{ width: 260, height: 360 }}
+              >
+                <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
+                  <img src={product.imageUrl} alt={product.name} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
+                </div>
+                <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
+                <div className="mt-1 flex items-center justify-between gap-2">
+                  <p className="text-[#F5A623] text-sm font-black">{product.price}</p>
+                  <a
+                    href={`https://wa.me/256773207919?text=${encodeURIComponent(`Hi Eagles RFC, I want to buy ${product.name}.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
+                  >
+                    Buy Now
+                  </a>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -2126,79 +2244,42 @@ const ShopPage: React.FC = () => {
         <div
           ref={footwearScrollRef}
           onScroll={checkFootwearScroll}
-          className="flex gap-4 overflow-x-auto pb-3 pr-2 scroll-smooth snap-x"
+          className="flex gap-4 overflow-x-auto overflow-y-visible pt-2 pb-5 pr-2 scroll-smooth snap-x"
         >
-        <article className="flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]" style={{ width: 260, height: 360 }}>
-          <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-            <img src={toAssetUrl('/Footwear/cole haan two.jpeg')} alt="Cole Haan Two" className="w-full h-full object-cover" />
-          </div>
-          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">Cole Haan Two</h3>
-          <div className="mt-1 flex items-center justify-between gap-2">
-            <p className="text-[#F5A623] text-sm font-black">UGX 1,300,000</p>
-            <a
-              href={`https://wa.me/256773207919?text=${encodeURIComponent('Hi Eagles RFC, I want to buy Cole Haan Two.')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
-            >
-              Buy Now
-            </a>
-          </div>
-        </article>
+          {footwearProducts.map((item) => {
+            const productName = item.code.toUpperCase();
+            const message = `Hi Eagles RFC, I want to buy ${productName}.`;
+            const isActive = activeFootwearCode === item.code;
 
-        <article className="flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]" style={{ width: 260, height: 360 }}>
-          <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-            <img src={toAssetUrl('/Footwear/cole haan three.webp')} alt="Cole Haan 3" className="w-full h-full object-cover" />
-          </div>
-          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">Cole Haan 3</h3>
-          <div className="mt-1 flex items-center justify-between gap-2">
-            <p className="text-[#F5A623] text-sm font-black">UGX 1,250,000</p>
-            <a
-              href={`https://wa.me/256773207919?text=${encodeURIComponent('Hi Eagles RFC, I want to buy Cole Haan 3.')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
-            >
-              Buy Now
-            </a>
-          </div>
-        </article>
-
-        <article className="flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]" style={{ width: 260, height: 360 }}>
-          <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-            <img src={toAssetUrl('/Footwear/cole haan four.webp')} alt="Cole Haan Four" className="w-full h-full object-cover" />
-          </div>
-          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">Cole Haan Four</h3>
-          <div className="mt-1 flex items-center justify-between gap-2">
-            <p className="text-[#F5A623] text-sm font-black">UGX 1,350,000</p>
-            <a
-              href={`https://wa.me/256773207919?text=${encodeURIComponent('Hi Eagles RFC, I want to buy Cole Haan Four.')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
-            >
-              Buy Now
-            </a>
-          </div>
-        </article>
-
-        <article className="flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm w-[260px] h-[360px]" style={{ width: 260, height: 360 }}>
-          <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-            <img src={toAssetUrl('/Footwear/cole haan five.webp')} alt="Cole Haan Five" className="w-full h-full object-cover" />
-          </div>
-          <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">Cole Haan Five</h3>
-          <div className="mt-1 flex items-center justify-between gap-2">
-            <p className="text-[#F5A623] text-sm font-black">UGX 1,250,000</p>
-            <a
-              href={`https://wa.me/256773207919?text=${encodeURIComponent('Hi Eagles RFC, I want to buy Cole Haan Five.')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
-            >
-              Buy Now
-            </a>
-          </div>
-        </article>
+            return (
+              <article
+                key={item.code}
+                onMouseEnter={() => setActiveFootwearCode(item.code)}
+                onMouseLeave={() => setActiveFootwearCode((current) => (current === item.code ? null : current))}
+                onTouchStart={() => setActiveFootwearCode(item.code)}
+                onTouchEnd={() => setActiveFootwearCode((current) => (current === item.code ? null : current))}
+                onTouchCancel={() => setActiveFootwearCode((current) => (current === item.code ? null : current))}
+                className={`group relative flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 w-[260px] h-[360px] transition-all duration-300 ${isActive ? '-translate-y-3 scale-[1.04] shadow-2xl z-20' : 'shadow-sm z-0'}`}
+                style={{ width: 260, height: 360 }}
+              >
+                <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
+                  <img src={toAssetUrl(`/Footwear/${item.code}.jpeg`)} alt={productName} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
+                </div>
+                <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{productName}</h3>
+                <div className="mt-1 flex items-center justify-between gap-2">
+                  <p className="text-[#F5A623] text-sm font-black">UGX {item.price.toLocaleString('en-US')}</p>
+                  <a
+                    href={`https://wa.me/256773207919?text=${encodeURIComponent(message)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
+                  >
+                    Buy Now
+                  </a>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -2208,9 +2289,43 @@ const ShopPage: React.FC = () => {
         <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black">Shop</p>
         <h2 className="text-2xl font-black uppercase tracking-tight text-[#081534]">Shoe Care</h2>
       </div>
-      <p className="text-gray-600 text-sm">
-        Keep your kit sharp with polish, cleaners, and protective care products. Reach out to place an order.
-      </p>
+      <div className="flex gap-4 overflow-x-auto overflow-y-visible pt-2 pb-5 pr-2 scroll-smooth snap-x">
+        {shoeCareProducts.map((item, index) => {
+          const productName = item.code.toUpperCase();
+          const message = `Hi Eagles RFC, I want to buy ${productName}.`;
+          const itemKey = `${item.code}-${index}`;
+          const isActive = activeShoeCareKey === itemKey;
+
+          return (
+            <article
+              key={itemKey}
+              onMouseEnter={() => setActiveShoeCareKey(itemKey)}
+              onMouseLeave={() => setActiveShoeCareKey((current) => (current === itemKey ? null : current))}
+              onTouchStart={() => setActiveShoeCareKey(itemKey)}
+              onTouchEnd={() => setActiveShoeCareKey((current) => (current === itemKey ? null : current))}
+              onTouchCancel={() => setActiveShoeCareKey((current) => (current === itemKey ? null : current))}
+              className={`group relative flex-none snap-start bg-white border border-[#e2e7f0] rounded-xl p-4 w-[260px] h-[360px] transition-all duration-300 ${isActive ? '-translate-y-3 scale-[1.04] shadow-2xl z-20' : 'shadow-sm z-0'}`}
+              style={{ width: 260, height: 360 }}
+            >
+              <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
+                <img src={toAssetUrl(`/Shoe Care/${item.image}.jpg`)} alt={productName} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
+              </div>
+              <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{productName}</h3>
+              <div className="mt-1 flex items-center justify-between gap-2">
+                <p className="text-[#F5A623] text-sm font-black">UGX {item.price.toLocaleString('en-US')}</p>
+                <a
+                  href={`https://wa.me/256773207919?text=${encodeURIComponent(message)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center rounded-md bg-[#25D366] px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white hover:bg-[#1fa855] transition-colors"
+                >
+                  Buy Now
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
     </section>
 
     <section className="relative overflow-hidden rounded-2xl border border-[#d7deea] bg-gradient-to-br from-[#081534] via-[#0f2149] to-[#10295a] p-6 sm:p-8">
@@ -3231,6 +3346,7 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 
 
 
