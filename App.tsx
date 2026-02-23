@@ -1872,7 +1872,14 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               </div>
               <div className="rounded-lg border border-[#355da4] bg-[#0b1d45] px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Sponsored By</p>
-                <p className="mt-1 text-sm font-bold text-white">Kampanis Shoes and Bags Clinic</p>
+                <a
+                  href="https://x.com/kampaniSBC12"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 block text-sm font-bold text-white hover:text-[#F5A623] transition-colors"
+                >
+                  Kampanis Shoes and Bags Clinic
+                </a>
               </div>
             </div>
           </article>
@@ -1915,7 +1922,14 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               <p className="mt-3 text-sm text-[#c9d8f3] font-semibold leading-relaxed">{item.note}</p>
               <div className="mt-3 rounded-lg border border-[#355da4] bg-[#0b1d45] px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Sponsored By</p>
-                <p className="mt-1 text-sm font-bold text-white">Kampanis Shoes and Bags Clinic</p>
+                <a
+                  href="https://x.com/kampaniSBC12"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 block text-sm font-bold text-white hover:text-[#F5A623] transition-colors"
+                >
+                  Kampanis Shoes and Bags Clinic
+                </a>
               </div>
             </div>
           </article>
