@@ -21,9 +21,8 @@ export class PollApiConfigError extends Error {
 }
 
 const POLL_KEY = (import.meta.env.VITE_POLL_KEY ?? 'eagles-vs-golden-badgers').trim();
-
-// Use relative /api path so it works on both localhost and production
-const API_BASE = '/api';
+const configuredApiBase = (import.meta.env.VITE_POLL_API_BASE ?? '').trim();
+const API_BASE = configuredApiBase ? configuredApiBase.replace(/\/+$/, '') : '/api';
 
 export const getPollCounts = async (): Promise<PollCountsSnapshot> => {
   const res = await fetch(`${API_BASE}/poll/${POLL_KEY}/counts`);

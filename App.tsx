@@ -45,6 +45,7 @@ type FixtureScore = {
 
 const POLL_SESSION_VOTE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-vote-v2';
 const POLL_SESSION_TOKEN_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-token-v2';
+const POLL_COUNTS_CACHE_STORAGE_KEY = 'eagles-vs-golden-badgers-poll-counts-cache-v1';
 const POLL_MATCH_DATE_LABEL = 'SUN 1ST MARCH';
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {};
@@ -884,8 +885,35 @@ const MatchPollWidget: React.FC = () => {
       setCounts(nextSnapshot.counts);
       setTotalVotes(nextSnapshot.total);
       setActivePollsTotal(nextSnapshot.activePollsTotal);
+      const storage = getBrowserStorage();
+      if (storage) {
+        storage.setItem(POLL_COUNTS_CACHE_STORAGE_KEY, JSON.stringify(nextSnapshot));
+      }
       setCountsStatus('live');
     } catch (error) {
+      const storage = getBrowserStorage();
+      if (storage) {
+        const cachedRaw = storage.getItem(POLL_COUNTS_CACHE_STORAGE_KEY);
+        if (cachedRaw) {
+          try {
+            const cached = JSON.parse(cachedRaw) as {
+              counts?: Partial<PollCounts>;
+              total?: number;
+              activePollsTotal?: number;
+            };
+            const cachedCounts: PollCounts = {
+              win: Number(cached.counts?.win) || 0,
+              draw: Number(cached.counts?.draw) || 0,
+              loss: Number(cached.counts?.loss) || 0
+            };
+            setCounts(cachedCounts);
+            setTotalVotes(Number(cached.total) || cachedCounts.win + cachedCounts.draw + cachedCounts.loss);
+            setActivePollsTotal(Number(cached.activePollsTotal) || 0);
+          } catch {
+            // ignore invalid cache
+          }
+        }
+      }
       if (error instanceof PollApiConfigError) {
         setCountsStatus('unconfigured');
         return;
@@ -1049,12 +1077,12 @@ const MatchPollWidget: React.FC = () => {
       )}
       {submitStatus === 'failed' && (
         <p className="text-[10px] font-black uppercase text-[#1a1a1a] mt-1">
-          Vote saved locally for this session; sync pending.
+          Vote saved locally for this session; sync pending once API is reachable.
         </p>
       )}
       {(countsStatus === 'offline' || countsStatus === 'unconfigured') && (
         <p className="text-[10px] font-black uppercase text-[#1a1a1a] mt-1">
-          Live tally unavailable; showing last known totals.
+          Live tally unavailable; showing last known totals from local cache.
         </p>
       )}
       {storageStatus === 'blocked' && (
@@ -1593,10 +1621,10 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
             <img
-              src={p.imageUrl || toAssetUrl('/player.png')}
+              src={p.imageUrl || toAssetUrl('/player2.png')}
               alt={p.name}
               onError={(event) => {
-                event.currentTarget.src = toAssetUrl('/player.png');
+                event.currentTarget.src = toAssetUrl('/player2.png');
               }}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             />

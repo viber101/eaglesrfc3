@@ -10,9 +10,13 @@ Setup:
    `npm install`
 2. Copy environment template:
    `cp .env.example .env.local`
-3. Fill Supabase values in `.env.local`.
-4. Start dev server:
+3. Set poll env values in `.env.local` as needed:
+   - `VITE_POLL_KEY`
+   - `VITE_POLL_API_BASE` (optional; use when API is on a different host)
+4. Start frontend dev server:
    `npm run dev`
+5. Start poll API server (separate process):
+   `cd api && npm install && npm start`
 
 ## Match Poll Backend (Express + SQLite)
 
@@ -34,6 +38,7 @@ Vote response includes:
 - SQLite file path: `/data/polls.db`
 - `docker-compose.yml` mounts persistent volume `poll_data` to `/data`
 - This volume is required so poll data survives container/site restarts
+- If API is hosted on a different domain/path, set `VITE_POLL_API_BASE` so frontend does not call a missing local `/api` path.
 
 ### 3) Behavior provided
 - In-app voting (no redirects)
