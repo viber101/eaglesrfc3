@@ -210,10 +210,6 @@ const LEGACY_SLIDE_IMAGES = [
   '/gallery/Eagles (14).jpeg',
   '/gallery/Eagles (19).jpeg'
 ];
-const MATCHDAY_POSTER_IMAGES = [
-  '/WhatsApp Image 2026-02-16 at 6.13.52 PM.jpeg',
-  '/KINTANTE FUN DAY FLYER.png'
-];
 const PARTNER_LOGOS = [
   { name: 'Kampanis', src: '/partners/kampanis.png' },
   { name: 'Vacker', src: '/partners/Vacker.jpeg' },
@@ -613,6 +609,9 @@ const CalendarSection: React.FC = () => {
   const [activeMonths, setActiveMonths] = useState<string[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>(MONTH_ORDER[new Date().getMonth()]);
   const [isLoading, setIsLoading] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -682,6 +681,31 @@ const CalendarSection: React.FC = () => {
   const currentMonth = MONTH_ORDER[new Date().getMonth()];
   const isMonthActive = (month: string) => activeMonths.includes(month);
   const calendarYear = new Date().getFullYear();
+  const selectedMonthHasActivities = isMonthActive(selectedMonth) && visibleFixtures.length > 0;
+
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, [selectedMonthHasActivities, visibleFixtures.length, selectedMonth]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = scrollContainerRef.current.clientWidth * 0.85;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <section className="mb-12">
@@ -747,27 +771,62 @@ const CalendarSection: React.FC = () => {
               </span>
             </div>
 
-            {visibleFixtures.length ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {visibleFixtures.map((fixture, index) => {
-                  const score = FIXTURE_SCORE_OVERRIDES[toFixtureKey(fixture)];
-                  const posterImage = MATCHDAY_POSTER_IMAGES[index % MATCHDAY_POSTER_IMAGES.length];
-                  return (
-                    <article key={`${fixture.id}-${fixture.home}-${fixture.away}`} className="rounded-xl overflow-hidden border border-[#d7dbe3] shadow-sm bg-[#081534]">
-                      <div className="relative aspect-[4/5]">
-                        <img src={toAssetUrl(posterImage)} alt={`${fixture.home} vs ${fixture.away} poster`} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#081534] via-[#081534]/65 to-transparent" />
-                        <div className="absolute left-3 right-3 bottom-3 text-white">
-                          <p className="text-[10px] font-black uppercase tracking-wider text-[#F5A623]">{fixture.category}</p>
-                          <h4 className="mt-1 text-base sm:text-lg font-black leading-tight uppercase">{fixture.home} vs {fixture.away}</h4>
-                          <p className="mt-1 text-xs font-bold text-white/90">{toFixtureDayLabel(fixture)}, {toFixtureMonthDayLabel(fixture)}, {calendarYear}</p>
-                          <p className="text-xs font-bold text-white/80">{fixture.time} | {fixture.venue}</p>
-                          <p className="mt-1 text-[11px] font-black text-white/95">HT {formatHalfTimeValue(score)} | FT {formatScoreValue(score)}</p>
+            {selectedMonthHasActivities ? (
+              <div className="relative">
+                {canScrollLeft && (
+                  <button onClick={() => scroll('left')} className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#081534] shadow-lg">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
+                  </button>
+                )}
+                {canScrollRight && (
+                  <button onClick={() => scroll('right')} className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#081534] shadow-lg">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
+                  </button>
+                )}
+
+                <div ref={scrollContainerRef} onScroll={checkScroll} className="flex overflow-x-auto gap-4 scrollbar-hide snap-x snap-mandatory pb-1">
+                  {visibleFixtures.map((fixture) => {
+                    const score = FIXTURE_SCORE_OVERRIDES[toFixtureKey(fixture)];
+                    return (
+                      <article key={`${fixture.id}-${fixture.home}-${fixture.away}`} className="min-w-[320px] sm:min-w-[360px] max-w-[360px] rounded-2xl overflow-hidden bg-white border border-[#d7dbe3] shadow-sm snap-start">
+                        <div className="bg-gradient-to-br from-[#0d245b] via-[#0b1d4a] to-[#081538] p-5 text-white border-t-4 border-[#F5A623]">
+                          <div className="flex items-center justify-between text-[11px] font-black uppercase tracking-wider text-[#b2bdd5] mb-4">
+                            <span>{fixture.category}</span>
+                            <span>{toFixtureDateLabel(fixture)} {fixture.time}</span>
+                          </div>
+                          <div className="grid grid-cols-3 items-center gap-3">
+                            <p className={`text-sm font-black uppercase leading-tight text-left ${isEaglesTeam(fixture.home) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.home}</p>
+                            <p className="text-3xl font-black text-center">VS</p>
+                            <p className={`text-sm font-black uppercase leading-tight text-right ${isEaglesTeam(fixture.away) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.away}</p>
+                          </div>
                         </div>
-                      </div>
-                    </article>
-                  );
-                })}
+                        <div className="p-5 bg-[#f7f8fb]">
+                          <p className="text-[#1b2f5a] text-xs font-bold mb-2">CURA Championship</p>
+                          <h3 className="text-[#0d245b] text-3xl font-black tracking-tight mb-1">Week {fixture.week}</h3>
+                          <p className="text-[#0d245b] text-lg font-black mb-3">{toFixtureMonthDayLabel(fixture)}</p>
+                          <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
+                            <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Half Time</span>
+                            <span className="text-[#0d245b] text-base font-black">{formatHalfTimeValue(score)}</span>
+                          </div>
+                          <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
+                            <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Full Time</span>
+                            <span className="text-[#0d245b] text-base font-black">{formatScoreValue(score)}</span>
+                          </div>
+                          <div className="space-y-2 text-[#35507f] text-sm font-bold">
+                            <p className="flex items-center gap-2">
+                              <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
+                              {toFixtureDayLabel(fixture)}, {fixture.time}
+                            </p>
+                            <p className="flex items-center gap-2">
+                              <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657 13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
+                              {fixture.venue}
+                            </p>
+                          </div>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
               </div>
             ) : (
               <div className="rounded-lg border border-dashed border-[#d0d8e6] bg-[#fafbfe] p-6 text-center">
