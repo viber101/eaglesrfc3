@@ -1860,7 +1860,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
 
             <div className="p-5 bg-[#f7f9fd]">
               <div className="mb-3 rounded-lg overflow-hidden border border-[#d6deeb] h-40 bg-[#dfe6f3]">
-                <img src={toAssetUrl('/gallery/Eagles (3).jpeg')} alt={`Man of the Match vs ${getOpponentName(fixture)}`} className="w-full h-full object-cover" />
+                <img src={toAssetUrl('/player2.png')} alt={`Man of the Match vs ${getOpponentName(fixture)}`} className="w-full h-full object-cover" />
               </div>
               <div className="rounded-xl border border-dashed border-[#c7d5eb] bg-white p-4 mb-3">
                 <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#607497]">Selected Player</p>
