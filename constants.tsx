@@ -9,12 +9,12 @@ export const COLORS = {
 };
 
 export const MOCK_STANDINGS: Standing[] = [
-  { pos: 1, team: 'Blue Phoenix', p: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Emirates_Logo.svg/2560px-Emirates_Logo.svg.png' },
-  { pos: 2, team: 'Eagles', p: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/1200px-Arsenal_FC.svg.png' },
-  { pos: 3, team: 'Golden Badgers', p: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Manchester_City_FC_badge.svg/1200px-Manchester_City_FC_badge.svg.png' },
-  { pos: 4, team: 'Jaguars', p: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/fc/Wolverhampton_Wanderers.svg/1200px-Wolverhampton_Wanderers.svg.png' },
-  { pos: 5, team: 'Mukono Hawks', p: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f9/Aston_Villa_FC_crest_%282016%29.svg/1200px-Aston_Villa_FC_crest_%282016%29.svg.png' },
-  { pos: 6, team: 'Rams', p: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/b4/Tottenham_Hotspur.svg/1200px-Tottenham_Hotspur.svg.png' }
+  { pos: 1, team: 'Blue Phoenix', p: 0, w: 0, l: 0, bp: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Emirates_Logo.svg/2560px-Emirates_Logo.svg.png' },
+  { pos: 2, team: 'Eagles', p: 0, w: 0, l: 0, bp: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/1200px-Arsenal_FC.svg.png' },
+  { pos: 3, team: 'Golden Badgers', p: 0, w: 0, l: 0, bp: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Manchester_City_FC_badge.svg/1200px-Manchester_City_FC_badge.svg.png' },
+  { pos: 4, team: 'Jaguars', p: 0, w: 0, l: 0, bp: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/fc/Wolverhampton_Wanderers.svg/1200px-Wolverhampton_Wanderers.svg.png' },
+  { pos: 5, team: 'Mukono Hawks', p: 0, w: 0, l: 0, bp: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/f/f9/Aston_Villa_FC_crest_%282016%29.svg/1200px-Aston_Villa_FC_crest_%282016%29.svg.png' },
+  { pos: 6, team: 'Rams', p: 0, w: 0, l: 0, bp: 0, gd: 0, pts: 0, logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/b4/Tottenham_Hotspur.svg/1200px-Tottenham_Hotspur.svg.png' }
 ];
 
 export const MOCK_PLAYERS: Player[] = [

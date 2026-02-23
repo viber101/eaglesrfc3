@@ -47,6 +47,9 @@ export interface Standing {
   pos: number;
   team: string;
   p: number;
+  w: number;
+  l: number;
+  bp: number;
   gd: number;
   pts: number;
   logo: string;
