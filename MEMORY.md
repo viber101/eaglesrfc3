@@ -69,13 +69,18 @@ Set at: https://github.com/viber101/eaglesrfc3/settings/secrets/actions
 
 - **Provider**: Let's Encrypt (free, auto-renews every 90 days)
 - **Tool**: Certbot
-- **Certificate path on VPS**: `/etc/letsencrypt/live/eaglesrugbyug.com/`
-- SSL is obtained automatically on first deployment via GitHub Actions
+- **Email used**: eaglessportsfranchise@gmail.com
+- **Certificate path on VPS**: `/etc/letsencrypt/live/eaglesrugbyug.com/fullchain.pem`
+- **Key path on VPS**: `/etc/letsencrypt/live/eaglesrugbyug.com/privkey.pem`
+- **Expires**: 2026-05-24 (auto-renews via Certbot scheduled task)
+- SSL was obtained manually via VPS Terminal on 2026-02-23
 
 ### Manual SSL renewal (if needed)
-SSH into VPS and run:
+SSH into VPS via Hostinger Terminal and run:
 ```bash
+cd /var/www/eaglesrfc && docker compose down
 certbot renew
+docker compose up -d
 ```
 
 ---
