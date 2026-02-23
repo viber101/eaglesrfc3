@@ -870,18 +870,9 @@ const CalendarSection: React.FC = () => {
                             {isToday ? <span className="text-[10px] font-black uppercase tracking-wide text-white bg-[#F5A623] px-1.5 py-0.5 rounded">Today</span> : null}
                           </div>
                           <p className="mt-1 text-[10px] sm:text-[11px] font-bold text-[#66758f] leading-tight">{shortDateLabel}</p>
-                          <p className="mt-2 text-[11px] sm:text-xs font-semibold text-[#9aa5b6] leading-tight">No activity</p>
                         </div>
                       );
                     })}
-                  </div>
-                </div>
-
-                <div className="rounded-xl border border-[#d7dbe3] bg-[#f9fbff] p-4">
-                  <h4 className="text-[#081534] text-sm sm:text-base font-black uppercase tracking-wider mb-3">Month Activities</h4>
-                  <div className="rounded-lg border border-dashed border-[#d0d8e6] bg-[#fafbfe] p-6 text-center">
-                    <p className="text-sm font-black uppercase tracking-wide text-[#6b7280]">No activities this month.</p>
-                    <p className="mt-1 text-xs font-semibold text-[#8b95a5]">Select another month or use "Go to current month".</p>
                   </div>
                 </div>
               </div>
