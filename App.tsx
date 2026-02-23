@@ -124,6 +124,15 @@ type PlayerBirthday = {
   month: number;
 };
 
+type ScorerSpotlight = {
+  id: string;
+  label: string;
+  player: string;
+  statLabel: string;
+  statValue: string;
+  note: string;
+};
+
 const PLAYER_PROFILE_OVERRIDES: Record<string, PlayerProfileOverride> = {
   '1': { name: 'Ogwal Joshua', age: 25, kgs: 90, cm: 180 },
   '2': { name: 'Kisubi Paul', age: 20, kgs: 105, cm: 170 },
@@ -247,6 +256,25 @@ const PLAYER_BIRTHDAYS: PlayerBirthday[] = [
   { name: 'Santos Musa Lukwago', day: 9, month: 6 },
   { name: 'Hilary Kisitu', day: 9, month: 6 },
   { name: 'Denis Mujuni', day: 5, month: 11 }
+];
+
+const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
+  {
+    id: 'top-try',
+    label: 'Top Try Scorer',
+    player: 'Ojara Emmanuel',
+    statLabel: 'Tries',
+    statValue: '14',
+    note: 'Explosive finisher with consistent match-winning impact.'
+  },
+  {
+    id: 'top-points',
+    label: 'Top Points Scorer',
+    player: 'Wasula Gerry Peter',
+    statLabel: 'Points',
+    statValue: '98',
+    note: 'Reliable points machine from open play and set pieces.'
+  }
 ];
 
 const getPlayerProfile = (id: string, fallbackName: string) => {
@@ -1791,6 +1819,37 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     </section>
 
     <CalendarSection />
+
+    <section className="mb-12">
+      <div className="flex items-end justify-between mb-4">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black mb-1">Performance Board</p>
+          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Top Scorers 2026</h3>
+        </div>
+        <p className="hidden sm:block text-xs font-bold uppercase tracking-wider text-[#5c6e8d]">Swipe to view</p>
+      </div>
+
+      <div className="flex overflow-x-auto gap-4 snap-x snap-mandatory scrollbar-hide pb-1">
+        {HOME_SCORER_SPOTLIGHT.map((item) => (
+          <article
+            key={item.id}
+            className="flex-none w-[88vw] sm:w-[420px] snap-start rounded-2xl overflow-hidden border border-[#d6deeb] shadow-[0_14px_34px_rgba(8,21,52,0.16)] bg-white"
+          >
+            <div className="bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#102f76] text-white px-5 py-4 border-t-4 border-[#F5A623]">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">{item.label}</p>
+              <h4 className="mt-1 text-2xl sm:text-3xl font-black tracking-tight leading-none">{item.player}</h4>
+            </div>
+            <div className="px-5 py-5 bg-[#f7f9fd]">
+              <div className="flex items-end justify-between gap-4">
+                <p className="text-[#0d245b] text-5xl sm:text-6xl font-black leading-none">{item.statValue}</p>
+                <p className="text-[#1f3f78] text-sm sm:text-base font-black uppercase tracking-wider">{item.statLabel}</p>
+              </div>
+              <p className="mt-3 text-sm text-[#445b83] font-semibold leading-relaxed">{item.note}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
 
     <Carousel
       title="Current Squad 2026"
