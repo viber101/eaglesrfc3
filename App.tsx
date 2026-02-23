@@ -1888,11 +1888,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               </div>
               <div className="rounded-lg border border-dashed border-[#cdd8ea] bg-white px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Man of the Match</p>
-                <p className="mt-1 text-sm font-semibold text-[#233a63]">________________</p>
-              </div>
-              <div className="mt-3 rounded-lg border border-[#dce5f3] bg-white px-3 py-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Sponsored By</p>
-                <p className="mt-1 text-sm font-bold text-[#1f3f78]">Kampanis Shoes and Bags Clinic</p>
+                <p className="mt-1 text-sm font-semibold text-[#233a63]">Name: __________________</p>
               </div>
             </div>
           </article>
