@@ -1851,28 +1851,48 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         {homeCalendarFixtures.map((fixture) => (
           <article
             key={`motm-${fixture.id}-${fixture.home}-${fixture.away}`}
-            className="flex-none w-[84vw] max-w-[340px] sm:w-[380px] snap-start rounded-2xl overflow-hidden border border-[#102e67] shadow-[0_20px_40px_rgba(8,21,52,0.22)] bg-[#0a1638]"
+            className="flex-none w-[84vw] max-w-[340px] sm:w-[380px] snap-start rounded-2xl overflow-hidden bg-white border border-[#d7dbe3] shadow-sm"
           >
-            <div className="relative px-4 py-3 sm:px-5 sm:py-4 bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#143a8a] text-white border-t-4 border-[#F5A623]">
-              <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.1),transparent_45%)]" />
-              <p className="relative text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">Man of the Match</p>
-              <h4 className="relative mt-1 text-lg sm:text-2xl font-black tracking-tight leading-tight">{getOpponentName(fixture)}</h4>
-              <p className="relative mt-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#b2bdd5]">
-                Week {fixture.week} | {toFixtureMonthDayLabel(fixture)} | {fixture.time}
-              </p>
+            <div className="bg-gradient-to-br from-[#0d245b] via-[#0b1d4a] to-[#081538] p-4 sm:p-5 text-white border-t-4 border-[#F5A623]">
+              <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#b2bdd5] mb-3 sm:mb-4">
+                <span>{fixture.category}</span>
+                <span>{toFixtureDateLabel(fixture)} {fixture.time}</span>
+              </div>
+              <div className="grid grid-cols-3 items-center gap-3">
+                <p className={`text-xs sm:text-sm font-black uppercase leading-tight text-left break-words ${isEaglesTeam(fixture.home) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.home}</p>
+                <p className="text-2xl sm:text-3xl font-black text-center">VS</p>
+                <p className={`text-xs sm:text-sm font-black uppercase leading-tight text-right break-words ${isEaglesTeam(fixture.away) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.away}</p>
+              </div>
             </div>
-
-            <div className="p-4 sm:p-5 bg-[linear-gradient(180deg,#0f234f,#0a1737)]">
-              <div className="mb-2 sm:mb-3 rounded-lg overflow-hidden border border-[#2f4f8f] h-[220px] sm:h-[260px] bg-[#0b1d45] ring-1 ring-[#27457f]">
-                <img src={toAssetUrl('/player2.png')} alt={`Man of the Match vs ${getOpponentName(fixture)}`} className="w-full h-full object-cover" />
+            <div className="p-4 sm:p-5 bg-[#f7f8fb]">
+              <p className="text-[#1b2f5a] text-xs font-bold mb-2">CURA Championship</p>
+              <h3 className="text-[#0d245b] text-2xl sm:text-3xl font-black tracking-tight mb-1">Week {fixture.week}</h3>
+              <p className="text-[#0d245b] text-base sm:text-lg font-black mb-3">{toFixtureMonthDayLabel(fixture)}</p>
+              <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Half Time</span>
+                <span className="text-[#0d245b] text-sm sm:text-base font-black">... : ...</span>
               </div>
-              <div className="rounded-xl border border-dashed border-[#355da4] bg-[#0b1d45] p-3 sm:p-4 mb-2 sm:mb-3">
-                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#89a9e4]">Selected Player</p>
-                <p className="mt-1.5 text-lg sm:text-xl font-black text-white leading-none">________________</p>
+              <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Full Time</span>
+                <span className="text-[#0d245b] text-sm sm:text-base font-black">... : ...</span>
               </div>
-              <div className="rounded-lg border border-[#355da4] bg-[#0b1d45] px-3 py-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Sponsored By</p>
-                <p className="mt-1 text-sm font-bold text-white">Kampanis Shoes and Bags Clinic</p>
+              <div className="space-y-2 text-[#35507f] text-xs sm:text-sm font-bold mb-3">
+                <p className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
+                  {toFixtureDayLabel(fixture)}, {fixture.time}
+                </p>
+                <p className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657 13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
+                  {fixture.venue}
+                </p>
+              </div>
+              <div className="rounded-lg border border-dashed border-[#cdd8ea] bg-white px-3 py-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Man of the Match</p>
+                <p className="mt-1 text-sm font-semibold text-[#233a63]">________________</p>
+              </div>
+              <div className="mt-3 rounded-lg border border-[#dce5f3] bg-white px-3 py-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Sponsored By</p>
+                <p className="mt-1 text-sm font-bold text-[#1f3f78]">Kampanis Shoes and Bags Clinic</p>
               </div>
             </div>
           </article>
