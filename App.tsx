@@ -749,6 +749,10 @@ const CalendarSection: React.FC = () => {
     return () => window.clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    setSelectedBirthdayDay(null);
+  }, [selectedMonth]);
+
   const visibleFixtures = selectedMonth
     ? fixtures.filter((fixture) => getFixtureMonthForFilter(fixture).toLowerCase() === selectedMonth.toLowerCase())
     : fixtures;
@@ -767,9 +771,6 @@ const CalendarSection: React.FC = () => {
   const trailingEmptyDays = Array.from({ length: trailingCount }, () => null as number | null);
   const calendarCells = [...leadingEmptyDays, ...monthDays, ...trailingEmptyDays];
   const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-  const todayBirthdays = PLAYER_BIRTHDAYS.filter((player) => (
-    player.day === today.getDate() && player.month === (today.getMonth() + 1)
-  ));
   const selectedMonthBirthdays = PLAYER_BIRTHDAYS
     .filter((player) => player.month === selectedMonthNumber)
     .sort((a, b) => a.day - b.day);
@@ -780,11 +781,8 @@ const CalendarSection: React.FC = () => {
     return map;
   }, new Map<number, string[]>());
   const birthdayDaysInSelectedMonth = Array.from(birthdayNamesByDay.keys()).sort((a, b) => a - b);
-  const selectedDayBirthdayNames = selectedBirthdayDay ? (birthdayNamesByDay.get(selectedBirthdayDay) || []) : [];
-
-  useEffect(() => {
-    setSelectedBirthdayDay(birthdayDaysInSelectedMonth[0] ?? null);
-  }, [selectedMonth]);
+  const selectedDayBirthdayNamesRaw = selectedBirthdayDay ? (birthdayNamesByDay.get(selectedBirthdayDay) || []) : [];
+  const selectedDayBirthdayNames = Array.from(new Set(selectedDayBirthdayNamesRaw));
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -981,22 +979,17 @@ const CalendarSection: React.FC = () => {
             <div className="mt-4 rounded-xl border border-[#d7dbe3] bg-[#f9fbff] p-4">
               <h4 className="text-[#081534] text-sm sm:text-base font-black uppercase tracking-wider mb-3">Birthday Messages</h4>
               <div className="space-y-2">
-                {todayBirthdays.map((player) => (
-                  <p key={`today-${player.name}`} className="rounded-lg border border-[#f1c36b] bg-[#fff3da] text-[#6a4300] px-3 py-2 text-sm font-black">
-                    Happy Birthday, {player.name}! Keep flying high with Eagles Rugby Club.
-                  </p>
-                ))}
                 {selectedDayBirthdayNames.map((name) => (
                   <p key={`selected-day-${name}`} className="rounded-lg border border-[#f1c36b] bg-[#fff7e6] text-[#6a4300] px-3 py-2 text-sm font-black">
                     Happy Birthday, {name}! Wishing you strength, joy, and a winning year ahead.
                   </p>
                 ))}
-                {selectedDayBirthdayNames.length === 0 && selectedMonthBirthdays.length > 0 ? (
+                {selectedBirthdayDay === null && selectedMonthBirthdays.length > 0 ? (
                   <p className="rounded-lg border border-[#e3e8f3] bg-white text-[#1f3357] px-3 py-2 text-sm font-semibold">
                     This month has birthdays. Tap an orange date in the calendar to view birthday names.
                   </p>
                 ) : null}
-                {!todayBirthdays.length && !selectedMonthBirthdays.length && !selectedDayBirthdayNames.length ? (
+                {selectedMonthBirthdays.length === 0 ? (
                   <p className="rounded-lg border border-[#e3e8f3] bg-white text-[#5c6e8d] px-3 py-2 text-sm font-semibold">
                     Birthday board is ready. Pick another month to view upcoming player birthday messages.
                   </p>
