@@ -1867,8 +1867,8 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                 <p className="mt-2 text-xl font-black text-[#102f66] leading-none">________________</p>
               </div>
               <div className="rounded-lg border border-[#dce5f3] bg-white px-3 py-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Match</p>
-                <p className="mt-1 text-sm font-bold text-[#1f3f78]">{fixture.home} vs {fixture.away}</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Sponsored By</p>
+                <p className="mt-1 text-sm font-bold text-[#1f3f78]">Kampanis Shoes and Bags Clinic</p>
               </div>
             </div>
           </article>
@@ -1901,6 +1901,10 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               <div className="mb-4 rounded-lg border border-dashed border-[#cdd8ea] bg-white px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Name</p>
                 <p className="mt-1 text-sm font-semibold text-[#233a63]">________________</p>
+              </div>
+              <div className="mb-4 rounded-lg border border-[#dce5f3] bg-white px-3 py-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Sponsored By</p>
+                <p className="mt-1 text-sm font-bold text-[#1f3f78]">Kampanis Shoes and Bags Clinic</p>
               </div>
               <div className="flex items-end justify-between gap-4">
                 <p className="text-[#0d245b] text-5xl sm:text-6xl font-black leading-none">{item.statValue}</p>
@@ -1955,11 +1959,11 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                   type="button"
                   onClick={(event) => {
                     event.stopPropagation();
-                    onNavigate('squad');
+                    onNavigate('contact');
                   }}
                   className="inline-flex items-center gap-1 text-white text-[11px] font-black uppercase tracking-widest hover:text-[#F5A623] transition-colors mt-0.5"
                 >
-                  PROFILE
+                  SPONSOR
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M14 3h7v7" />
                     <path d="M10 14L21 3" />
