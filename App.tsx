@@ -1842,7 +1842,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       <div className="flex items-end justify-between mb-5">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] font-black text-[#f39c12]">Game Week Focus</p>
-          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Man of the Match 2026</h3>
+          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Man of the Match 3026</h3>
         </div>
         <p className="hidden sm:block text-xs font-bold uppercase tracking-wider text-[#5c6e8d]">Based on calendar fixtures</p>
       </div>
