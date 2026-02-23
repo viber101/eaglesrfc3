@@ -37,20 +37,21 @@ jobs:
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
             mkdir -p /var/www/eaglesrfc/dist
+            mkdir -p /var/www/eaglesrfc/api
             cd /var/www/eaglesrfc
             docker compose down || true
 
-      - name: Copy dist and config files to VPS
+      - name: Copy all files to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
-          source: "dist/,nginx.conf,docker-compose.yml"
+          source: "dist/,api/,nginx.conf,docker-compose.yml"
           target: "/var/www/eaglesrfc"
           strip_components: 0
 
-      - name: Start Docker container
+      - name: Start Docker containers
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -59,4 +60,4 @@ jobs:
           script: |
             cd /var/www/eaglesrfc
             docker compose up -d --build
-            echo "✅ Deployment complete! Site live at http://eaglesrugbyug.com"
+            echo "✅ Deployment complete!"
