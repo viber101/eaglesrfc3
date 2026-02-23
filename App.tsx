@@ -210,6 +210,10 @@ const LEGACY_SLIDE_IMAGES = [
   '/gallery/Eagles (14).jpeg',
   '/gallery/Eagles (19).jpeg'
 ];
+const MATCHDAY_POSTER_IMAGES = [
+  '/WhatsApp Image 2026-02-16 at 6.13.52 PM.jpeg',
+  '/KINTANTE FUN DAY FLYER.png'
+];
 const PARTNER_LOGOS = [
   { name: 'Kampanis', src: '/partners/kampanis.png' },
   { name: 'Vacker', src: '/partners/Vacker.jpeg' },
@@ -677,28 +681,7 @@ const CalendarSection: React.FC = () => {
 
   const currentMonth = MONTH_ORDER[new Date().getMonth()];
   const isMonthActive = (month: string) => activeMonths.includes(month);
-  const selectedMonthIndex = MONTH_INDEX[selectedMonth.toLowerCase()] ?? new Date().getMonth();
   const calendarYear = new Date().getFullYear();
-  const firstWeekdayOfMonth = new Date(calendarYear, selectedMonthIndex, 1).getDay();
-  const daysInSelectedMonth = new Date(calendarYear, selectedMonthIndex + 1, 0).getDate();
-  const leadingEmptyDays = Array.from({ length: firstWeekdayOfMonth }, () => null as number | null);
-  const monthDays = Array.from({ length: daysInSelectedMonth }, (_, index) => index + 1);
-  const trailingCount = (7 - ((leadingEmptyDays.length + monthDays.length) % 7)) % 7;
-  const trailingEmptyDays = Array.from({ length: trailingCount }, () => null as number | null);
-  const calendarCells = [...leadingEmptyDays, ...monthDays, ...trailingEmptyDays];
-  const monthFixturesByDay = visibleFixtures.reduce((map, fixture) => {
-    const adjustedDate = getAdjustedFixtureDate(fixture);
-    const dayNumber = adjustedDate ? adjustedDate.getDate() : Number(extractDateNumber(fixture.date));
-    if (!Number.isFinite(dayNumber) || dayNumber < 1 || dayNumber > daysInSelectedMonth) {
-      return map;
-    }
-    const existing = map.get(dayNumber) || [];
-    existing.push(fixture);
-    map.set(dayNumber, existing);
-    return map;
-  }, new Map<number, FixtureItem[]>());
-
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
     <section className="mb-12">
@@ -754,8 +737,8 @@ const CalendarSection: React.FC = () => {
         </div>
       ) : (
         <div className="bg-[#081534] rounded-2xl p-4 sm:p-5 shadow-[0_20px_45px_rgba(8,21,52,0.35)]">
-          <div className="bg-white rounded-xl border border-[#d7dbe3] overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#d7dbe3] flex items-center justify-between gap-2">
+          <div className="bg-white rounded-xl border border-[#d7dbe3] p-4 sm:p-5">
+            <div className="mb-4 flex items-center justify-between gap-2">
               <h3 className="text-[#081534] text-lg sm:text-xl font-black tracking-tight">{selectedMonth} {calendarYear}</h3>
               <span className={`text-[10px] sm:text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${
                 isMonthActive(selectedMonth) ? 'bg-[#e7f6ed] text-[#1f7a3f]' : 'bg-[#f3f4f6] text-[#6b7280]'
@@ -764,55 +747,24 @@ const CalendarSection: React.FC = () => {
               </span>
             </div>
 
-            <div className="grid grid-cols-7 border-b border-[#d7dbe3] bg-[#f7f8fb]">
-              {weekDays.map((dayName) => (
-                <div key={dayName} className="px-2 py-2 text-center text-[10px] sm:text-xs font-black uppercase tracking-wider text-[#4d6185] border-r last:border-r-0 border-[#d7dbe3]">
-                  {dayName}
-                </div>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-7">
-              {calendarCells.map((dayNumber, index) => {
-                if (!dayNumber) {
-                  return <div key={`empty-${index}`} className="min-h-[84px] sm:min-h-[110px] border-r border-b last:border-r-0 border-[#e6e9ef] bg-[#f8fafc]" />;
-                }
-                const dayFixtures = monthFixturesByDay.get(dayNumber) || [];
-                return (
-                  <div key={dayNumber} className="min-h-[84px] sm:min-h-[110px] border-r border-b last:border-r-0 border-[#e6e9ef] p-2 bg-white">
-                    <p className="text-sm sm:text-base font-black text-[#081534]">{dayNumber}</p>
-                    {dayFixtures.length > 0 ? (
-                      <p className="mt-1 text-[10px] sm:text-xs font-bold text-[#0d245b] leading-tight">
-                        {dayFixtures.length} {dayFixtures.length === 1 ? 'activity' : 'activities'}
-                      </p>
-                    ) : (
-                      <p className="mt-1 text-[10px] sm:text-xs font-semibold text-[#9aa5b6] leading-tight">No activity</p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="mt-4 bg-white rounded-xl border border-[#d7dbe3] p-4">
-            <h4 className="text-[#081534] text-sm sm:text-base font-black uppercase tracking-wider mb-3">Month Activities</h4>
             {visibleFixtures.length ? (
-              <div className="space-y-3">
-                {visibleFixtures.map((fixture) => {
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {visibleFixtures.map((fixture, index) => {
                   const score = FIXTURE_SCORE_OVERRIDES[toFixtureKey(fixture)];
+                  const posterImage = MATCHDAY_POSTER_IMAGES[index % MATCHDAY_POSTER_IMAGES.length];
                   return (
-                    <article key={`${fixture.id}-${fixture.home}-${fixture.away}`} className="rounded-lg border border-[#e1e6ef] bg-[#f9fbff] p-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="text-xs sm:text-sm font-black text-[#0d245b] uppercase tracking-wide">{fixture.home} vs {fixture.away}</p>
-                        <p className="text-[10px] sm:text-xs font-bold text-[#4d6185] uppercase">{fixture.time}</p>
+                    <article key={`${fixture.id}-${fixture.home}-${fixture.away}`} className="rounded-xl overflow-hidden border border-[#d7dbe3] shadow-sm bg-[#081534]">
+                      <div className="relative aspect-[4/5]">
+                        <img src={toAssetUrl(posterImage)} alt={`${fixture.home} vs ${fixture.away} poster`} className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#081534] via-[#081534]/65 to-transparent" />
+                        <div className="absolute left-3 right-3 bottom-3 text-white">
+                          <p className="text-[10px] font-black uppercase tracking-wider text-[#F5A623]">{fixture.category}</p>
+                          <h4 className="mt-1 text-base sm:text-lg font-black leading-tight uppercase">{fixture.home} vs {fixture.away}</h4>
+                          <p className="mt-1 text-xs font-bold text-white/90">{toFixtureDayLabel(fixture)}, {toFixtureMonthDayLabel(fixture)}, {calendarYear}</p>
+                          <p className="text-xs font-bold text-white/80">{fixture.time} | {fixture.venue}</p>
+                          <p className="mt-1 text-[11px] font-black text-white/95">HT {formatHalfTimeValue(score)} | FT {formatScoreValue(score)}</p>
+                        </div>
                       </div>
-                      <p className="mt-1 text-xs sm:text-sm font-semibold text-[#1b2f5a]">
-                        {toFixtureDayLabel(fixture)}, {toFixtureMonthDayLabel(fixture)}, {calendarYear}
-                      </p>
-                      <p className="mt-1 text-xs font-semibold text-[#35507f]">{fixture.venue}</p>
-                      <p className="mt-2 text-[11px] font-black text-[#0d245b]">
-                        HT {formatHalfTimeValue(score)} | FT {formatScoreValue(score)}
-                      </p>
                     </article>
                   );
                 })}
