@@ -678,6 +678,7 @@ const CalendarSection: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>(MONTH_ORDER[new Date().getMonth()]);
   const [isLoading, setIsLoading] = useState(true);
   const [today, setToday] = useState<Date>(() => new Date());
+  const [selectedBirthdayDay, setSelectedBirthdayDay] = useState<number | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -772,6 +773,18 @@ const CalendarSection: React.FC = () => {
   const selectedMonthBirthdays = PLAYER_BIRTHDAYS
     .filter((player) => player.month === selectedMonthNumber)
     .sort((a, b) => a.day - b.day);
+  const birthdayNamesByDay = selectedMonthBirthdays.reduce((map, player) => {
+    const currentNames = map.get(player.day) || [];
+    currentNames.push(player.name);
+    map.set(player.day, currentNames);
+    return map;
+  }, new Map<number, string[]>());
+  const birthdayDaysInSelectedMonth = Array.from(birthdayNamesByDay.keys()).sort((a, b) => a - b);
+  const selectedDayBirthdayNames = selectedBirthdayDay ? (birthdayNamesByDay.get(selectedBirthdayDay) || []) : [];
+
+  useEffect(() => {
+    setSelectedBirthdayDay(birthdayDaysInSelectedMonth[0] ?? null);
+  }, [selectedMonth]);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -937,13 +950,28 @@ const CalendarSection: React.FC = () => {
                       const isToday = today.getFullYear() === cellDate.getFullYear()
                         && today.getMonth() === cellDate.getMonth()
                         && today.getDate() === cellDate.getDate();
+                      const hasBirthday = birthdayNamesByDay.has(dayNumber);
+                      const isSelectedBirthdayDate = selectedBirthdayDay === dayNumber;
+                      const cellClasses = hasBirthday
+                        ? `min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] p-2 bg-[#fff1d6] cursor-pointer ${isSelectedBirthdayDate ? 'ring-2 ring-inset ring-[#F5A623]' : ''}`
+                        : `min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] p-2 ${isToday ? 'bg-[#F5A623]/25' : 'bg-white'}`;
                       return (
-                        <div key={dayNumber} className={`min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] p-2 ${isToday ? 'bg-[#F5A623]/25' : 'bg-white'}`}>
+                        <button
+                          key={dayNumber}
+                          type="button"
+                          onClick={() => {
+                            if (hasBirthday) {
+                              setSelectedBirthdayDay(dayNumber);
+                            }
+                          }}
+                          className={cellClasses}
+                        >
                           <div className="flex items-start justify-between gap-1">
                             <p className="text-base sm:text-lg font-black text-[#081534] leading-none">{dayNumber}</p>
                             {isToday ? <span className="text-[10px] font-black uppercase tracking-wide text-white bg-[#F5A623] px-1.5 py-0.5 rounded">Today</span> : null}
                           </div>
-                        </div>
+                          {hasBirthday ? <p className="mt-1 text-[10px] font-black uppercase tracking-wide text-[#a86700]">Birthday</p> : null}
+                        </button>
                       );
                     })}
                   </div>
@@ -959,12 +987,17 @@ const CalendarSection: React.FC = () => {
                     Happy Birthday, {player.name}! Keep flying high with Eagles Rugby Club.
                   </p>
                 ))}
-                {selectedMonthBirthdays.slice(0, 6).map((player) => (
-                  <p key={`${player.name}-${player.day}-${player.month}`} className="rounded-lg border border-[#e3e8f3] bg-white text-[#1f3357] px-3 py-2 text-sm font-semibold">
-                    Happy Birthday in advance to {player.name} on {player.day} {selectedMonth}.
+                {selectedDayBirthdayNames.map((name) => (
+                  <p key={`selected-day-${name}`} className="rounded-lg border border-[#f1c36b] bg-[#fff7e6] text-[#6a4300] px-3 py-2 text-sm font-black">
+                    Happy Birthday, {name}! Wishing you strength, joy, and a winning year ahead.
                   </p>
                 ))}
-                {!todayBirthdays.length && !selectedMonthBirthdays.length ? (
+                {selectedDayBirthdayNames.length === 0 && selectedMonthBirthdays.length > 0 ? (
+                  <p className="rounded-lg border border-[#e3e8f3] bg-white text-[#1f3357] px-3 py-2 text-sm font-semibold">
+                    This month has birthdays. Tap an orange date in the calendar to view birthday names.
+                  </p>
+                ) : null}
+                {!todayBirthdays.length && !selectedMonthBirthdays.length && !selectedDayBirthdayNames.length ? (
                   <p className="rounded-lg border border-[#e3e8f3] bg-white text-[#5c6e8d] px-3 py-2 text-sm font-semibold">
                     Birthday board is ready. Pick another month to view upcoming player birthday messages.
                   </p>
