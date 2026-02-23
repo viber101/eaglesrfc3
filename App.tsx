@@ -1851,24 +1851,24 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         {homeCalendarFixtures.map((fixture) => (
           <article
             key={`motm-${fixture.id}-${fixture.home}-${fixture.away}`}
-            className="flex-none w-[88vw] sm:w-[400px] snap-start rounded-2xl overflow-hidden border border-[#102e67] shadow-[0_20px_40px_rgba(8,21,52,0.22)] bg-[#0a1638]"
+            className="flex-none w-[84vw] max-w-[340px] sm:w-[380px] snap-start rounded-2xl overflow-hidden border border-[#102e67] shadow-[0_20px_40px_rgba(8,21,52,0.22)] bg-[#0a1638]"
           >
-            <div className="relative px-5 py-4 bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#143a8a] text-white border-t-4 border-[#F5A623]">
+            <div className="relative px-4 py-3 sm:px-5 sm:py-4 bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#143a8a] text-white border-t-4 border-[#F5A623]">
               <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.1),transparent_45%)]" />
               <p className="relative text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">Man of the Match</p>
-              <h4 className="relative mt-1 text-xl sm:text-2xl font-black tracking-tight leading-tight">{getOpponentName(fixture)}</h4>
-              <p className="relative mt-1 text-[11px] font-bold uppercase tracking-wider text-[#b2bdd5]">
+              <h4 className="relative mt-1 text-lg sm:text-2xl font-black tracking-tight leading-tight">{getOpponentName(fixture)}</h4>
+              <p className="relative mt-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#b2bdd5]">
                 Week {fixture.week} | {toFixtureMonthDayLabel(fixture)} | {fixture.time}
               </p>
             </div>
 
-            <div className="p-5 bg-[linear-gradient(180deg,#0f234f,#0a1737)]">
-              <div className="mb-3 rounded-lg overflow-hidden border border-[#2f4f8f] aspect-square bg-[#0b1d45] ring-1 ring-[#27457f]">
+            <div className="p-4 sm:p-5 bg-[linear-gradient(180deg,#0f234f,#0a1737)]">
+              <div className="mb-2 sm:mb-3 rounded-lg overflow-hidden border border-[#2f4f8f] h-[220px] sm:h-[260px] bg-[#0b1d45] ring-1 ring-[#27457f]">
                 <img src={toAssetUrl('/player2.png')} alt={`Man of the Match vs ${getOpponentName(fixture)}`} className="w-full h-full object-cover" />
               </div>
-              <div className="rounded-xl border border-dashed border-[#355da4] bg-[#0b1d45] p-4 mb-3">
+              <div className="rounded-xl border border-dashed border-[#355da4] bg-[#0b1d45] p-3 sm:p-4 mb-2 sm:mb-3">
                 <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#89a9e4]">Selected Player</p>
-                <p className="mt-2 text-xl font-black text-white leading-none">________________</p>
+                <p className="mt-1.5 text-lg sm:text-xl font-black text-white leading-none">________________</p>
               </div>
               <div className="rounded-lg border border-[#355da4] bg-[#0b1d45] px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Sponsored By</p>
@@ -1893,24 +1893,24 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         {HOME_SCORER_SPOTLIGHT.map((item) => (
           <article
             key={item.id}
-            className="flex-none w-[88vw] sm:w-[430px] snap-start rounded-2xl overflow-hidden border border-[#102e67] shadow-[0_20px_40px_rgba(8,21,52,0.22)] bg-[#0a1638]"
+            className="flex-none w-[84vw] max-w-[340px] sm:w-[400px] snap-start rounded-2xl overflow-hidden border border-[#102e67] shadow-[0_20px_40px_rgba(8,21,52,0.22)] bg-[#0a1638]"
           >
-            <div className="relative bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#143a8a] text-white px-5 py-4 border-t-4 border-[#F5A623]">
+            <div className="relative bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#143a8a] text-white px-4 py-3 sm:px-5 sm:py-4 border-t-4 border-[#F5A623]">
               <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.1),transparent_45%)]" />
               <p className="relative text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">{item.label}</p>
-              <h4 className="relative mt-1 text-2xl sm:text-3xl font-black tracking-tight leading-none">{item.player}</h4>
+              <h4 className="relative mt-1 text-xl sm:text-3xl font-black tracking-tight leading-none">{item.player}</h4>
             </div>
-            <div className="px-5 py-5 bg-[linear-gradient(180deg,#0f234f,#0a1737)]">
-              <div className="mb-4 rounded-lg overflow-hidden border border-[#2f4f8f] aspect-square bg-[#0b1d45] ring-1 ring-[#27457f]">
+            <div className="px-4 py-4 sm:px-5 sm:py-5 bg-[linear-gradient(180deg,#0f234f,#0a1737)]">
+              <div className="mb-3 rounded-lg overflow-hidden border border-[#2f4f8f] h-[220px] sm:h-[260px] bg-[#0b1d45] ring-1 ring-[#27457f]">
                 <img src={toAssetUrl(item.imageUrl)} alt={`${item.label} preview`} className="w-full h-full object-cover" />
               </div>
-              <div className="mb-4 rounded-lg border border-dashed border-[#355da4] bg-[#0b1d45] px-3 py-2">
+              <div className="mb-3 rounded-lg border border-dashed border-[#355da4] bg-[#0b1d45] px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Name</p>
                 <p className="mt-1 text-sm font-semibold text-white">________________</p>
               </div>
               <div className="flex items-end justify-between gap-4">
-                <p className="text-[#F5A623] text-5xl sm:text-6xl font-black leading-none">{item.statValue}</p>
-                <p className="text-[#d7e2f6] text-sm sm:text-base font-black uppercase tracking-wider">{item.statLabel}</p>
+                <p className="text-[#F5A623] text-4xl sm:text-6xl font-black leading-none">{item.statValue}</p>
+                <p className="text-[#d7e2f6] text-xs sm:text-base font-black uppercase tracking-wider">{item.statLabel}</p>
               </div>
               <div className="mt-3 rounded-lg border border-[#355da4] bg-[#0b1d45] px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Sponsored By</p>
