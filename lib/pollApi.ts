@@ -1,18 +1,5 @@
-import { isSupabaseConfigured, supabase } from './supabaseClient';
-
 export type PollChoice = 'win' | 'draw' | 'loss';
 export type PollCounts = Record<PollChoice, number>;
-
-type PollCountsRow = {
-  win: number | string | null;
-  draw: number | string | null;
-  loss: number | string | null;
-  total?: number | string | null;
-};
-
-type CastVoteRow = PollCountsRow & {
-  accepted: boolean | null;
-};
 
 export type CastVoteResult = {
   accepted: boolean;
@@ -29,71 +16,43 @@ export class PollApiConfigError extends Error {
 
 const POLL_KEY = (import.meta.env.VITE_POLL_KEY ?? 'eagles-vs-golden-badgers').trim();
 
-const toSafeInt = (value: number | string | null | undefined) => {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed < 0) {
-    return 0;
-  }
-  return Math.floor(parsed);
-};
-
-const normalizeCounts = (row: PollCountsRow | null | undefined): PollCounts => ({
-  win: toSafeInt(row?.win),
-  draw: toSafeInt(row?.draw),
-  loss: toSafeInt(row?.loss)
-});
-
-const getFirstRow = <T>(rows: T | T[] | null): T | null => {
-  if (!rows) {
-    return null;
-  }
-  if (Array.isArray(rows)) {
-    return rows[0] ?? null;
-  }
-  return rows;
-};
-
-const ensureConfigured = () => {
-  if (!isSupabaseConfigured || !supabase) {
-    throw new PollApiConfigError('Supabase configuration is missing.');
-  }
-  if (!POLL_KEY) {
-    throw new PollApiConfigError('Poll key is missing.');
-  }
-};
+// Use relative /api path so it works on both localhost and production
+const API_BASE = '/api';
 
 export const getPollCounts = async (): Promise<PollCounts> => {
-  ensureConfigured();
-  const { data, error } = await supabase.rpc('get_poll_counts', {
-    p_poll_key: POLL_KEY
-  });
+  const res = await fetch(`${API_BASE}/poll/${POLL_KEY}/counts`);
 
-  if (error) {
-    throw error;
+  if (!res.ok) {
+    throw new Error(`Failed to fetch poll counts: ${res.status}`);
   }
 
-  const row = getFirstRow(data as PollCountsRow[] | PollCountsRow | null);
-  return normalizeCounts(row);
+  const data = await res.json();
+  return {
+    win: Number(data.win) || 0,
+    draw: Number(data.draw) || 0,
+    loss: Number(data.loss) || 0
+  };
 };
 
 export const castVote = async (choice: PollChoice, sessionToken: string): Promise<CastVoteResult> => {
-  ensureConfigured();
-
-  const { data, error } = await supabase.rpc('cast_vote', {
-    p_poll_key: POLL_KEY,
-    p_choice: choice,
-    p_session_token: sessionToken
+  const res = await fetch(`${API_BASE}/poll/${POLL_KEY}/vote`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ choice, session_token: sessionToken })
   });
 
-  if (error) {
-    throw error;
+  if (!res.ok) {
+    throw new Error(`Failed to cast vote: ${res.status}`);
   }
 
-  const row = getFirstRow(data as CastVoteRow[] | CastVoteRow | null);
-
+  const data = await res.json();
   return {
-    accepted: Boolean(row?.accepted),
-    counts: normalizeCounts(row),
-    total: toSafeInt(row?.total)
+    accepted: Boolean(data.accepted),
+    counts: {
+      win: Number(data.win) || 0,
+      draw: Number(data.draw) || 0,
+      loss: Number(data.loss) || 0
+    },
+    total: Number(data.total) || 0
   };
 };
