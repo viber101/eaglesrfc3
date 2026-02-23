@@ -1848,7 +1848,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         {homeCalendarFixtures.map((fixture) => (
           <article
             key={`motm-${fixture.id}-${fixture.home}-${fixture.away}`}
-            className="flex-none w-[88vw] sm:w-[390px] snap-start rounded-2xl overflow-hidden border border-[#d6deeb] shadow-[0_14px_34px_rgba(8,21,52,0.16)] bg-white"
+            className="flex-none w-[88vw] sm:w-[800px] snap-start rounded-2xl overflow-hidden border border-[#d6deeb] shadow-[0_14px_34px_rgba(8,21,52,0.16)] bg-white"
           >
             <div className="relative px-5 py-4 bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#102f76] text-white border-t-4 border-[#F5A623]">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">Man of the Match</p>
@@ -1859,7 +1859,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
             </div>
 
             <div className="p-5 bg-[#f7f9fd]">
-              <div className="mb-3 rounded-lg overflow-hidden border border-[#d6deeb] h-40 bg-[#dfe6f3]">
+              <div className="mb-3 rounded-lg overflow-hidden border border-[#d6deeb] w-[800px] h-[800px] max-w-full mx-auto bg-[#dfe6f3]">
                 <img src={toAssetUrl('/player2.png')} alt={`Man of the Match vs ${getOpponentName(fixture)}`} className="w-full h-full object-cover" />
               </div>
               <div className="rounded-xl border border-dashed border-[#c7d5eb] bg-white p-4 mb-3">
@@ -1888,29 +1888,29 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         {HOME_SCORER_SPOTLIGHT.map((item) => (
           <article
             key={item.id}
-            className="flex-none w-[88vw] sm:w-[420px] snap-start rounded-2xl overflow-hidden border border-[#d6deeb] shadow-[0_14px_34px_rgba(8,21,52,0.16)] bg-white"
+            className="flex-none w-[88vw] sm:w-[800px] snap-start rounded-2xl overflow-hidden border border-[#d6deeb] shadow-[0_14px_34px_rgba(8,21,52,0.16)] bg-white"
           >
             <div className="bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#102f76] text-white px-5 py-4 border-t-4 border-[#F5A623]">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">{item.label}</p>
               <h4 className="mt-1 text-2xl sm:text-3xl font-black tracking-tight leading-none">{item.player}</h4>
             </div>
             <div className="px-5 py-5 bg-[#f7f9fd]">
-              <div className="mb-4 rounded-lg overflow-hidden border border-[#d6deeb] h-40 bg-[#dfe6f3]">
+              <div className="mb-4 rounded-lg overflow-hidden border border-[#d6deeb] w-[800px] h-[800px] max-w-full mx-auto bg-[#dfe6f3]">
                 <img src={toAssetUrl(item.imageUrl)} alt={`${item.label} preview`} className="w-full h-full object-cover" />
               </div>
               <div className="mb-4 rounded-lg border border-dashed border-[#cdd8ea] bg-white px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Name</p>
                 <p className="mt-1 text-sm font-semibold text-[#233a63]">________________</p>
               </div>
-              <div className="mb-4 rounded-lg border border-[#dce5f3] bg-white px-3 py-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Sponsored By</p>
-                <p className="mt-1 text-sm font-bold text-[#1f3f78]">Kampanis Shoes and Bags Clinic</p>
-              </div>
               <div className="flex items-end justify-between gap-4">
                 <p className="text-[#0d245b] text-5xl sm:text-6xl font-black leading-none">{item.statValue}</p>
                 <p className="text-[#1f3f78] text-sm sm:text-base font-black uppercase tracking-wider">{item.statLabel}</p>
               </div>
               <p className="mt-3 text-sm text-[#445b83] font-semibold leading-relaxed">{item.note}</p>
+              <div className="mt-3 rounded-lg border border-[#dce5f3] bg-white px-3 py-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Sponsored By</p>
+                <p className="mt-1 text-sm font-bold text-[#1f3f78]">Kampanis Shoes and Bags Clinic</p>
+              </div>
             </div>
           </article>
         ))}
