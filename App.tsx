@@ -609,6 +609,7 @@ const CalendarSection: React.FC = () => {
   const [activeMonths, setActiveMonths] = useState<string[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>(MONTH_ORDER[new Date().getMonth()]);
   const [isLoading, setIsLoading] = useState(true);
+  const [today, setToday] = useState<Date>(() => new Date());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -672,6 +673,11 @@ const CalendarSection: React.FC = () => {
     return () => {
       isMounted = false;
     };
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setToday(new Date()), 60 * 1000);
+    return () => window.clearInterval(timer);
   }, []);
 
   const visibleFixtures = selectedMonth
@@ -852,9 +858,18 @@ const CalendarSection: React.FC = () => {
                       if (!dayNumber) {
                         return <div key={`empty-${index}`} className="min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] bg-[#f8fafc]" />;
                       }
+                      const cellDate = new Date(calendarYear, selectedMonthIndex, dayNumber);
+                      const isToday = today.getFullYear() === cellDate.getFullYear()
+                        && today.getMonth() === cellDate.getMonth()
+                        && today.getDate() === cellDate.getDate();
+                      const shortDateLabel = cellDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                       return (
-                        <div key={dayNumber} className="min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] p-2 bg-white">
-                          <p className="text-base sm:text-lg font-black text-[#081534] leading-none">{dayNumber}</p>
+                        <div key={dayNumber} className={`min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] p-2 ${isToday ? 'bg-[#fff7e6]' : 'bg-white'}`}>
+                          <div className="flex items-start justify-between gap-1">
+                            <p className="text-base sm:text-lg font-black text-[#081534] leading-none">{dayNumber}</p>
+                            {isToday ? <span className="text-[10px] font-black uppercase tracking-wide text-[#a96d00]">Today</span> : null}
+                          </div>
+                          <p className="mt-1 text-[10px] sm:text-[11px] font-bold text-[#66758f] leading-tight">{shortDateLabel}</p>
                           <p className="mt-2 text-[11px] sm:text-xs font-semibold text-[#9aa5b6] leading-tight">No activity</p>
                         </div>
                       );
