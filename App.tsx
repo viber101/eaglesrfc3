@@ -970,7 +970,6 @@ const CalendarSection: React.FC = () => {
                             <p className="text-base sm:text-lg font-black text-[#081534] leading-none">{dayNumber}</p>
                             {isToday ? <span className="text-[10px] font-black uppercase tracking-wide text-white bg-[#F5A623] px-1.5 py-0.5 rounded">Today</span> : null}
                           </div>
-                          {hasBirthday ? <p className="mt-1 text-[10px] font-black uppercase tracking-wide text-[#a86700]">Birthday</p> : null}
                         </button>
                       );
                     })}
