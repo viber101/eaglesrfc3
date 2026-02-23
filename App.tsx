@@ -1340,7 +1340,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                 <div className="absolute inset-0 bg-gradient-to-br from-[#170a30] via-[#0a1224] to-black" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(126,91,255,0.55),transparent_45%)]" />
                 <img
-                  src={p.imageUrl}
+                  src={toAssetUrl('/player.png')}
                   alt={p.name}
                   className={`relative z-10 w-full h-full object-cover object-top transition-transform duration-500 ${isActive ? 'scale-105' : 'scale-100'}`}
                 />
@@ -1397,9 +1397,14 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       {MOCK_X_PLAYERS.map((p) => (
         <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
-            {p.imageUrl ? (
-              <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-            ) : null}
+            <img
+              src={p.imageUrl || toAssetUrl('/player.png')}
+              alt={p.name}
+              onError={(event) => {
+                event.currentTarget.src = toAssetUrl('/player.png');
+              }}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
             <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
           </div>
           <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
