@@ -1866,7 +1866,8 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                 <img src={toAssetUrl('/player2.png')} alt={`Man of the Match vs ${getOpponentName(fixture)}`} className="w-full h-full object-cover" />
               </div>
               <div className="rounded-xl border border-dashed border-[#355da4] bg-[#0b1d45] p-3 sm:p-4 mb-2 sm:mb-3">
-                <p className="text-sm sm:text-base font-black text-white leading-none">Man of the Match: .............</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#89a9e4]">Selected Player</p>
+                <p className="mt-1.5 text-lg sm:text-xl font-black text-white leading-none">________________</p>
               </div>
               <div className="rounded-lg border border-[#355da4] bg-[#0b1d45] px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Sponsored By</p>
