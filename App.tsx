@@ -1854,6 +1854,10 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               <div className="mb-4 rounded-lg overflow-hidden border border-[#d6deeb] h-40 bg-[#dfe6f3]">
                 <img src={toAssetUrl(item.imageUrl)} alt={`${item.label} preview`} className="w-full h-full object-cover" />
               </div>
+              <div className="mb-4 rounded-lg border border-dashed border-[#cdd8ea] bg-white px-3 py-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Name</p>
+                <p className="mt-1 text-sm font-semibold text-[#233a63]">________________</p>
+              </div>
               <div className="flex items-end justify-between gap-4">
                 <p className="text-[#0d245b] text-5xl sm:text-6xl font-black leading-none">{item.statValue}</p>
                 <p className="text-[#1f3f78] text-sm sm:text-base font-black uppercase tracking-wider">{item.statLabel}</p>
