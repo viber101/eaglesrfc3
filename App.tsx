@@ -277,6 +277,15 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     statValue: '--',
     note: 'Official top points scorer will be published soon.',
     imageUrl: '/gallery/Eagles (4).jpeg'
+  },
+  {
+    id: 'player-month',
+    label: 'Player of the Month',
+    player: 'To Be Announced',
+    statLabel: 'Award',
+    statValue: '--',
+    note: 'Monthly standout player will be announced soon.',
+    imageUrl: '/gallery/Eagles (6).jpeg'
   }
 ];
 
@@ -1826,8 +1835,8 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     <section className="mb-12">
       <div className="flex items-end justify-between mb-4">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black mb-1">Performance Board</p>
-          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Top Scorers 2026</h3>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black mb-1">Performace Bord 2028</p>
+          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Performace Bord 2028</h3>
         </div>
         <p className="hidden sm:block text-xs font-bold uppercase tracking-wider text-[#5c6e8d]">Swipe to view</p>
       </div>
