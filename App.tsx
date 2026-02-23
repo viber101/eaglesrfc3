@@ -1751,6 +1751,7 @@ const TierCard: React.FC<{ tier: SponsorshipTier }> = ({ tier }) => {
 const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate }) => {
   const [activeSquadPlayerId, setActiveSquadPlayerId] = useState<string | null>(null);
   const [nextMatch, setNextMatch] = useState<FixtureItem | null>(null);
+  const [homeCalendarFixtures, setHomeCalendarFixtures] = useState<FixtureItem[]>([]);
   const fallbackMatch: FixtureItem = {
     id: 'fallback-next-match',
     week: '1',
@@ -1764,6 +1765,9 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     away: 'Golden Badgers'
   };
   const selectedMatch = nextMatch || fallbackMatch;
+  const getOpponentName = (fixture: FixtureItem) => (
+    isEaglesTeam(fixture.home) ? fixture.away : fixture.home
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -1792,10 +1796,12 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
           return kickoff ? kickoff.getTime() >= now.getTime() : false;
         });
 
+        setHomeCalendarFixtures(sortedFixtures);
         setNextMatch(upcoming || sortedFixtures[0] || null);
       })
       .catch(() => {
         if (isMounted) {
+          setHomeCalendarFixtures([]);
           setNextMatch(null);
         }
       });
@@ -1831,6 +1837,41 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     </section>
 
     <CalendarSection />
+
+    <section className="mb-12">
+      <div className="flex items-end justify-between mb-4">
+        <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Man of the Match Cards</h3>
+        <p className="hidden sm:block text-xs font-bold uppercase tracking-wider text-[#5c6e8d]">Based on calendar fixtures</p>
+      </div>
+
+      <div className="flex overflow-x-auto gap-4 snap-x snap-mandatory scrollbar-hide pb-1">
+        {homeCalendarFixtures.map((fixture) => (
+          <article
+            key={`motm-${fixture.id}-${fixture.home}-${fixture.away}`}
+            className="flex-none w-[88vw] sm:w-[390px] snap-start rounded-2xl overflow-hidden border border-[#d6deeb] shadow-[0_14px_34px_rgba(8,21,52,0.16)] bg-white"
+          >
+            <div className="relative px-5 py-4 bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#102f76] text-white border-t-4 border-[#F5A623]">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">Man of the Match</p>
+              <h4 className="mt-1 text-xl sm:text-2xl font-black tracking-tight leading-tight">{getOpponentName(fixture)}</h4>
+              <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-[#b2bdd5]">
+                Week {fixture.week} | {toFixtureMonthDayLabel(fixture)} | {fixture.time}
+              </p>
+            </div>
+
+            <div className="p-5 bg-[#f7f9fd]">
+              <div className="rounded-xl border border-dashed border-[#c7d5eb] bg-white p-4 mb-3">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#607497]">Selected Player</p>
+                <p className="mt-2 text-xl font-black text-[#102f66] leading-none">________________</p>
+              </div>
+              <div className="rounded-lg border border-[#dce5f3] bg-white px-3 py-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Match</p>
+                <p className="mt-1 text-sm font-bold text-[#1f3f78]">{fixture.home} vs {fixture.away}</p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
 
     <section className="mb-12">
       <div className="flex items-end justify-between mb-4">
