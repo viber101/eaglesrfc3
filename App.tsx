@@ -267,7 +267,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     statLabel: 'Tries',
     statValue: '--',
     note: 'Official top try scorer will be published soon.',
-    imageUrl: '/gallery/Eagles (2).jpeg'
+    imageUrl: '/player2.png'
   },
   {
     id: 'top-points',
@@ -276,7 +276,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     statLabel: 'Points',
     statValue: '--',
     note: 'Official top points scorer will be published soon.',
-    imageUrl: '/gallery/Eagles (4).jpeg'
+    imageUrl: '/player2.png'
   },
   {
     id: 'player-month',
@@ -285,7 +285,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     statLabel: 'Award',
     statValue: '--',
     note: 'Monthly standout player will be announced soon.',
-    imageUrl: '/gallery/Eagles (6).jpeg'
+    imageUrl: '/player2.png'
   }
 ];
 
