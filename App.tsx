@@ -1340,7 +1340,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                 <div className="absolute inset-0 bg-gradient-to-br from-[#170a30] via-[#0a1224] to-black" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(126,91,255,0.55),transparent_45%)]" />
                 <img
-                  src={toAssetUrl('/player.png')}
+                  src={toAssetUrl('/player2.png')}
                   alt={p.name}
                   className={`relative z-10 w-full h-full object-cover object-top transition-transform duration-500 ${isActive ? 'scale-105' : 'scale-100'}`}
                 />
