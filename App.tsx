@@ -1839,30 +1839,34 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     <CalendarSection />
 
     <section className="mb-12">
-      <div className="flex items-end justify-between mb-4">
-        <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Man of the Match 2026</h3>
+      <div className="flex items-end justify-between mb-5">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.18em] font-black text-[#6b7f9f]">Home Dashboard</p>
+          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Man of the Match 2026</h3>
+        </div>
         <p className="hidden sm:block text-xs font-bold uppercase tracking-wider text-[#5c6e8d]">Based on calendar fixtures</p>
       </div>
 
-      <div className="flex overflow-x-auto gap-4 snap-x snap-mandatory scrollbar-hide pb-1">
+      <div className="flex overflow-x-auto gap-5 snap-x snap-mandatory scrollbar-hide pb-1">
         {homeCalendarFixtures.map((fixture) => (
           <article
             key={`motm-${fixture.id}-${fixture.home}-${fixture.away}`}
-            className="flex-none w-[88vw] sm:w-[390px] snap-start rounded-2xl overflow-hidden border border-[#d6deeb] shadow-[0_14px_34px_rgba(8,21,52,0.16)] bg-white"
+            className="flex-none w-[88vw] sm:w-[400px] snap-start rounded-2xl overflow-hidden border border-[#d6deeb] shadow-[0_18px_36px_rgba(8,21,52,0.12)] bg-white"
           >
-            <div className="relative px-5 py-4 bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#102f76] text-white border-t-4 border-[#F5A623]">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">Man of the Match</p>
-              <h4 className="mt-1 text-xl sm:text-2xl font-black tracking-tight leading-tight">{getOpponentName(fixture)}</h4>
-              <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-[#b2bdd5]">
+            <div className="relative px-5 py-4 bg-[#0b1d4a] text-white border-t-4 border-[#F5A623]">
+              <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.06),transparent_45%)]" />
+              <p className="relative text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">Man of the Match</p>
+              <h4 className="relative mt-1 text-xl sm:text-2xl font-black tracking-tight leading-tight">{getOpponentName(fixture)}</h4>
+              <p className="relative mt-1 text-[11px] font-bold uppercase tracking-wider text-[#b2bdd5]">
                 Week {fixture.week} | {toFixtureMonthDayLabel(fixture)} | {fixture.time}
               </p>
             </div>
 
-            <div className="p-5 bg-[#f7f9fd]">
-              <div className="mb-3 rounded-lg overflow-hidden border border-[#d6deeb] aspect-square bg-[#dfe6f3]">
+            <div className="p-5 bg-[linear-gradient(180deg,#f7f9fd,#f0f4fa)]">
+              <div className="mb-3 rounded-lg overflow-hidden border border-[#d6deeb] aspect-square bg-[#dfe6f3] ring-1 ring-white">
                 <img src={toAssetUrl('/player2.png')} alt={`Man of the Match vs ${getOpponentName(fixture)}`} className="w-full h-full object-cover" />
               </div>
-              <div className="rounded-xl border border-dashed border-[#c7d5eb] bg-white p-4 mb-3">
+              <div className="rounded-xl border border-dashed border-[#c7d5eb] bg-white p-4 mb-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.8)]">
                 <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#607497]">Selected Player</p>
                 <p className="mt-2 text-xl font-black text-[#102f66] leading-none">________________</p>
               </div>
@@ -1877,28 +1881,30 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     </section>
 
     <section className="mb-12">
-      <div className="flex items-end justify-between mb-4">
+      <div className="flex items-end justify-between mb-5">
         <div>
+          <p className="text-[10px] uppercase tracking-[0.18em] font-black text-[#6b7f9f]">Home Dashboard</p>
           <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Performace Bord 2026</h3>
         </div>
         <p className="hidden sm:block text-xs font-bold uppercase tracking-wider text-[#5c6e8d]">Swipe to view</p>
       </div>
 
-      <div className="flex overflow-x-auto gap-4 snap-x snap-mandatory scrollbar-hide pb-1">
+      <div className="flex overflow-x-auto gap-5 snap-x snap-mandatory scrollbar-hide pb-1">
         {HOME_SCORER_SPOTLIGHT.map((item) => (
           <article
             key={item.id}
-            className="flex-none w-[88vw] sm:w-[420px] snap-start rounded-2xl overflow-hidden border border-[#d6deeb] shadow-[0_14px_34px_rgba(8,21,52,0.16)] bg-white"
+            className="flex-none w-[88vw] sm:w-[430px] snap-start rounded-2xl overflow-hidden border border-[#d6deeb] shadow-[0_18px_36px_rgba(8,21,52,0.12)] bg-white"
           >
-            <div className="bg-gradient-to-r from-[#081534] via-[#0d245b] to-[#102f76] text-white px-5 py-4 border-t-4 border-[#F5A623]">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">{item.label}</p>
-              <h4 className="mt-1 text-2xl sm:text-3xl font-black tracking-tight leading-none">{item.player}</h4>
+            <div className="relative bg-[#0b1d4a] text-white px-5 py-4 border-t-4 border-[#F5A623]">
+              <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.06),transparent_45%)]" />
+              <p className="relative text-[10px] font-black uppercase tracking-[0.2em] text-[#F5A623]">{item.label}</p>
+              <h4 className="relative mt-1 text-2xl sm:text-3xl font-black tracking-tight leading-none">{item.player}</h4>
             </div>
-            <div className="px-5 py-5 bg-[#f7f9fd]">
-              <div className="mb-4 rounded-lg overflow-hidden border border-[#d6deeb] aspect-square bg-[#dfe6f3]">
+            <div className="px-5 py-5 bg-[linear-gradient(180deg,#f7f9fd,#f0f4fa)]">
+              <div className="mb-4 rounded-lg overflow-hidden border border-[#d6deeb] aspect-square bg-[#dfe6f3] ring-1 ring-white">
                 <img src={toAssetUrl(item.imageUrl)} alt={`${item.label} preview`} className="w-full h-full object-cover" />
               </div>
-              <div className="mb-4 rounded-lg border border-dashed border-[#cdd8ea] bg-white px-3 py-2">
+              <div className="mb-4 rounded-lg border border-dashed border-[#cdd8ea] bg-white px-3 py-2 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.8)]">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607497]">Name</p>
                 <p className="mt-1 text-sm font-semibold text-[#233a63]">________________</p>
               </div>
