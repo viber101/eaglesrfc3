@@ -118,6 +118,12 @@ type PlayerProfileOverride = {
   cm?: number;
 };
 
+type PlayerBirthday = {
+  name: string;
+  day: number;
+  month: number;
+};
+
 const PLAYER_PROFILE_OVERRIDES: Record<string, PlayerProfileOverride> = {
   '1': { name: 'Ogwal Joshua', age: 25, kgs: 90, cm: 180 },
   '2': { name: 'Kisubi Paul', age: 20, kgs: 105, cm: 170 },
@@ -180,6 +186,68 @@ const PLAYER_PROFILE_OVERRIDES: Record<string, PlayerProfileOverride> = {
   '60': { name: 'Kisitu Hilary', age: 29, kgs: 69, cm: 170 },
   '61': { name: 'Mujuni Denis', age: 28, kgs: 76, cm: 167 }
 };
+
+const PLAYER_BIRTHDAYS: PlayerBirthday[] = [
+  { name: 'Kisi Paul', day: 25, month: 4 },
+  { name: 'Jasper Eron', day: 19, month: 6 },
+  { name: 'Jonathan Anywar', day: 17, month: 2 },
+  { name: 'Liam Ssesaywana', day: 14, month: 11 },
+  { name: 'Jose Jombwe', day: 13, month: 9 },
+  { name: 'Humphrey Jacob Olara', day: 25, month: 3 },
+  { name: 'Derrick Aporu', day: 19, month: 1 },
+  { name: 'Joseph Luswata Mwesigwa', day: 30, month: 8 },
+  { name: 'Gerry Peter Wasula', day: 26, month: 11 },
+  { name: 'Mark Lagat', day: 16, month: 10 },
+  { name: 'Raymond Ssali', day: 6, month: 1 },
+  { name: 'Mathew Calvin Ekelot', day: 1, month: 12 },
+  { name: 'Stephen Lema', day: 15, month: 12 },
+  { name: 'Stuart Katamba Mutyaba', day: 5, month: 11 },
+  { name: 'James Polycarp Ochan', day: 10, month: 8 },
+  { name: 'Charles Tayebwa', day: 31, month: 10 },
+  { name: 'Jonathan Nanalagama', day: 27, month: 2 },
+  { name: 'Mark Baganzizi', day: 27, month: 1 },
+  { name: 'George William Serunjogi', day: 12, month: 8 },
+  { name: 'Jonah Ssemugyenyi', day: 7, month: 11 },
+  { name: 'Samuel Komakech', day: 13, month: 4 },
+  { name: 'Timothy Obonyo Etoko', day: 6, month: 12 },
+  { name: 'Ronaldo Okwera', day: 9, month: 9 },
+  { name: 'Peter Desire Obwana', day: 5, month: 5 },
+  { name: 'Andrew Okot', day: 8, month: 12 },
+  { name: 'Emmanuel Ojara', day: 30, month: 6 },
+  { name: 'Trinnito Satya Kiprotich', day: 9, month: 11 },
+  { name: 'Herman Mwesigwa', day: 24, month: 11 },
+  { name: 'Adam Kabalenga', day: 29, month: 6 },
+  { name: 'Henry Rwoth-Ongeo', day: 8, month: 10 },
+  { name: 'Chris Ham Otim', day: 24, month: 6 },
+  { name: 'Griffin Paul Odongo', day: 15, month: 6 },
+  { name: 'Fahad Matovu', day: 3, month: 11 },
+  { name: 'Francis Bogere', day: 2, month: 4 },
+  { name: 'Alpha Lumala', day: 12, month: 11 },
+  { name: 'Elvis Ntare', day: 14, month: 2 },
+  { name: 'Danny Lagom', day: 4, month: 2 },
+  { name: 'William Kato Mugufuni', day: 8, month: 5 },
+  { name: 'Daniel Ochora', day: 14, month: 7 },
+  { name: 'Dan Mark Omeda', day: 28, month: 5 },
+  { name: 'Jimmy Wagabaza', day: 24, month: 2 },
+  { name: 'Julius Omongin', day: 28, month: 4 },
+  { name: 'Sulaiman Kauki', day: 5, month: 8 },
+  { name: 'Malcom Muwola', day: 20, month: 6 },
+  { name: 'Keith Moshe', day: 17, month: 4 },
+  { name: 'Aaron Osuta', day: 25, month: 8 },
+  { name: 'Paschal Olara', day: 23, month: 10 },
+  { name: 'Manuel Owen Oca', day: 4, month: 3 },
+  { name: 'Regan Kitara', day: 6, month: 2 },
+  { name: 'Chris Nsubuga', day: 9, month: 7 },
+  { name: 'Rodney Karama', day: 21, month: 12 },
+  { name: 'Samuel Sabunyo', day: 26, month: 1 },
+  { name: 'Willy Arpatai', day: 23, month: 12 },
+  { name: 'Robert Ateng', day: 26, month: 6 },
+  { name: 'Jireh Masiga', day: 14, month: 12 },
+  { name: 'Shamick Mbubi', day: 16, month: 6 },
+  { name: 'Santos Musa Lukwago', day: 9, month: 6 },
+  { name: 'Hilary Kisitu', day: 9, month: 6 },
+  { name: 'Denis Mujuni', day: 5, month: 11 }
+];
 
 const getPlayerProfile = (id: string, fallbackName: string) => {
   const override = PLAYER_PROFILE_OVERRIDES[id];
@@ -689,6 +757,7 @@ const CalendarSection: React.FC = () => {
   const calendarYear = new Date().getFullYear();
   const selectedMonthHasActivities = isMonthActive(selectedMonth) && visibleFixtures.length > 0;
   const selectedMonthIndex = MONTH_INDEX[selectedMonth.toLowerCase()] ?? new Date().getMonth();
+  const selectedMonthNumber = selectedMonthIndex + 1;
   const firstWeekdayOfMonth = new Date(calendarYear, selectedMonthIndex, 1).getDay();
   const daysInSelectedMonth = new Date(calendarYear, selectedMonthIndex + 1, 0).getDate();
   const leadingEmptyDays = Array.from({ length: firstWeekdayOfMonth }, () => null as number | null);
@@ -697,6 +766,12 @@ const CalendarSection: React.FC = () => {
   const trailingEmptyDays = Array.from({ length: trailingCount }, () => null as number | null);
   const calendarCells = [...leadingEmptyDays, ...monthDays, ...trailingEmptyDays];
   const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  const todayBirthdays = PLAYER_BIRTHDAYS.filter((player) => (
+    player.day === today.getDate() && player.month === (today.getMonth() + 1)
+  ));
+  const selectedMonthBirthdays = PLAYER_BIRTHDAYS
+    .filter((player) => player.month === selectedMonthNumber)
+    .sort((a, b) => a.day - b.day);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -875,6 +950,27 @@ const CalendarSection: React.FC = () => {
                 </div>
               </div>
             )}
+
+            <div className="mt-4 rounded-xl border border-[#d7dbe3] bg-[#f9fbff] p-4">
+              <h4 className="text-[#081534] text-sm sm:text-base font-black uppercase tracking-wider mb-3">Birthday Messages</h4>
+              <div className="space-y-2">
+                {todayBirthdays.map((player) => (
+                  <p key={`today-${player.name}`} className="rounded-lg border border-[#f1c36b] bg-[#fff3da] text-[#6a4300] px-3 py-2 text-sm font-black">
+                    Happy Birthday, {player.name}! Keep flying high with Eagles Rugby Club.
+                  </p>
+                ))}
+                {selectedMonthBirthdays.slice(0, 6).map((player) => (
+                  <p key={`${player.name}-${player.day}-${player.month}`} className="rounded-lg border border-[#e3e8f3] bg-white text-[#1f3357] px-3 py-2 text-sm font-semibold">
+                    Happy Birthday in advance to {player.name} on {player.day} {selectedMonth}.
+                  </p>
+                ))}
+                {!todayBirthdays.length && !selectedMonthBirthdays.length ? (
+                  <p className="rounded-lg border border-[#e3e8f3] bg-white text-[#5c6e8d] px-3 py-2 text-sm font-semibold">
+                    Birthday board is ready. Pick another month to view upcoming player birthday messages.
+                  </p>
+                ) : null}
+              </div>
+            </div>
           </div>
         </div>
       )}
