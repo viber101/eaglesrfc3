@@ -873,60 +873,105 @@ const CalendarSection: React.FC = () => {
             </div>
 
             {selectedMonthHasActivities ? (
-              <div className="relative">
-                {canScrollLeft && (
-                  <button onClick={() => scroll('left')} className="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full items-center justify-center text-[#081534] shadow-lg">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
-                  </button>
-                )}
-                {canScrollRight && (
-                  <button onClick={() => scroll('right')} className="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full items-center justify-center text-[#081534] shadow-lg">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
-                  </button>
-                )}
+              <div className="space-y-4">
+                <div className="relative">
+                  {canScrollLeft && (
+                    <button onClick={() => scroll('left')} className="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full items-center justify-center text-[#081534] shadow-lg">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                  )}
+                  {canScrollRight && (
+                    <button onClick={() => scroll('right')} className="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full items-center justify-center text-[#081534] shadow-lg">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  )}
 
-                <div ref={scrollContainerRef} onScroll={checkScroll} className="flex overflow-x-auto gap-3 sm:gap-4 scrollbar-hide snap-x snap-mandatory pb-1">
-                  {visibleFixtures.map((fixture) => {
-                    const score = FIXTURE_SCORE_OVERRIDES[toFixtureKey(fixture)];
-                    return (
-                      <article key={`${fixture.id}-${fixture.home}-${fixture.away}`} className="w-full min-w-full sm:min-w-[360px] sm:max-w-[360px] rounded-2xl overflow-hidden bg-white border border-[#d7dbe3] shadow-sm snap-start">
-                        <div className="bg-gradient-to-br from-[#0d245b] via-[#0b1d4a] to-[#081538] p-4 sm:p-5 text-white border-t-4 border-[#F5A623]">
-                          <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#b2bdd5] mb-3 sm:mb-4">
-                            <span>{fixture.category}</span>
-                            <span>{toFixtureDateLabel(fixture)} {fixture.time}</span>
+                  <div ref={scrollContainerRef} onScroll={checkScroll} className="flex overflow-x-auto gap-3 sm:gap-4 scrollbar-hide snap-x snap-mandatory pb-1">
+                    {visibleFixtures.map((fixture) => {
+                      const score = FIXTURE_SCORE_OVERRIDES[toFixtureKey(fixture)];
+                      return (
+                        <article key={`${fixture.id}-${fixture.home}-${fixture.away}`} className="w-full min-w-full sm:min-w-[360px] sm:max-w-[360px] rounded-2xl overflow-hidden bg-white border border-[#d7dbe3] shadow-sm snap-start">
+                          <div className="bg-gradient-to-br from-[#0d245b] via-[#0b1d4a] to-[#081538] p-4 sm:p-5 text-white border-t-4 border-[#F5A623]">
+                            <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#b2bdd5] mb-3 sm:mb-4">
+                              <span>{fixture.category}</span>
+                              <span>{toFixtureDateLabel(fixture)} {fixture.time}</span>
+                            </div>
+                            <div className="grid grid-cols-3 items-center gap-3">
+                              <p className={`text-xs sm:text-sm font-black uppercase leading-tight text-left break-words ${isEaglesTeam(fixture.home) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.home}</p>
+                              <p className="text-2xl sm:text-3xl font-black text-center">VS</p>
+                              <p className={`text-xs sm:text-sm font-black uppercase leading-tight text-right break-words ${isEaglesTeam(fixture.away) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.away}</p>
+                            </div>
                           </div>
-                          <div className="grid grid-cols-3 items-center gap-3">
-                            <p className={`text-xs sm:text-sm font-black uppercase leading-tight text-left break-words ${isEaglesTeam(fixture.home) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.home}</p>
-                            <p className="text-2xl sm:text-3xl font-black text-center">VS</p>
-                            <p className={`text-xs sm:text-sm font-black uppercase leading-tight text-right break-words ${isEaglesTeam(fixture.away) ? 'text-[#F5A623]' : 'text-white'}`}>{fixture.away}</p>
+                          <div className="p-4 sm:p-5 bg-[#f7f8fb]">
+                            <p className="text-[#1b2f5a] text-xs font-bold mb-2">CURA Championship</p>
+                            <h3 className="text-[#0d245b] text-2xl sm:text-3xl font-black tracking-tight mb-1">Week {fixture.week}</h3>
+                            <p className="text-[#0d245b] text-base sm:text-lg font-black mb-3">{toFixtureMonthDayLabel(fixture)}</p>
+                            <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
+                              <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Half Time</span>
+                              <span className="text-[#0d245b] text-sm sm:text-base font-black">{formatHalfTimeValue(score)}</span>
+                            </div>
+                            <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
+                              <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Full Time</span>
+                              <span className="text-[#0d245b] text-sm sm:text-base font-black">{formatScoreValue(score)}</span>
+                            </div>
+                            <div className="space-y-2 text-[#35507f] text-xs sm:text-sm font-bold">
+                              <p className="flex items-center gap-2">
+                                <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
+                                {toFixtureDayLabel(fixture)}, {fixture.time}
+                              </p>
+                              <p className="flex items-center gap-2">
+                                <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657 13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
+                                {fixture.venue}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <div className="p-4 sm:p-5 bg-[#f7f8fb]">
-                          <p className="text-[#1b2f5a] text-xs font-bold mb-2">CURA Championship</p>
-                          <h3 className="text-[#0d245b] text-2xl sm:text-3xl font-black tracking-tight mb-1">Week {fixture.week}</h3>
-                          <p className="text-[#0d245b] text-base sm:text-lg font-black mb-3">{toFixtureMonthDayLabel(fixture)}</p>
-                          <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
-                            <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Half Time</span>
-                            <span className="text-[#0d245b] text-sm sm:text-base font-black">{formatHalfTimeValue(score)}</span>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-[#d7dbe3] overflow-hidden bg-white">
+                  <div className="grid grid-cols-7 border-b border-[#d7dbe3] bg-[#f7f8fb]">
+                    {weekDays.map((dayName) => (
+                      <div key={dayName} className="px-2 py-2 text-center text-[10px] sm:text-xs font-black tracking-wider text-[#4d6185] border-r last:border-r-0 border-[#d7dbe3]">
+                        {dayName}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7">
+                    {calendarCells.map((dayNumber, index) => {
+                      if (!dayNumber) {
+                        return <div key={`empty-${index}`} className="min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] bg-[#f8fafc]" />;
+                      }
+                      const cellDate = new Date(calendarYear, selectedMonthIndex, dayNumber);
+                      const isToday = today.getFullYear() === cellDate.getFullYear()
+                        && today.getMonth() === cellDate.getMonth()
+                        && today.getDate() === cellDate.getDate();
+                      const hasBirthday = birthdayNamesByDay.has(dayNumber);
+                      const isSelectedBirthdayDate = selectedBirthdayDay === dayNumber;
+                      const cellClasses = hasBirthday
+                        ? `min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] p-2 bg-[#fff1d6] cursor-pointer ${isSelectedBirthdayDate ? 'ring-2 ring-inset ring-[#F5A623]' : ''}`
+                        : `min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] p-2 ${isToday ? 'bg-[#F5A623]/25' : 'bg-white'}`;
+                      return (
+                        <button
+                          key={dayNumber}
+                          type="button"
+                          onClick={() => {
+                            if (hasBirthday) {
+                              setSelectedBirthdayDay(dayNumber);
+                            }
+                          }}
+                          className={cellClasses}
+                        >
+                          <div className="flex items-start justify-between gap-1">
+                            <p className="text-base sm:text-lg font-black text-[#081534] leading-none">{dayNumber}</p>
+                            {isToday ? <span className="text-[10px] font-black uppercase tracking-wide text-white bg-[#F5A623] px-1.5 py-0.5 rounded">Today</span> : null}
                           </div>
-                          <div className="mb-3 border border-[#d5dbe6] rounded-md bg-white px-3 py-2 flex items-center justify-between">
-                            <span className="text-[10px] font-black uppercase tracking-wide text-[#4d6185]">Full Time</span>
-                            <span className="text-[#0d245b] text-sm sm:text-base font-black">{formatScoreValue(score)}</span>
-                          </div>
-                          <div className="space-y-2 text-[#35507f] text-xs sm:text-sm font-bold">
-                            <p className="flex items-center gap-2">
-                              <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
-                              {toFixtureDayLabel(fixture)}, {fixture.time}
-                            </p>
-                            <p className="flex items-center gap-2">
-                              <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657 13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
-                              {fixture.venue}
-                            </p>
-                          </div>
-                        </div>
-                      </article>
-                    );
-                  })}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             ) : (
