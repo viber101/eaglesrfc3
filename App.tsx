@@ -1870,17 +1870,6 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                 <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#89a9e4]">Selected Player</p>
                 <p className="mt-2 text-xl font-black text-white leading-none">________________</p>
               </div>
-              <div className="rounded-lg border border-[#355da4] bg-[#0b1d45] px-3 py-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Sponsored By</p>
-                <a
-                  href="https://x.com/kampaniSBC12"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 block text-sm font-bold text-white hover:text-[#F5A623] transition-colors"
-                >
-                  Kampanis Shoes and Bags Clinic
-                </a>
-              </div>
             </div>
           </article>
         ))}
@@ -1918,18 +1907,6 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               <div className="flex items-end justify-between gap-4">
                 <p className="text-[#F5A623] text-5xl sm:text-6xl font-black leading-none">{item.statValue}</p>
                 <p className="text-[#d7e2f6] text-sm sm:text-base font-black uppercase tracking-wider">{item.statLabel}</p>
-              </div>
-              <p className="mt-3 text-sm text-[#c9d8f3] font-semibold leading-relaxed">{item.note}</p>
-              <div className="mt-3 rounded-lg border border-[#355da4] bg-[#0b1d45] px-3 py-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Sponsored By</p>
-                <a
-                  href="https://x.com/kampaniSBC12"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 block text-sm font-bold text-white hover:text-[#F5A623] transition-colors"
-                >
-                  Kampanis Shoes and Bags Clinic
-                </a>
               </div>
             </div>
           </article>
