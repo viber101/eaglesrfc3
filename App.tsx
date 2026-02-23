@@ -130,7 +130,7 @@ const PLAYER_PROFILE_OVERRIDES: Record<string, PlayerProfileOverride> = {
   '7': { name: 'Olara Humphrey', age: 25, kgs: 95, cm: 190 },
   '8': { name: 'Aporu Derrick', age: 24, kgs: 65, cm: 174 },
   '9': { name: 'Joseph Luswata', age: 19, kgs: 68, cm: 170 },
-  '10': { name: 'Wasula Gerry Peter', age: 21, cm: 155 },
+  '10': { name: 'Wasula Gerry Peter', age: 21, kgs: 105, cm: 155 },
   '11': { name: 'Lagat Mark', age: 22, kgs: 80, cm: 175 },
   '12': { name: 'Ssali Raymond', age: 20, kgs: 68, cm: 169 },
   '13': { name: 'Ekelot Mathew', age: 23, kgs: 78, cm: 167 },
