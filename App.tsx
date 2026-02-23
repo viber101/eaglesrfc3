@@ -682,6 +682,15 @@ const CalendarSection: React.FC = () => {
   const isMonthActive = (month: string) => activeMonths.includes(month);
   const calendarYear = new Date().getFullYear();
   const selectedMonthHasActivities = isMonthActive(selectedMonth) && visibleFixtures.length > 0;
+  const selectedMonthIndex = MONTH_INDEX[selectedMonth.toLowerCase()] ?? new Date().getMonth();
+  const firstWeekdayOfMonth = new Date(calendarYear, selectedMonthIndex, 1).getDay();
+  const daysInSelectedMonth = new Date(calendarYear, selectedMonthIndex + 1, 0).getDate();
+  const leadingEmptyDays = Array.from({ length: firstWeekdayOfMonth }, () => null as number | null);
+  const monthDays = Array.from({ length: daysInSelectedMonth }, (_, index) => index + 1);
+  const trailingCount = (7 - ((leadingEmptyDays.length + monthDays.length) % 7)) % 7;
+  const trailingEmptyDays = Array.from({ length: trailingCount }, () => null as number | null);
+  const calendarCells = [...leadingEmptyDays, ...monthDays, ...trailingEmptyDays];
+  const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -829,9 +838,37 @@ const CalendarSection: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="rounded-lg border border-dashed border-[#d0d8e6] bg-[#fafbfe] p-6 text-center">
-                <p className="text-sm font-black uppercase tracking-wide text-[#6b7280]">No activities this month.</p>
-                <p className="mt-1 text-xs font-semibold text-[#8b95a5]">Select another month or use "Go to current month".</p>
+              <div className="space-y-4">
+                <div className="rounded-xl border border-[#d7dbe3] overflow-hidden bg-white">
+                  <div className="grid grid-cols-7 border-b border-[#d7dbe3] bg-[#f7f8fb]">
+                    {weekDays.map((dayName) => (
+                      <div key={dayName} className="px-2 py-2 text-center text-[10px] sm:text-xs font-black tracking-wider text-[#4d6185] border-r last:border-r-0 border-[#d7dbe3]">
+                        {dayName}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7">
+                    {calendarCells.map((dayNumber, index) => {
+                      if (!dayNumber) {
+                        return <div key={`empty-${index}`} className="min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] bg-[#f8fafc]" />;
+                      }
+                      return (
+                        <div key={dayNumber} className="min-h-[78px] sm:min-h-[98px] border-r border-b last:border-r-0 border-[#e6e9ef] p-2 bg-white">
+                          <p className="text-base sm:text-lg font-black text-[#081534] leading-none">{dayNumber}</p>
+                          <p className="mt-2 text-[11px] sm:text-xs font-semibold text-[#9aa5b6] leading-tight">No activity</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-[#d7dbe3] bg-[#f9fbff] p-4">
+                  <h4 className="text-[#081534] text-sm sm:text-base font-black uppercase tracking-wider mb-3">Month Activities</h4>
+                  <div className="rounded-lg border border-dashed border-[#d0d8e6] bg-[#fafbfe] p-6 text-center">
+                    <p className="text-sm font-black uppercase tracking-wide text-[#6b7280]">No activities this month.</p>
+                    <p className="mt-1 text-xs font-semibold text-[#8b95a5]">Select another month or use "Go to current month".</p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
