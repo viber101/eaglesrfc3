@@ -1,5 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import SectionHeader from './components/SectionHeader';
 import Card from './components/Card';
@@ -1473,19 +1474,27 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     </Carousel>
 
     <Carousel title="Our Athletes in Business">
-      {MOCK_BUSINESS_ATHLETES.map((p) => (
-        <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
-          <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
-            <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-            <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
+      {MOCK_BUSINESS_ATHLETES.map((p) => {
+        const isOtimChris = p.name.toLowerCase().includes('otim chris');
+
+        return (
+          <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
+            <div className={`relative aspect-[3/4] overflow-hidden mb-4 ${isOtimChris ? 'bg-black border border-[#1f1f1f]' : 'bg-gray-200'}`}>
+              <img
+                src={p.imageUrl}
+                alt={p.name}
+                className={`w-full h-full transition-transform duration-500 ${isOtimChris ? 'object-contain object-bottom translate-x-6 translate-y-3 group-hover:scale-105' : 'object-cover group-hover:scale-110'}`}
+              />
+              <div className={`absolute top-4 left-4 font-black drop-shadow-md ${isOtimChris ? 'text-6xl text-white tracking-tight' : 'text-4xl text-white/50'}`}>#{p.number}</div>
+            </div>
+            <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.title}</p>
+            <p className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-center">
+              +256786616953
+            </p>
           </div>
-          <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
-          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.title}</p>
-          <p className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-center">
-            +256786616953
-          </p>
-        </div>
-      ))}
+        );
+      })}
     </Carousel>
 
     <section className="mb-16">
@@ -3200,18 +3209,51 @@ const GalleryPage: React.FC = () => {
   );
 };
 
+const PAGE_PATHS: Record<string, string> = {
+  home: '/',
+  about: '/about',
+  history: '/history',
+  squad: '/squad',
+  'hall-of-fame': '/hall-of-fame',
+  shop: '/shop',
+  tv: '/tv',
+  donate: '/donate',
+  contact: '/contact',
+  'fitness-center': '/fitness-center',
+  'our-projects': '/our-projects',
+  'our-foundation': '/our-foundation',
+  'sponsor-us': '/sponsor-us',
+  'other-services': '/other-services',
+  membership: '/membership',
+  gallery: '/gallery'
+};
+
+const PATH_PAGES = Object.entries(PAGE_PATHS).reduce<Record<string, string>>((acc, [page, path]) => {
+  acc[path] = page;
+  return acc;
+}, {});
+
+const normalizePathname = (pathname: string) => {
+  if (pathname === '/') {
+    return pathname;
+  }
+  return pathname.replace(/\/+$/, '');
+};
+
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [pendingShopSectionId, setPendingShopSectionId] = useState<string | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPage = PATH_PAGES[normalizePathname(location.pathname)] ?? 'home';
 
   const navigateToPage = (target: string) => {
     const [page, sectionId] = target.split('#');
-    setCurrentPage(page);
-    if (page === 'shop' && sectionId) {
-      setPendingShopSectionId(sectionId);
+    const pageKey = page || 'home';
+    const targetPath = PAGE_PATHS[pageKey] ?? PAGE_PATHS.home;
+    const nextLocation = sectionId ? `${targetPath}#${sectionId}` : targetPath;
+    if (`${location.pathname}${location.hash}` === nextLocation) {
       return;
     }
-    setPendingShopSectionId(null);
+    navigate(nextLocation);
   };
 
   useEffect(() => {
@@ -3221,32 +3263,36 @@ const App: React.FC = () => {
       if (!targetPage) {
         return;
       }
-      setCurrentPage(targetPage);
-      setPendingShopSectionId(null);
-      window.scrollTo(0, 0);
+      const targetPath = targetPage.startsWith('/') ? targetPage : PAGE_PATHS[targetPage] ?? PAGE_PATHS.home;
+      navigate(targetPath);
     };
 
     window.addEventListener('eagles:navigate', handleExternalNavigate as EventListener);
     return () => window.removeEventListener('eagles:navigate', handleExternalNavigate as EventListener);
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [currentPage]);
-
-  useEffect(() => {
-    if (currentPage !== 'shop' || !pendingShopSectionId) {
+    const sectionId = location.hash.replace('#', '');
+    if (!sectionId) {
+      window.scrollTo(0, 0);
       return;
     }
-    const timer = window.setTimeout(() => {
-      const section = document.getElementById(pendingShopSectionId);
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const maxAttempts = 12;
+    const tryScrollToSection = (attempt = 0) => {
+      const section = document.getElementById(sectionId);
+      if (!section) {
+        if (attempt < maxAttempts) {
+          window.setTimeout(() => tryScrollToSection(attempt + 1), 60);
+        }
+        return;
       }
-      setPendingShopSectionId(null);
-    }, 60);
-    return () => window.clearTimeout(timer);
-  }, [currentPage, pendingShopSectionId]);
+
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    tryScrollToSection();
+  }, [location.pathname, location.hash]);
 
   return (
     <div className="min-h-screen bg-[#f4f4f4]">
@@ -3292,19 +3338,19 @@ const App: React.FC = () => {
 
           <div className="bg-[#141414] min-h-[240px] p-8 border-r border-white/10">
             <ul className="space-y-8 text-sm uppercase tracking-wide">
-              <li><button onClick={() => setCurrentPage('about')} className="hover:text-[#F5A623] transition-colors">About Us</button></li>
-              <li><button onClick={() => setCurrentPage('history')} className="hover:text-[#F5A623] transition-colors">History</button></li>
-              <li><button onClick={() => setCurrentPage('squad')} className="hover:text-[#F5A623] transition-colors">Squad</button></li>
+              <li><button onClick={() => navigateToPage('about')} className="hover:text-[#F5A623] transition-colors">About Us</button></li>
+              <li><button onClick={() => navigateToPage('history')} className="hover:text-[#F5A623] transition-colors">History</button></li>
+              <li><button onClick={() => navigateToPage('squad')} className="hover:text-[#F5A623] transition-colors">Squad</button></li>
               <li><a href="#" className="hover:text-[#F5A623] transition-colors">Staff</a></li>
             </ul>
           </div>
 
           <div className="bg-[#171717] min-h-[240px] p-8 border-r border-white/10">
             <ul className="space-y-8 text-sm uppercase tracking-wide">
-              <li><button onClick={() => setCurrentPage('shop')} className="hover:text-[#F5A623] transition-colors">Shop</button></li>
-              <li><button onClick={() => setCurrentPage('tv')} className="hover:text-[#F5A623] transition-colors">Eagles TV</button></li>
-              <li><button onClick={() => setCurrentPage('other-services')} className="hover:text-[#F5A623] transition-colors">Other Services</button></li>
-              <li><button onClick={() => setCurrentPage('donate')} className="hover:text-[#F5A623] transition-colors">Donate</button></li>
+              <li><button onClick={() => navigateToPage('shop')} className="hover:text-[#F5A623] transition-colors">Shop</button></li>
+              <li><button onClick={() => navigateToPage('tv')} className="hover:text-[#F5A623] transition-colors">Eagles TV</button></li>
+              <li><button onClick={() => navigateToPage('other-services')} className="hover:text-[#F5A623] transition-colors">Other Services</button></li>
+              <li><button onClick={() => navigateToPage('donate')} className="hover:text-[#F5A623] transition-colors">Donate</button></li>
             </ul>
           </div>
 
