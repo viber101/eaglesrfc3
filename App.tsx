@@ -2211,19 +2211,43 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       })}
     </Carousel>
 
-    <Carousel title="Our Athletes in Business">
-      {MOCK_BUSINESS_ATHLETES.map((p) => (
-        <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
-          <div className="relative aspect-[3/4] overflow-hidden bg-black mb-4">
-            <img src={toAssetUrl(p.imageUrl)} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-            <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
-          </div>
-          <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
-          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{p.title}</p>
-          <p className="mt-3 w-full bg-[#F5A623] text-black py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-center">
-            +256786616953
+    <Carousel
+      title="Our Athletes in Business"
+      preContent={(
+        <section className="mb-6 rounded-2xl border border-[#d8dfeb] bg-gradient-to-br from-[#f8fbff] via-white to-[#eef4ff] p-4 sm:p-5">
+          <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-[#a86700] mb-2">Beyond The Pitch</p>
+          <p className="text-sm sm:text-base text-[#1f355f] leading-relaxed font-semibold max-w-3xl">
+            Celebrating Eagles athletes building strong careers and businesses in different industries.
           </p>
-        </div>
+        </section>
+      )}
+    >
+      {MOCK_BUSINESS_ATHLETES.map((p) => (
+        <article key={p.id} className="flex-none w-[292px] sm:w-[320px] snap-start group">
+          <div className="rounded-2xl overflow-hidden border border-[#d6deea] bg-white shadow-sm">
+            <div className="relative aspect-[4/5] overflow-hidden bg-[#0e1f4a] border border-black/85">
+              <img src={toAssetUrl(p.imageUrl)} alt={p.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#081534]/70 via-transparent to-transparent" />
+              <span className="absolute top-3 left-3 h-8 min-w-8 px-2 rounded-full bg-white/90 text-[#081534] text-xs font-black flex items-center justify-center">
+                #{p.number}
+              </span>
+            </div>
+            <div className="p-4 sm:p-5">
+              <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-[#081534] leading-tight">
+                {p.name}
+              </h3>
+              <p className="mt-1 text-[11px] sm:text-xs font-black uppercase tracking-[0.18em] text-[#5f7090]">
+                {p.title}
+              </p>
+              <a
+                href="tel:+256786616953"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[#e0a024] bg-[#F5A623] px-4 py-2.5 text-[11px] font-black uppercase tracking-[0.16em] text-black transition-colors hover:bg-[#081534] hover:text-white hover:border-[#081534]"
+              >
+                +256786616953
+              </a>
+            </div>
+          </div>
+        </article>
       ))}
     </Carousel>
 
