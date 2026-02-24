@@ -1,5 +1,5 @@
 ﻿
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import SectionHeader from './components/SectionHeader';
@@ -898,33 +898,42 @@ const CalendarSection: React.FC = () => {
   const trailingEmptyDays = Array.from({ length: trailingCount }, () => null as number | null);
   const calendarCells = [...leadingEmptyDays, ...monthDays, ...trailingEmptyDays];
   const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-  const selectedMonthBirthdays = PLAYER_BIRTHDAYS
-    .filter((player) => player.month === selectedMonthNumber)
-    .sort((a, b) => a.day - b.day);
-  const birthdayNamesByDay = selectedMonthBirthdays.reduce((map, player) => {
-    const currentNames = map.get(player.day) || [];
-    currentNames.push(player.name);
-    map.set(player.day, currentNames);
-    return map;
-  }, new Map<number, string[]>());
+  const selectedMonthBirthdays = useMemo(
+    () => PLAYER_BIRTHDAYS
+      .filter((player) => player.month === selectedMonthNumber)
+      .sort((a, b) => a.day - b.day),
+    [selectedMonthNumber]
+  );
+  const birthdayNamesByDay = useMemo(
+    () => selectedMonthBirthdays.reduce((map, player) => {
+      const currentNames = map.get(player.day) || [];
+      currentNames.push(player.name);
+      map.set(player.day, currentNames);
+      return map;
+    }, new Map<number, string[]>()),
+    [selectedMonthBirthdays]
+  );
   const selectedDayBirthdayNames = selectedBirthdayDay ? (birthdayNamesByDay.get(selectedBirthdayDay) || []) : [];
 
   useEffect(() => {
     const isTodayInSelectedMonth = today.getMonth() === selectedMonthIndex;
     if (!isTodayInSelectedMonth) {
-      setSelectedBirthdayDay(null);
       return;
     }
 
     const todayDate = today.getDate();
     if (!birthdayNamesByDay.has(todayDate)) {
-      setSelectedBirthdayDay(null);
       return;
     }
 
     // Auto-select today's birthday once, while preserving manual selections.
     setSelectedBirthdayDay((current) => current ?? todayDate);
   }, [today, selectedMonthIndex, birthdayNamesByDay]);
+
+  useEffect(() => {
+    // Reset invalid selection when month changes.
+    setSelectedBirthdayDay((current) => (current !== null && birthdayNamesByDay.has(current) ? current : null));
+  }, [birthdayNamesByDay]);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -955,9 +964,6 @@ const CalendarSection: React.FC = () => {
       return;
     }
     setSelectedBirthdayDay(dayNumber);
-    window.requestAnimationFrame(() => {
-      birthdayMessagesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    });
   };
 
   return (
@@ -1110,7 +1116,7 @@ const CalendarSection: React.FC = () => {
                           key={dayNumber}
                           type="button"
                           onClick={() => handleBirthdayDateClick(dayNumber)}
-                          className={cellClasses}
+                          className={`${cellClasses} w-full h-full text-left flex flex-col justify-between`}
                         >
                           <div className="flex items-start justify-between gap-1">
                             <p className="text-base sm:text-lg font-black text-[#081534] leading-none">{dayNumber}</p>
@@ -1151,7 +1157,7 @@ const CalendarSection: React.FC = () => {
                           key={dayNumber}
                           type="button"
                           onClick={() => handleBirthdayDateClick(dayNumber)}
-                          className={cellClasses}
+                          className={`${cellClasses} w-full h-full text-left flex flex-col justify-between`}
                         >
                           <div className="flex items-start justify-between gap-1">
                             <p className="text-base sm:text-lg font-black text-[#081534] leading-none">{dayNumber}</p>
