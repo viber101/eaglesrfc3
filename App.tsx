@@ -214,7 +214,7 @@ const PLAYER_BIRTHDAYS: PlayerBirthday[] = [
   { name: 'Stuart Katamba Mutyaba', day: 5, month: 11 },
   { name: 'James Polycarp Ochan', day: 10, month: 8 },
   { name: 'Charles Tayebwa', day: 31, month: 10 },
-  { name: 'Jonathan Nanalagama', day: 27, month: 2 },
+  { name: 'Jonathan Nagalama', day: 27, month: 2 },
   { name: 'Mark Baganzizi', day: 27, month: 1 },
   { name: 'George William Serunjogi', day: 12, month: 8 },
   { name: 'Jonah Ssemugyenyi', day: 7, month: 11 },
@@ -285,6 +285,78 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     statLabel: 'Award',
     statValue: '--',
     note: 'Monthly standout player will be announced soon.',
+    imageUrl: '/player2.png'
+  },
+  {
+    id: 'impact-player-month',
+    label: 'Impact Player of the Month',
+    player: 'To Be Announced',
+    statLabel: 'Award',
+    statValue: '--',
+    note: 'Impact player winner will be announced soon.',
+    imageUrl: '/player2.png'
+  },
+  {
+    id: 'try-month',
+    label: 'Try of the Month',
+    player: 'To Be Announced',
+    statLabel: 'Award',
+    statValue: '--',
+    note: 'Best try of the month will be announced soon.',
+    imageUrl: '/player2.png'
+  },
+  {
+    id: 'training-warrior-month',
+    label: 'Training Warrior of the Month',
+    player: 'To Be Announced',
+    statLabel: 'Award',
+    statValue: '--',
+    note: 'Training warrior winner will be announced soon.',
+    imageUrl: '/player2.png'
+  },
+  {
+    id: 'full-80-month',
+    label: 'Full 80 of the Month',
+    player: 'To Be Announced',
+    statLabel: 'Award',
+    statValue: '--',
+    note: 'Full 80 performer will be announced soon.',
+    imageUrl: '/player2.png'
+  },
+  {
+    id: 'consistent-performer-month',
+    label: 'Consistent Performer of the Month',
+    player: 'To Be Announced',
+    statLabel: 'Award',
+    statValue: '--',
+    note: 'Consistent performer winner will be announced soon.',
+    imageUrl: '/player2.png'
+  },
+  {
+    id: 'defensive-beast-month',
+    label: 'Defensive Beast of the Month',
+    player: 'To Be Announced',
+    statLabel: 'Award',
+    statValue: '--',
+    note: 'Defensive beast winner will be announced soon.',
+    imageUrl: '/player2.png'
+  },
+  {
+    id: 'turnover-king-month',
+    label: 'Turnover King of the Month',
+    player: 'To Be Announced',
+    statLabel: 'Award',
+    statValue: '--',
+    note: 'Turnover king winner will be announced soon.',
+    imageUrl: '/player2.png'
+  },
+  {
+    id: 'try-creator-month',
+    label: 'Try Creator of the Month',
+    player: 'To Be Announced',
+    statLabel: 'Award',
+    statValue: '--',
+    note: 'Try creator winner will be announced soon.',
     imageUrl: '/player2.png'
   }
 ];
@@ -363,7 +435,17 @@ const PAGE_IMAGES = {
   shopHero: '/gallery/Eagles (6).jpeg',
   tvHero: '/gallery/Eagles (15).jpeg'
 };
-const toAssetUrl = (path: string) => encodeURI(path);
+const ASSET_BASE_URL = import.meta.env.BASE_URL || '/';
+const toAssetUrl = (path: string) => {
+  if (!path) return path;
+  if (/^(?:[a-z]+:)?\/\//i.test(path) || path.startsWith('data:') || path.startsWith('blob:')) {
+    return path;
+  }
+
+  const normalizedBase = ASSET_BASE_URL.endsWith('/') ? ASSET_BASE_URL : `${ASSET_BASE_URL}/`;
+  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+  return encodeURI(`${normalizedBase}${normalizedPath}`);
+};
 
 const cleanCell = (value: string) => value.replace(/"/g, '').replace(/\s+/g, ' ').trim();
 const extractDateNumber = (value: string) => value.match(/\d+/)?.[0] ?? value;
@@ -1821,7 +1903,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
   <>
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
       <div className="lg:col-span-8 relative rounded-2xl overflow-hidden min-h-[300px] sm:min-h-[380px] lg:min-h-[400px]">
-        <img src="/homehero.jpeg" alt="Eagles Rugby" className="w-full h-full object-cover absolute inset-0" />
+        <img src={toAssetUrl('/homehero.jpeg')} alt="Eagles Rugby" className="w-full h-full object-cover absolute inset-0" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
         
         {/* Compact Match Overlay - Centered */}
@@ -2028,7 +2110,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
             <img
-              src={p.imageUrl || toAssetUrl('/player2.png')}
+              src={toAssetUrl(p.imageUrl || '/player2.png')}
               alt={p.name}
               onError={(event) => {
                 event.currentTarget.src = toAssetUrl('/player2.png');
@@ -2106,7 +2188,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       {MOCK_BUSINESS_ATHLETES.map((p) => (
         <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
           <div className="relative aspect-[3/4] overflow-hidden bg-black mb-4">
-            <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <img src={toAssetUrl(p.imageUrl)} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
             <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
           </div>
           <h3 className="text-lg font-black uppercase tracking-tighter group-hover:text-[#F5A623] transition-colors">{p.name}</h3>
@@ -2122,7 +2204,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       <SectionHeader title="Our History" />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-white p-8 lg:p-12 shadow-sm border-l-8 border-[#F5A623]">
         <div className="lg:col-span-5 h-[350px] overflow-hidden">
-          <img src="/legacy.jpeg" alt="History" className="w-full h-full object-cover object-top" />
+          <img src={toAssetUrl('/legacy.jpeg')} alt="History" className="w-full h-full object-cover object-top" />
         </div>
         <div className="lg:col-span-7 flex flex-col justify-center">
           <h3 className="text-4xl lg:text-5xl font-black uppercase italic tracking-tighter mb-6 leading-none">A Legacy of Unity</h3>
@@ -2249,7 +2331,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
             className="group cursor-pointer flex-none w-[260px] sm:w-[300px] snap-start"
           >
             <div className="relative aspect-video overflow-hidden bg-gray-200 mb-2">
-              <img src={tv.imageUrl} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <img src={toAssetUrl(tv.imageUrl)} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
                 <div className="w-10 h-10 bg-[#F5A623] rounded-full flex items-center justify-center text-black">
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -2291,7 +2373,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         >
           {[...PARTNER_LOGOS, ...PARTNER_LOGOS].map((partner, index) => (
             <article key={`${partner.name}-${index}`} className="min-w-[150px] sm:min-w-[180px] h-[86px] sm:h-[96px] bg-white/95 rounded-sm px-4 flex items-center justify-center">
-              <img src={partner.src} alt={partner.name} className="max-h-[54px] sm:max-h-[60px] w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
+              <img src={toAssetUrl(partner.src)} alt={partner.name} className="max-h-[54px] sm:max-h-[60px] w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
             </article>
           ))}
         </div>
@@ -2856,7 +2938,7 @@ const ShopPage: React.FC = () => {
                 style={{ width: 260, height: 360 }}
               >
                 <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-                  <img src={product.imageUrl} alt={product.name} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
+                  <img src={toAssetUrl(product.imageUrl)} alt={product.name} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
                 </div>
                 <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
                 <div className="mt-1 flex items-center justify-between gap-2">
@@ -3038,7 +3120,7 @@ const TvPage: React.FC = () => (
           className="group cursor-pointer"
         >
           <div className="relative aspect-video overflow-hidden bg-gray-200 mb-2 rounded-lg">
-            <img src={tv.imageUrl} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src={toAssetUrl(tv.imageUrl)} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             <div className="absolute inset-0 flex items-center justify-center bg-black/20">
               <div className="w-10 h-10 bg-[#F5A623] rounded-full flex items-center justify-center text-black">
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
@@ -3442,7 +3524,7 @@ const SponsorUsPage: React.FC = () => (
         </div>
       </div>
       <div className="rounded-lg overflow-hidden border border-[#d7deea]">
-        <img src="/kit sponsor/kit sponsor.jpeg" alt="Eagles shirt sponsorship spaces" className="w-full h-[360px] object-contain bg-[#0b1020]" />
+        <img src={toAssetUrl('/kit sponsor/kit sponsor.jpeg')} alt="Eagles shirt sponsorship spaces" className="w-full h-[360px] object-contain bg-[#0b1020]" />
       </div>
     </section>
 
@@ -3538,7 +3620,7 @@ const ServiceImageCard: React.FC<{
     <article className="rounded-xl overflow-hidden border border-[#e2e7f0] bg-white">
       <div className="relative h-44 bg-gradient-to-br from-[#0f224f] via-[#081534] to-[#1d3c85]">
         <img
-          src={useFallback ? fallbackImageUrl : imageUrl}
+          src={toAssetUrl(useFallback ? fallbackImageUrl : imageUrl)}
           alt={title}
           className="w-full h-full object-cover"
           loading="eager"
@@ -3560,7 +3642,7 @@ const ServiceImageCard: React.FC<{
 const OtherServicesPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
     <section className="relative overflow-hidden rounded-2xl border border-[#1f2a44] bg-[#050a14] text-white">
-      <img src="/other%20services/web%20design.png" alt="Other services" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+      <img src={toAssetUrl('/other%20services/web%20design.png')} alt="Other services" className="absolute inset-0 w-full h-full object-cover opacity-30" />
       <div className="absolute inset-0 bg-gradient-to-r from-[#040913] via-[#050a14]/92 to-[#050a14]/70" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_18%,rgba(245,166,35,0.25),transparent_42%)]" />
       <div className="relative z-10 p-6 sm:p-8 lg:p-10">
@@ -3981,7 +4063,7 @@ const App: React.FC = () => {
       <footer className="mt-16 w-full bg-black text-white">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5">
           <div className="bg-[#111111] min-h-[200px] sm:min-h-[240px] flex items-center justify-center p-6 sm:p-8 border-r border-white/10">
-            <img src="/KINTANTE FUN DAY FLYER.png" alt="Eagles Rugby Club" className="h-20 sm:h-24 w-auto object-contain" />
+            <img src={toAssetUrl('/KINTANTE FUN DAY FLYER.png')} alt="Eagles Rugby Club" className="h-20 sm:h-24 w-auto object-contain" />
           </div>
 
           <div className="bg-[#141414] min-h-[200px] sm:min-h-[240px] p-6 sm:p-8 border-r border-white/10">
