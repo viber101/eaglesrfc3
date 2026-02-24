@@ -720,6 +720,7 @@ const CalendarSection: React.FC = () => {
   const [today, setToday] = useState<Date>(() => new Date());
   const [selectedBirthdayDay, setSelectedBirthdayDay] = useState<number | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const birthdayMessagesRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
@@ -820,9 +821,7 @@ const CalendarSection: React.FC = () => {
     map.set(player.day, currentNames);
     return map;
   }, new Map<number, string[]>());
-  const birthdayDaysInSelectedMonth = Array.from(birthdayNamesByDay.keys()).sort((a, b) => a - b);
-  const selectedDayBirthdayNamesRaw = selectedBirthdayDay ? (birthdayNamesByDay.get(selectedBirthdayDay) || []) : [];
-  const selectedDayBirthdayNames = Array.from(new Set(selectedDayBirthdayNamesRaw));
+  const selectedDayBirthdayNames = selectedBirthdayDay ? (birthdayNamesByDay.get(selectedBirthdayDay) || []) : [];
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -846,6 +845,16 @@ const CalendarSection: React.FC = () => {
         behavior: 'smooth'
       });
     }
+  };
+
+  const handleBirthdayDateClick = (dayNumber: number) => {
+    if (!birthdayNamesByDay.has(dayNumber)) {
+      return;
+    }
+    setSelectedBirthdayDay(dayNumber);
+    window.requestAnimationFrame(() => {
+      birthdayMessagesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
   };
 
   return (
@@ -997,11 +1006,7 @@ const CalendarSection: React.FC = () => {
                         <button
                           key={dayNumber}
                           type="button"
-                          onClick={() => {
-                            if (hasBirthday) {
-                              setSelectedBirthdayDay(dayNumber);
-                            }
-                          }}
+                          onClick={() => handleBirthdayDateClick(dayNumber)}
                           className={cellClasses}
                         >
                           <div className="flex items-start justify-between gap-1">
@@ -1042,11 +1047,7 @@ const CalendarSection: React.FC = () => {
                         <button
                           key={dayNumber}
                           type="button"
-                          onClick={() => {
-                            if (hasBirthday) {
-                              setSelectedBirthdayDay(dayNumber);
-                            }
-                          }}
+                          onClick={() => handleBirthdayDateClick(dayNumber)}
                           className={cellClasses}
                         >
                           <div className="flex items-start justify-between gap-1">
@@ -1061,17 +1062,22 @@ const CalendarSection: React.FC = () => {
               </div>
             )}
 
-            <div className="mt-4 rounded-xl border border-[#d7dbe3] bg-[#f9fbff] p-4">
+            <div ref={birthdayMessagesRef} className="mt-4 rounded-xl border border-[#d7dbe3] bg-[#f9fbff] p-4">
               <h4 className="text-[#081534] text-sm sm:text-base font-black uppercase tracking-wider mb-3">Birthday Messages</h4>
               <div className="space-y-2">
-                {selectedDayBirthdayNames.map((name) => (
-                  <p key={`selected-day-${name}`} className="rounded-lg border border-[#f1c36b] bg-[#fff7e6] text-[#6a4300] px-3 py-2 text-sm font-black">
+                {selectedBirthdayDay !== null && selectedDayBirthdayNames.length > 0 ? (
+                  <p className="rounded-lg border border-[#e3e8f3] bg-white text-[#1f3357] px-3 py-2 text-sm font-semibold">
+                    Selected date: {selectedMonth} {selectedBirthdayDay}, {calendarYear}
+                  </p>
+                ) : null}
+                {selectedDayBirthdayNames.map((name, index) => (
+                  <p key={`birthday-${selectedBirthdayDay}-${name}-${index}`} className="rounded-lg border border-[#f1c36b] bg-[#fff7e6] text-[#6a4300] px-3 py-2 text-sm font-black">
                     Happy Birthday, {name}! Wishing you strength, joy, and a winning year ahead.
                   </p>
                 ))}
                 {selectedBirthdayDay === null && selectedMonthBirthdays.length > 0 ? (
                   <p className="rounded-lg border border-[#e3e8f3] bg-white text-[#1f3357] px-3 py-2 text-sm font-semibold">
-                    This month has birthdays. Tap an orange date in the calendar to view birthday names.
+                    Tap any highlighted date to view that day&apos;s birthday message.
                   </p>
                 ) : null}
                 {selectedMonthBirthdays.length === 0 ? (
