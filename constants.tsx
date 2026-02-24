@@ -128,7 +128,7 @@ export const MOCK_HALL_OF_FAME: HallOfFameMember[] = [
 ];
 
 export const MOCK_BUSINESS_ATHLETES: HallOfFameMember[] = [
-  { id: 'ab1', name: 'Otim Chris', number: '1', title: 'Architect and XR Developer', imageUrl: '/Our%20Athletes%20in%20Business/Otim%20Chris.jpeg' }
+  { id: 'ab1', name: 'Otim Chris', number: '1', title: 'Architect and XR Developer', imageUrl: '/Our Athletes in Business/Otim Chris.jpeg' }
 ];
 
 export const MOCK_TRENDING_VIDEOS: NewsItem[] = [

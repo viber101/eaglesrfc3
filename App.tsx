@@ -444,7 +444,15 @@ const toAssetUrl = (path: string) => {
 
   const normalizedBase = ASSET_BASE_URL.endsWith('/') ? ASSET_BASE_URL : `${ASSET_BASE_URL}/`;
   const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-  return encodeURI(`${normalizedBase}${normalizedPath}`);
+  const decodedPath = (() => {
+    try {
+      return decodeURI(normalizedPath);
+    } catch {
+      return normalizedPath;
+    }
+  })();
+
+  return encodeURI(`${normalizedBase}${decodedPath}`);
 };
 
 const cleanCell = (value: string) => value.replace(/"/g, '').replace(/\s+/g, ' ').trim();
