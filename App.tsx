@@ -872,10 +872,6 @@ const CalendarSection: React.FC = () => {
     return () => window.clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    setSelectedBirthdayDay(null);
-  }, [selectedMonth]);
-
   const visibleFixtures = selectedMonth
     ? fixtures.filter((fixture) => getFixtureMonthForFilter(fixture).toLowerCase() === selectedMonth.toLowerCase())
     : fixtures;
@@ -904,6 +900,23 @@ const CalendarSection: React.FC = () => {
     return map;
   }, new Map<number, string[]>());
   const selectedDayBirthdayNames = selectedBirthdayDay ? (birthdayNamesByDay.get(selectedBirthdayDay) || []) : [];
+
+  useEffect(() => {
+    const isTodayInSelectedMonth = today.getMonth() === selectedMonthIndex;
+    if (!isTodayInSelectedMonth) {
+      setSelectedBirthdayDay(null);
+      return;
+    }
+
+    const todayDate = today.getDate();
+    if (!birthdayNamesByDay.has(todayDate)) {
+      setSelectedBirthdayDay(null);
+      return;
+    }
+
+    // Auto-select today's birthday once, while preserving manual selections.
+    setSelectedBirthdayDay((current) => current ?? todayDate);
+  }, [today, selectedMonthIndex, birthdayNamesByDay]);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
