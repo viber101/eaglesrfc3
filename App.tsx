@@ -104,7 +104,7 @@ const HOME_HALL_OF_FAME_IMAGE_BY_NAME: Record<string, string> = {
   'Ateng Robert': '/Hall of Fame/Ateng Robert.jpeg',
   'Ojara Emmanuel': '/Hall of Fame/Ojara Emmanuel.jpeg',
   'Regan Origi': '/Hall of Fame/Regan Kitara.jpeg',
-  'Osura Aaron': '/Hall of Fame/Osura Aaron.jpeg',
+  'Osuta Aaron': '/Hall of Fame/Osura Aaron.jpeg',
   'Daniel Ochora': '/Hall of Fame/Daniel Ochora.jpeg',
   'Dan Mark Omeda': '/Hall of Fame/Danmark Omeda.jpeg',
   'Shamick Mbubi': '/Hall of Fame/Shamick Mbubi.jpeg',
@@ -376,7 +376,7 @@ const getPlayerProfile = (id: string, fallbackName: string) => {
 };
 const FOUNDER_MESSAGE_PARAGRAPHS = [
   "When Eagles Rugby Club came to life in 2019, it was more than the birth of a team - it was the beginning of a brotherhood built on belief, sacrifice, and ambition. At the center of that new journey stood Edmond Tumusime, our very first coach, whose leadership laid the foundation of discipline, unity, and resilience that still defines the club today. With vision and determination, he helped shape not just a squad, but a culture - one that demanded commitment and inspired loyalty from every player who wore the badge.",
-  "Standing alongside him from the very start were Kayondo Ronnie, Shamick Mbubi, Dan Mark Omeda, Daniel Ochora, Osura Aaron, Regan Origi, Ojara Emmanuel, Ateng Robert, Araptai Willy, Liam Sewanyana, Bogere Francis, and Henry Rwoth - men who chose to stand firm in every situation, through challenges and triumphs alike. Together, they carried the dream of Eagles Rugby Club on their shoulders, turning obstacles into stepping stones and building a legacy that continues to inspire new generations. The Hall of Fame proudly honors these pioneers - not just for what they achieved on the pitch, but for the spirit, loyalty, and courage that gave life to the Eagles story."
+  "Standing alongside him from the very start were Kayondo Ronnie, Shamick Mbubi, Dan Mark Omeda, Daniel Ochora, Osuta Aaron, Regan Origi, Ojara Emmanuel, Ateng Robert, Araptai Willy, Liam Sewanyana, Bogere Francis, and Henry Rwoth - men who chose to stand firm in every situation, through challenges and triumphs alike. Together, they carried the dream of Eagles Rugby Club on their shoulders, turning obstacles into stepping stones and building a legacy that continues to inspire new generations. The Hall of Fame proudly honors these pioneers - not just for what they achieved on the pitch, but for the spirit, loyalty, and courage that gave life to the Eagles story."
 ];
 const FOUNDER_MESSAGE_PREVIEW = FOUNDER_MESSAGE_PARAGRAPHS.join(' ');
 const X_COACH_IMAGES = [
