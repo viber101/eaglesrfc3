@@ -2168,7 +2168,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
             </div>
             <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-[#d8dfeb] p-5 flex items-center justify-center bg-[radial-gradient(circle_at_top,#f7fbff,#edf3ff)]">
               <div className="relative w-[280px] max-w-full aspect-[3/4] overflow-hidden rounded-lg border border-[#d8dfeb] bg-gray-100 shadow-sm">
-                <img src={toAssetUrl('/arthur.jpeg')} alt="Arthur Kampani" className="w-full h-full object-cover object-top" />
+                <img src={toAssetUrl('/arthurk.jpeg')} alt="Arthur Kampani" className="w-full h-full object-cover object-top" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#081534]/70 via-[#081534]/20 to-transparent" />
                 <div className="absolute left-3 right-3 bottom-3 flex items-center justify-between">
                   <p className="text-[10px] uppercase tracking-[0.18em] font-black text-white/90">Founder</p>
