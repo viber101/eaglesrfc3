@@ -119,7 +119,7 @@ export const MOCK_HALL_OF_FAME: HallOfFameMember[] = [
   { id: 'hf5', name: 'Ateng Robert', number: '5', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-5/300/400' },
   { id: 'hf6', name: 'Ojara Emmanuel', number: '6', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-6/300/400' },
   { id: 'hf7', name: 'Regan Origi', number: '7', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-7/300/400' },
-  { id: 'hf8', name: 'Osura Aaron', number: '8', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-8/300/400' },
+  { id: 'hf8', name: 'Osuta Aaron', number: '8', title: 'Hall of Fame', imageUrl: '/Hall of Fame/Osuta Aaron.jpeg' },
   { id: 'hf9', name: 'Daniel Ochora', number: '9', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-9/300/400' },
   { id: 'hf10', name: 'Dan Mark Omeda', number: '10', title: 'Hall of Fame', imageUrl: 'https://picsum.photos/seed/eagles-hof-10/300/400' },
   { id: 'hf11', name: 'Shamick Mbubi', number: '11', title: 'Hall of Fame', imageUrl: '/Hall of Fame/Shamick Mbubi.jpeg' },
