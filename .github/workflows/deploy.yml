@@ -36,9 +36,9 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
-            if systemctl is-active --quiet nginx; then
+            if command -v systemctl >/dev/null 2>&1 && systemctl is-active --quiet nginx; then
               echo "Stopping host nginx to free ports 80/443..."
-              systemctl stop nginx
+              systemctl stop nginx || true
               systemctl disable nginx || true
             fi
             mkdir -p /var/www/eaglesrfc/dist
