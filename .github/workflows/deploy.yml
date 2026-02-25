@@ -36,16 +36,10 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
-            if command -v systemctl >/dev/null 2>&1 && timeout 10s systemctl is-active --quiet nginx; then
-              echo "Stopping host nginx to free ports 80/443..."
-              timeout 15s systemctl stop nginx || true
-              timeout 15s systemctl disable nginx || true
-            fi
             mkdir -p /var/www/eaglesrfc/dist
             mkdir -p /var/www/eaglesrfc/api
-            rm -rf /var/www/eaglesrfc/dist/*
             cd /var/www/eaglesrfc
-            timeout 90s docker compose down --remove-orphans || true
+            docker compose down || true
 
       - name: Copy all files to VPS
         uses: appleboy/scp-action@v0.1.7
