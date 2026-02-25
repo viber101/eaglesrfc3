@@ -180,16 +180,18 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
       <div className="bg-[#05070c] backdrop-blur text-white border-b border-white/10">
         <div className="max-w-[1700px] mx-auto px-4 lg:px-8 flex items-center h-[72px] relative">
-          <div
+          <button
+            type="button"
             className="flex items-center justify-center px-2 sm:px-3 py-1.5 rounded-md border border-white/10 bg-white/[0.03] mr-6 lg:mr-8 cursor-pointer"
-            onClick={() => onNavigate('home')}
+            onClick={() => navigateToPage('home')}
+            aria-label="Go to home page"
           >
             <img
               src="/KINTANTE FUN DAY FLYER.png"
               alt="Eagles RFC Logo"
               className="h-9 sm:h-10 w-auto object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)]"
             />
-          </div>
+          </button>
 
           <nav className="hidden lg:flex items-center gap-6 uppercase text-[13px] font-black tracking-[0.04em]">
             <button
