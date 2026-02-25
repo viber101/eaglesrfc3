@@ -32,8 +32,9 @@ jobs:
       - name: Prepare VPS directories
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
+          host: 72.60.83.198
+          username: root
+          port: 22
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
             DEPLOY_DIR="$HOME/eaglesrfc"
@@ -43,8 +44,9 @@ jobs:
       - name: Copy all files to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
+          host: 72.60.83.198
+          username: root
+          port: 22
           password: ${{ secrets.VPS_PASSWORD }}
           source: "dist/,api/,nginx.conf,docker-compose.yml"
           target: "~/eaglesrfc"
@@ -53,8 +55,9 @@ jobs:
       - name: Start Docker containers
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
+          host: 72.60.83.198
+          username: root
+          port: 22
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
             DEPLOY_DIR="$HOME/eaglesrfc"
