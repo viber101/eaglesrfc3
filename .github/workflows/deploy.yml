@@ -36,10 +36,9 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
-            mkdir -p /var/www/eaglesrfc/dist
-            mkdir -p /var/www/eaglesrfc/api
-            cd /var/www/eaglesrfc
-            docker compose down || true
+            DEPLOY_DIR="$HOME/eaglesrfc"
+            mkdir -p "$DEPLOY_DIR/dist"
+            mkdir -p "$DEPLOY_DIR/api"
 
       - name: Copy all files to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -48,7 +47,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           source: "dist/,api/,nginx.conf,docker-compose.yml"
-          target: "/var/www/eaglesrfc"
+          target: "~/eaglesrfc"
           strip_components: 0
 
       - name: Start Docker containers
@@ -58,9 +57,19 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
-            cd /var/www/eaglesrfc
-            docker compose up -d --build
-            docker compose ps
+            DEPLOY_DIR="$HOME/eaglesrfc"
+            cd "$DEPLOY_DIR"
+            if docker compose version >/dev/null 2>&1; then
+              DC="docker compose"
+            elif docker-compose version >/dev/null 2>&1; then
+              DC="docker-compose"
+            else
+              echo "Docker Compose is not available on VPS."
+              exit 1
+            fi
+            $DC down || true
+            $DC up -d --build
+            $DC ps
             docker logs eaglesrfc_web --tail 80 || true
             ss -tulpen | grep -E ':80|:443|:3001' || true
             echo "Deployment complete."
