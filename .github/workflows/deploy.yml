@@ -16,8 +16,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: npm
 
       - name: Install dependencies
         run: npm install
@@ -36,10 +36,16 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
+            if systemctl is-active --quiet nginx; then
+              echo "Stopping host nginx to free ports 80/443..."
+              systemctl stop nginx
+              systemctl disable nginx || true
+            fi
             mkdir -p /var/www/eaglesrfc/dist
             mkdir -p /var/www/eaglesrfc/api
+            rm -rf /var/www/eaglesrfc/dist/*
             cd /var/www/eaglesrfc
-            docker compose down || true
+            docker compose down --remove-orphans || true
 
       - name: Copy all files to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -60,4 +66,7 @@ jobs:
           script: |
             cd /var/www/eaglesrfc
             docker compose up -d --build
-            echo "✅ Deployment complete!"
+            docker compose ps
+            docker logs eaglesrfc_web --tail 80 || true
+            ss -tulpen | grep -E ':80|:443|:3001' || true
+            echo "Deployment complete."
