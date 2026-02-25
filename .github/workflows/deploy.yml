@@ -8,6 +8,10 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      VPS_HOST: 72.60.83.198
+      VPS_USER: root
+      VPS_PORT: 22
 
     steps:
       - name: Checkout repository
@@ -29,50 +33,28 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_POLL_KEY: ${{ secrets.VITE_POLL_KEY }}
 
-      - name: Prepare VPS directories
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 72.60.83.198
-          username: root
-          port: 22
-          password: ${{ secrets.VPS_PASSWORD }}
-          script: |
-            DEPLOY_DIR="$HOME/eaglesrfc"
-            mkdir -p "$DEPLOY_DIR/dist"
-            mkdir -p "$DEPLOY_DIR/api"
+      - name: Install SSH tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass openssh-client
 
-      - name: Copy all files to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: 72.60.83.198
-          username: root
-          port: 22
-          password: ${{ secrets.VPS_PASSWORD }}
-          source: "dist/,api/,nginx.conf,docker-compose.yml"
-          target: "~/eaglesrfc"
-          strip_components: 0
+      - name: Prepare VPS and upload files
+        env:
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          set -euo pipefail
+          export SSHPASS="$VPS_PASSWORD"
+          sshpass -e ssh -p "$VPS_PORT" -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" \
+            'mkdir -p ~/eaglesrfc/dist ~/eaglesrfc/api'
+          sshpass -e scp -P "$VPS_PORT" -o StrictHostKeyChecking=no -r \
+            dist api nginx.conf docker-compose.yml \
+            "$VPS_USER@$VPS_HOST:~/eaglesrfc/"
 
-      - name: Start Docker containers
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 72.60.83.198
-          username: root
-          port: 22
-          password: ${{ secrets.VPS_PASSWORD }}
-          script: |
-            DEPLOY_DIR="$HOME/eaglesrfc"
-            cd "$DEPLOY_DIR"
-            if docker compose version >/dev/null 2>&1; then
-              DC="docker compose"
-            elif docker-compose version >/dev/null 2>&1; then
-              DC="docker-compose"
-            else
-              echo "Docker Compose is not available on VPS."
-              exit 1
-            fi
-            $DC down || true
-            $DC up -d --build
-            $DC ps
-            docker logs eaglesrfc_web --tail 80 || true
-            ss -tulpen | grep -E ':80|:443|:3001' || true
-            echo "Deployment complete."
+      - name: Restart services on VPS
+        env:
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          set -euo pipefail
+          export SSHPASS="$VPS_PASSWORD"
+          sshpass -e ssh -p "$VPS_PORT" -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" \
+            'cd ~/eaglesrfc && (docker compose down || true) && docker compose up -d --build && docker compose ps; docker logs eaglesrfc_web --tail 80 || true'
