@@ -2148,10 +2148,6 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               <div className={`px-4 overflow-hidden transition-all duration-300 ${isActive ? 'max-h-28 opacity-100 pb-3' : 'max-h-0 opacity-0 pb-0'}`}>
                 <div className="pt-3 flex items-start text-white text-center">
                   <div className="flex-1">
-                    <p className="text-[2rem] font-black leading-none">{playerProfile.age ?? '-'}</p>
-                    <p className="text-[11px] leading-none uppercase tracking-wider text-white/90 font-medium">Age</p>
-                  </div>
-                  <div className="flex-1">
                     <p className="text-[2rem] font-black leading-none">{playerProfile.kgs ?? '-'}</p>
                     <p className="text-[11px] leading-none uppercase tracking-wider text-white/90 font-medium">KGS</p>
                   </div>
