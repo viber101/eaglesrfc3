@@ -105,6 +105,7 @@ const HOME_HALL_OF_FAME_IMAGE_BY_NAME: Record<string, string> = {
   'Ojara Emmanuel': '/Hall of Fame/Ojara Emmanuel.jpeg',
   'Regan Origi': '/Hall of Fame/Regan Kitara.jpeg',
   'Osuta Aaron': '/Hall of Fame/Osura Aaron.jpeg',
+  'Osura Aaron': '/Hall of Fame/Osura Aaron.jpeg',
   'Daniel Ochora': '/Hall of Fame/Daniel Ochora.jpeg',
   'Dan Mark Omeda': '/Hall of Fame/Danmark Omeda.jpeg',
   'Shamick Mbubi': '/Hall of Fame/Shamick Mbubi.jpeg',
