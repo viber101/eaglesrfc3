@@ -111,6 +111,30 @@ const HOME_HALL_OF_FAME_IMAGE_BY_NAME: Record<string, string> = {
   'Kayondo Ronnie': '/Hall of Fame/Kayondo Ronnie.jpeg',
   'Edmond Tumusime': '/Hall of Fame/Edmond Tumusiime.jpeg',
 };
+const HOME_CURRENT_SQUAD_2026_IMAGE_BY_NAME: Record<string, string> = {
+  'Anywar Jonathan': '/Current Squad 2026/Anywar Jonathan.jpeg',
+  'Aporu Derrick': '/Current Squad 2026/Aporu derrick.jpeg',
+  'Baganizi Mark': '/Current Squad 2026/Baganizi Mark.jpeg',
+  'Bogere Francis': '/Current Squad 2026/Bogere Francis.jpeg',
+  'Ekelot Mathew': '/Current Squad 2026/Ekelot Mathew.jpeg',
+  'James Polycarp': '/Current Squad 2026/James Polycarp.jpeg',
+  'Jombwe Jose': '/Current Squad 2026/Jombwe Jose.jpeg',
+  'Kitara Regan': '/Current Squad 2026/Kitara Regan.jpeg',
+  'Komakech Samuel': '/Current Squad 2026/Komakech samuel.jpeg',
+  'Lagat Mark': '/Current Squad 2026/Lagat Mark.jpeg',
+  'Lema Mutyaba': '/Current Squad 2026/Lema Mutyaba.jpeg',
+  'Lema Stephen': '/Current Squad 2026/Lema Mutyaba.jpeg',
+  'Matovu Jasper': '/Current Squad 2026/Matovu jasper.jpeg',
+  'Mungufeni William': '/Current Squad 2026/Mungufeni William.jpeg',
+  'Mwesigwa Herman': '/Current Squad 2026/Mwesigwa Herman.jpeg',
+  'Ochan Polycarp': '/Current Squad 2026/James Polycarp.jpeg',
+  'Oca Manuel Owen': '/Current Squad 2026/Oca Manuel Owen.jpeg',
+  'Rwoth-Ongeo Henry': '/Current Squad 2026/Rwoth-Ongeo Henry.jpeg',
+  'Sabunyo Samuel': '/Current Squad 2026/Sabunyo Samuel.jpeg',
+  'Ssemugenyi Jonah': '/Current Squad 2026/Ssemugenyi Jonah.jpeg',
+  'Ssewanyana Liam': '/Current Squad 2026/Ssewanyana Liam.jpeg',
+  'Wasula Gerry Peter': '/Current Squad 2026/Wasula Gerry Peter.jpeg'
+};
 type PlayerProfileOverride = {
   name: string;
   age?: number;
@@ -139,7 +163,7 @@ const PLAYER_PROFILE_OVERRIDES: Record<string, PlayerProfileOverride> = {
   '2': { name: 'Kisubi Paul', age: 20, kgs: 105, cm: 170 },
   '3': { name: 'Matovu Jasper', age: 27, kgs: 75, cm: 170 },
   '4': { name: 'Anywar Jonathan', age: 24, kgs: 85, cm: 169 },
-  '5': { name: 'Ssesayyana Liam', age: 23, kgs: 65, cm: 167 },
+  '5': { name: 'Ssewanyana Liam', age: 23, kgs: 65, cm: 167 },
   '6': { name: 'Jombwe Jose', age: 24, kgs: 110, cm: 167 },
   '7': { name: 'Olara Humphrey', age: 25, kgs: 95, cm: 190 },
   '8': { name: 'Aporu Derrick', age: 24, kgs: 65, cm: 174 },
@@ -153,9 +177,9 @@ const PLAYER_PROFILE_OVERRIDES: Record<string, PlayerProfileOverride> = {
   '16': { name: 'Ochan Polycarp', age: 25, kgs: 85, cm: 170 },
   '17': { name: 'Tayebwa Charles', age: 26, kgs: 68, cm: 1650 },
   '18': { name: 'Nagalama Jonathan', age: 24, kgs: 110, cm: 168 },
-  '19': { name: 'Baganzi Mark', age: 22, kgs: 60, cm: 158 },
+  '19': { name: 'Baganizi Mark', age: 22, kgs: 60, cm: 158 },
   '20': { name: 'Serunjoji William', age: 27, kgs: 70, cm: 167 },
-  '21': { name: 'Ssemugyenyi Jonah', age: 22, kgs: 59, cm: 155 },
+  '21': { name: 'Ssemugenyi Jonah', age: 22, kgs: 59, cm: 155 },
   '22': { name: 'Komakech Samuel', age: 25, kgs: 78, cm: 170 },
   '23': { name: 'Etoko Timothy', age: 20, kgs: 90, cm: 168 },
   '24': { name: 'Okwera Ronaldo', age: 26, kgs: 110, cm: 160 },
@@ -173,7 +197,7 @@ const PLAYER_PROFILE_OVERRIDES: Record<string, PlayerProfileOverride> = {
   '36': { name: 'Lumala Alpha', age: 25, kgs: 90, cm: 170 },
   '37': { name: 'Ntare Elvis', age: 24, kgs: 73, cm: 170 },
   '38': { name: 'Lagum Danny', age: 30, kgs: 89, cm: 170 },
-  '39': { name: 'Mugofeni William', age: 27, kgs: 115, cm: 175 },
+  '39': { name: 'Mungufeni William', age: 27, kgs: 115, cm: 175 },
   '40': { name: 'Ochora Daniel', age: 27, kgs: 107, cm: 168 },
   '41': { name: 'Omeda Dan Mark', age: 29, kgs: 85, cm: 165 },
   '42': { name: 'Wagabaza Jimmy', age: 40, kgs: 80, cm: 165 },
@@ -190,9 +214,6 @@ const PLAYER_PROFILE_OVERRIDES: Record<string, PlayerProfileOverride> = {
   '53': { name: 'Sabunyo Samuel', age: 25, kgs: 93, cm: 170 },
   '54': { name: 'Arapatai Willy', age: 27, kgs: 83, cm: 170 },
   '55': { name: 'Ateng Robert', age: 29, kgs: 104, cm: 167 },
-  '56': { name: 'Masiga Jireh', age: 20, kgs: 85, cm: 170 },
-  '57': { name: 'Mbubi Shamick', age: 29, kgs: 79, cm: 175 },
-  '58': { name: 'Lukwago Santos', age: 24, kgs: 73, cm: 170 },
   '60': { name: 'Kisitu Hilary', age: 29, kgs: 69, cm: 170 },
   '61': { name: 'Mujuni Denis', age: 28, kgs: 76, cm: 167 }
 };
@@ -2061,10 +2082,14 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
     >
       {MOCK_PLAYERS.map((p) => {
         const playerProfile = getPlayerProfile(p.id, p.name);
-        const nameParts = playerProfile.name.trim().split(/\s+/);
+        const displayName = p.name;
+        const playerImage = HOME_CURRENT_SQUAD_2026_IMAGE_BY_NAME[displayName] ?? '/player2.png';
+        const nameParts = displayName.trim().split(/\s+/);
         const firstName = nameParts.length > 1 ? nameParts.slice(0, -1).join(' ') : nameParts[0];
         const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : nameParts[0];
         const isActive = activeSquadPlayerId === p.id;
+        const isBogereCaptain = displayName === 'Bogere Francis';
+        const isFahadCoach = displayName === 'Matovu Fahad';
 
         return (
           <div key={p.id} className="flex-none w-[280px] sm:w-[300px] snap-start">
@@ -2079,8 +2104,8 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                 <div className="absolute inset-0 bg-gradient-to-br from-[#170a30] via-[#0a1224] to-black" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(126,91,255,0.55),transparent_45%)]" />
                 <img
-                  src={toAssetUrl('/player2.png')}
-                  alt={playerProfile.name}
+                  src={toAssetUrl(playerImage)}
+                  alt={displayName}
                   className={`relative z-10 w-full h-full object-cover object-top transition-transform duration-500 ${isActive ? 'scale-105' : 'scale-100'}`}
                 />
                 <div className="absolute inset-0 z-20 bg-gradient-to-t from-black via-transparent to-black/20" />
@@ -2090,7 +2115,17 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                 <div className="min-w-0">
                   <p className="text-white text-[11px] uppercase tracking-[0.18em] leading-none truncate">{firstName}</p>
                   <p className="text-white text-[2rem] font-black uppercase tracking-tight leading-none mt-1 truncate">{lastName}</p>
-                  <p className="text-[10px] font-bold text-[#9aa7bf] uppercase tracking-wider mt-1">{p.position}</p>
+                  <p className="text-[10px] font-bold text-[#9aa7bf] uppercase tracking-wider mt-1">
+                    {isBogereCaptain ? (
+                      <>
+                        8TH MAN (
+                        <span className="font-black text-[#F5A623]">CAPTAIN</span>
+                        )
+                      </>
+                    ) : (
+                      <span className={isFahadCoach ? 'text-[#F5A623]' : undefined}>{p.position}</span>
+                    )}
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -2599,6 +2634,7 @@ const SquadPage: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 items-start">
         {MOCK_PLAYERS.map((player) => {
           const playerProfile = getPlayerProfile(player.id, player.name);
+          const displayName = player.name;
           const isActive = activeSquadPlayerId === player.id;
 
           return (
@@ -2614,9 +2650,9 @@ const SquadPage: React.FC = () => {
               onClick={() => setActiveSquadPlayerId((current) => (current === player.id ? null : player.id))}
             >
               <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
-                <img src={toAssetUrl('/player2.png')} alt={playerProfile.name} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-105' : 'scale-100'}`} />
+                <img src={toAssetUrl('/player2.png')} alt={displayName} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-105' : 'scale-100'}`} />
               </div>
-              <h3 className="text-sm font-black uppercase tracking-tight">{playerProfile.name}</h3>
+              <h3 className="text-sm font-black uppercase tracking-tight">{displayName}</h3>
               <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">{player.position}</p>
               <div className={`overflow-hidden transition-all duration-300 ${isActive ? 'max-h-20 opacity-100 mt-3 pt-3 border-t border-[#e2e7f0]' : 'max-h-0 opacity-0 mt-0 pt-0 border-t-0'}`}>
                 <div className="flex items-start text-[#081534] text-center">
