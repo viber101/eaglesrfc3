@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 
 interface HeaderProps {
   currentPage: string;
@@ -171,7 +171,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             </div>
             <div className="absolute right-0 top-1/2 -translate-y-1/2 h-full flex items-center pl-4 sm:pl-5 pr-1 sm:pr-2 bg-gradient-to-l from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent">
               <div className="rounded-md bg-[#0b1221]/85 border border-white/20 px-3 sm:px-3.5 py-1">
-                <img src="/kampanis.png" alt="Kampanis" className="h-6 sm:h-7 md:h-8 w-auto object-contain" />
+                <img loading="eager" decoding="async" src="/kampanis.png" alt="Kampanis" className="h-6 sm:h-7 md:h-8 w-auto object-contain" />
               </div>
             </div>
           </div>
@@ -187,6 +187,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             aria-label="Go to home page"
           >
             <img
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
               src="/KINTANTE FUN DAY FLYER.png"
               alt="Eagles RFC Logo"
               className="h-9 sm:h-10 w-auto object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)]"
@@ -525,6 +528,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 };
 
 export default Header;
+
+
 
 
 

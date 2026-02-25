@@ -802,6 +802,7 @@ const PlayerSponsorsSlider: React.FC<{ onNavigate: (p: string) => void }> = ({ o
                   alt={sponsor.name}
                   className="max-h-full max-w-full object-contain"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
 
@@ -1840,7 +1841,7 @@ const PhotoStrip: React.FC<{ images: string[]; label: string }> = ({ images, lab
   <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
     {images.map((image, index) => (
       <article key={`${label}-${index}`} className="relative rounded-xl overflow-hidden min-h-[200px] border border-[#d9e0ec]">
-        <img src={toAssetUrl(image)} alt={`${label} ${index + 1}`} className="absolute inset-0 w-full h-full object-cover" />
+        <img loading="lazy" decoding="async" src={toAssetUrl(image)} alt={`${label} ${index + 1}`} className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
         <p className="absolute bottom-3 left-3 text-white text-[10px] font-black uppercase tracking-[0.2em]">{label}</p>
       </article>
@@ -1951,7 +1952,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
   <>
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
       <div className="lg:col-span-8 relative rounded-2xl overflow-hidden min-h-[300px] sm:min-h-[380px] lg:min-h-[400px]">
-        <img src={toAssetUrl('/homehero.jpeg')} alt="Eagles Rugby" className="w-full h-full object-cover absolute inset-0" />
+        <img loading="eager" fetchPriority="high" decoding="async" src={toAssetUrl('/homehero.jpeg')} alt="Eagles Rugby" className="w-full h-full object-cover absolute inset-0" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
         
         {/* Compact Match Overlay - Centered */}
@@ -2003,7 +2004,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
             </div>
             <div className="p-4 sm:p-5 bg-[linear-gradient(180deg,#0f234f,#0a1737)]">
               <div className="mb-2 sm:mb-3 rounded-lg overflow-hidden border border-[#2f4f8f] h-[220px] sm:h-[260px] bg-[#0b1d45] ring-1 ring-[#27457f]">
-                <img src={toAssetUrl('/player2.png')} alt={`Man of the Match vs ${getOpponentName(fixture)}`} className="w-full h-full object-cover" />
+                <img loading="lazy" decoding="async" src={toAssetUrl('/player2.png')} alt={`Man of the Match vs ${getOpponentName(fixture)}`} className="w-full h-full object-cover" />
               </div>
               <div className="rounded-xl border border-dashed border-[#355da4] bg-[#0b1d45] p-3 sm:p-4 mb-2 sm:mb-3">
                 <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#89a9e4]">Selected Player</p>
@@ -2048,7 +2049,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
             </div>
             <div className="px-4 py-4 sm:px-5 sm:py-5 bg-[linear-gradient(180deg,#0f234f,#0a1737)]">
               <div className="mb-3 rounded-lg overflow-hidden border border-[#2f4f8f] h-[220px] sm:h-[260px] bg-[#0b1d45] ring-1 ring-[#27457f]">
-                <img src={toAssetUrl(item.imageUrl)} alt={`${item.label} preview`} className="w-full h-full object-cover" />
+                <img loading="lazy" decoding="async" src={toAssetUrl(item.imageUrl)} alt={`${item.label} preview`} className="w-full h-full object-cover" />
               </div>
               <div className="mb-3 rounded-lg border border-dashed border-[#355da4] bg-[#0b1d45] px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Name</p>
@@ -2104,6 +2105,8 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                 <div className="absolute inset-0 bg-gradient-to-br from-[#170a30] via-[#0a1224] to-black" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(126,91,255,0.55),transparent_45%)]" />
                 <img
+                  loading="lazy"
+                  decoding="async"
                   src={toAssetUrl(playerImage)}
                   alt={displayName}
                   className={`relative z-10 w-full h-full object-cover object-top transition-transform duration-500 ${isActive ? 'scale-105' : 'scale-100'}`}
@@ -2168,6 +2171,8 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
             <img
+              loading="lazy"
+              decoding="async"
               src={toAssetUrl(p.imageUrl || '/player2.png')}
               alt={p.name}
               onError={(event) => {
@@ -2213,7 +2218,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
             </div>
             <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-[#d8dfeb] p-5 flex items-center justify-center bg-[radial-gradient(circle_at_top,#f7fbff,#edf3ff)]">
               <div className="relative w-[280px] max-w-full aspect-[3/4] overflow-hidden rounded-lg border border-[#d8dfeb] bg-gray-100 shadow-sm">
-                <img src={toAssetUrl('/arthurk.jpeg')} alt="Arthur Kampani" className="w-full h-full object-cover object-top" />
+                <img loading="lazy" decoding="async" src={toAssetUrl('/arthurk.jpeg')} alt="Arthur Kampani" className="w-full h-full object-cover object-top" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#081534]/70 via-[#081534]/20 to-transparent" />
                 <div className="absolute left-3 right-3 bottom-3 flex items-center justify-between">
                   <p className="text-[10px] uppercase tracking-[0.18em] font-black text-white/90">Founder</p>
@@ -2231,7 +2236,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
           <div key={p.id} className="flex-none w-[280px] snap-start group cursor-pointer">
             <div className="relative aspect-[3/4] overflow-hidden bg-gray-200 mb-4">
               {homeHallImage ? (
-                <img src={toAssetUrl(homeHallImage)} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <img loading="lazy" decoding="async" src={toAssetUrl(homeHallImage)} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               ) : null}
               <div className="absolute top-4 left-4 text-4xl font-black text-white/50 drop-shadow-md">{p.number}</div>
             </div>
@@ -2257,7 +2262,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         <article key={p.id} className="flex-none w-[292px] sm:w-[320px] snap-start group">
           <div className="rounded-2xl overflow-hidden border border-[#d6deea] bg-white shadow-sm">
             <div className="relative aspect-[4/5] overflow-hidden bg-[#0e1f4a] border border-black/85">
-              <img src={toAssetUrl(p.imageUrl)} alt={p.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+              <img loading="lazy" decoding="async" src={toAssetUrl(p.imageUrl)} alt={p.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#081534]/70 via-transparent to-transparent" />
               <span className="absolute top-3 left-3 h-8 min-w-8 px-2 rounded-full bg-white/90 text-[#081534] text-xs font-black flex items-center justify-center">
                 #{p.number}
@@ -2286,7 +2291,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       <SectionHeader title="Our History" />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-white p-8 lg:p-12 shadow-sm border-l-8 border-[#F5A623]">
         <div className="lg:col-span-5 h-[350px] overflow-hidden">
-          <img src={toAssetUrl('/legacy.jpeg')} alt="History" className="w-full h-full object-cover object-top" />
+          <img loading="lazy" decoding="async" src={toAssetUrl('/legacy.jpeg')} alt="History" className="w-full h-full object-cover object-top" />
         </div>
         <div className="lg:col-span-7 flex flex-col justify-center">
           <h3 className="text-4xl lg:text-5xl font-black uppercase italic tracking-tighter mb-6 leading-none">A Legacy of Unity</h3>
@@ -2308,6 +2313,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               alt={item.name}
               className="w-full h-full object-cover"
               loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <span className="absolute top-3 left-3 text-white/80 text-5xl font-black leading-none">{index + 1}</span>
@@ -2329,6 +2335,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
               alt={item.name}
               className="w-full h-full object-cover"
               loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <span className="absolute top-3 left-3 text-white/80 text-5xl font-black leading-none">{index + 1}</span>
@@ -2354,7 +2361,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <article className="relative min-h-[280px] md:min-h-[340px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
-          <img src={toAssetUrl('/kit.jpeg')} alt="Merchandise" className="absolute inset-0 w-full h-full object-cover" />
+          <img loading="lazy" decoding="async" src={toAssetUrl('/kit.jpeg')} alt="Merchandise" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
             <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Merchandise</h3>
@@ -2369,7 +2376,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         </article>
 
         <article className="relative min-h-[280px] md:min-h-[340px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
-          <img src={toAssetUrl('/Footwear/cole haan one.png')} alt="Footwear" className="absolute inset-0 w-full h-full object-contain object-center" />
+          <img loading="lazy" decoding="async" src={toAssetUrl('/Footwear/cole haan one.png')} alt="Footwear" className="absolute inset-0 w-full h-full object-contain object-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
             <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Footwear</h3>
@@ -2384,7 +2391,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         </article>
 
         <article className="relative min-h-[280px] md:min-h-[340px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm">
-          <img src={toAssetUrl('/Shoe Care/shoe care 1.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-contain object-center" />
+          <img loading="lazy" decoding="async" src={toAssetUrl('/Shoe Care/shoe care 1.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-contain object-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
             <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Shoe Care</h3>
@@ -2413,7 +2420,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
             className="group cursor-pointer flex-none w-[260px] sm:w-[300px] snap-start"
           >
             <div className="relative aspect-video overflow-hidden bg-gray-200 mb-2">
-              <img src={toAssetUrl(tv.imageUrl)} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <img loading="lazy" decoding="async" src={toAssetUrl(tv.imageUrl)} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
                 <div className="w-10 h-10 bg-[#F5A623] rounded-full flex items-center justify-center text-black">
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -2455,7 +2462,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
         >
           {[...PARTNER_LOGOS, ...PARTNER_LOGOS].map((partner, index) => (
             <article key={`${partner.name}-${index}`} className="min-w-[150px] sm:min-w-[180px] h-[86px] sm:h-[96px] bg-white/95 rounded-sm px-4 flex items-center justify-center">
-              <img src={toAssetUrl(partner.src)} alt={partner.name} className="max-h-[54px] sm:max-h-[60px] w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
+              <img loading="lazy" decoding="async" src={toAssetUrl(partner.src)} alt={partner.name} className="max-h-[54px] sm:max-h-[60px] w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
             </article>
           ))}
         </div>
@@ -2494,7 +2501,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
 const AboutPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 animate-in fade-in duration-700 px-4 space-y-8">
     <section className="relative rounded-2xl overflow-hidden border border-[#d9e0ec]">
-      <img src={toAssetUrl(PAGE_IMAGES.aboutHero)} className="w-full h-[420px] object-cover" alt="Eagles Rugby Club" />
+      <img loading="lazy" decoding="async" src={toAssetUrl(PAGE_IMAGES.aboutHero)} className="w-full h-[420px] object-cover" alt="Eagles Rugby Club" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent p-8 sm:p-12 flex flex-col justify-end">
         <p className="text-[#F5A623] text-xs uppercase tracking-[0.3em] font-black mb-2">About Eagles Rugby Club</p>
         <h1 className="text-white text-4xl sm:text-6xl font-black uppercase italic tracking-tighter leading-none mb-3">Founded 2019</h1>
@@ -2544,7 +2551,7 @@ const AboutPage: React.FC = () => (
 const HistoryPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
     <section className="relative text-white rounded-2xl p-8 sm:p-12 border-t-4 border-[#F5A623] overflow-hidden">
-      <img src={toAssetUrl(PAGE_IMAGES.historyHero)} alt="Eagles history" className="absolute inset-0 w-full h-full object-cover" />
+      <img loading="lazy" decoding="async" src={toAssetUrl(PAGE_IMAGES.historyHero)} alt="Eagles history" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-[#081534]/75" />
       <div className="relative z-10">
         <p className="text-[#F5A623] text-xs uppercase tracking-[0.3em] font-black mb-2">Our Journey</p>
@@ -2646,7 +2653,7 @@ const SquadPage: React.FC = () => {
               onClick={() => setActiveSquadPlayerId((current) => (current === player.id ? null : player.id))}
             >
               <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
-                <img src={toAssetUrl('/player2.png')} alt={displayName} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-105' : 'scale-100'}`} />
+                <img loading="lazy" decoding="async" src={toAssetUrl('/player2.png')} alt={displayName} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-105' : 'scale-100'}`} />
               </div>
               <h3 className="text-sm font-black uppercase tracking-tight">{displayName}</h3>
               <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">{player.position}</p>
@@ -2695,7 +2702,7 @@ const HallOfFamePage: React.FC = () => (
             <article key={member.id} className="bg-white border border-[#e2e7f0] rounded-xl p-3 shadow-sm">
               <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
                 {hallImage ? (
-                  <img src={toAssetUrl(hallImage)} alt={member.name} className="w-full h-full object-cover" />
+                  <img loading="lazy" decoding="async" src={toAssetUrl(hallImage)} alt={member.name} className="w-full h-full object-cover" />
                 ) : null}
               </div>
               <h3 className="text-sm font-black uppercase tracking-tight">{member.name}</h3>
@@ -2930,7 +2937,7 @@ const ShopPage: React.FC = () => {
         className="flex gap-4 overflow-x-auto pb-2 pr-2 scroll-smooth snap-x snap-mandatory scrollbar-hide"
       >
         <article className="relative flex-none w-[90%] sm:w-[75%] md:w-[calc((100%-2rem)/3)] min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm snap-start">
-          <img src={toAssetUrl('/Merchandise/mouth guard.webp')} alt="Merchandise" className="absolute inset-0 w-full h-full object-cover" />
+          <img loading="lazy" decoding="async" src={toAssetUrl('/Merchandise/mouth guard.webp')} alt="Merchandise" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
             <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Merchandise</h3>
@@ -2944,7 +2951,7 @@ const ShopPage: React.FC = () => {
         </article>
 
         <article className="relative flex-none w-[90%] sm:w-[75%] md:w-[calc((100%-2rem)/3)] min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm snap-start">
-          <img src={toAssetUrl('/Footwear/cole haan one.png')} alt="Footwear" className="absolute inset-0 w-full h-full object-cover object-center" />
+          <img loading="lazy" decoding="async" src={toAssetUrl('/Footwear/cole haan one.png')} alt="Footwear" className="absolute inset-0 w-full h-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
             <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Footwear</h3>
@@ -2958,7 +2965,7 @@ const ShopPage: React.FC = () => {
         </article>
 
         <article className="relative flex-none w-[90%] sm:w-[75%] md:w-[calc((100%-2rem)/3)] min-h-[280px] md:min-h-[360px] rounded-xl overflow-hidden border border-[#d7deea] shadow-sm snap-start">
-          <img src={toAssetUrl('/Shoe Care/shoe care 1.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-cover" />
+          <img loading="lazy" decoding="async" src={toAssetUrl('/Shoe Care/shoe care 1.png')} alt="Shoe Care" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
             <h3 className="text-white text-2xl md:text-3xl font-black uppercase tracking-tight mb-3">Shoe Care</h3>
@@ -3021,7 +3028,7 @@ const ShopPage: React.FC = () => {
                 style={{ width: 260, height: 360 }}
               >
                 <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-                  <img src={toAssetUrl(product.imageUrl)} alt={product.name} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
+                  <img loading="lazy" decoding="async" src={toAssetUrl(product.imageUrl)} alt={product.name} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
                 </div>
                 <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{product.name}</h3>
                 <div className="mt-1 flex items-center justify-between gap-2">
@@ -3090,7 +3097,7 @@ const ShopPage: React.FC = () => {
                 style={{ width: 260, height: 360 }}
               >
                 <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-                  <img src={toAssetUrl(`/Footwear/${item.code}.jpeg`)} alt={productName} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
+                  <img loading="lazy" decoding="async" src={toAssetUrl(`/Footwear/${item.code}.jpeg`)} alt={productName} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
                 </div>
                 <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{productName}</h3>
                 <div className="mt-1 flex items-center justify-between gap-2">
@@ -3135,7 +3142,7 @@ const ShopPage: React.FC = () => {
               style={{ width: 260, height: 360 }}
             >
               <div className="aspect-[4/5] overflow-hidden bg-gray-100 mb-3 rounded border border-[#e2e7f0]">
-                <img src={toAssetUrl(`/Shoe Care/${item.image}.jpg`)} alt={productName} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
+                <img loading="lazy" decoding="async" src={toAssetUrl(`/Shoe Care/${item.image}.jpg`)} alt={productName} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
               </div>
               <h3 className="text-xs font-bold uppercase text-gray-900 leading-tight">{productName}</h3>
               <div className="mt-1 flex items-center justify-between gap-2">
@@ -3187,7 +3194,7 @@ const ShopPage: React.FC = () => {
 const TvPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
     <section className="relative rounded-xl overflow-hidden border border-[#e2e7f0] min-h-[240px]">
-      <img src={toAssetUrl(PAGE_IMAGES.tvHero)} alt="Eagles TV hero" className="absolute inset-0 w-full h-full object-cover" />
+      <img loading="lazy" decoding="async" src={toAssetUrl(PAGE_IMAGES.tvHero)} alt="Eagles TV hero" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/20 p-6 flex flex-col justify-end">
         <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-2 text-white">Eagles TV</h1>
         <p className="text-gray-200 max-w-2xl">{TV_CONTENT.intro}</p>
@@ -3203,7 +3210,7 @@ const TvPage: React.FC = () => (
           className="group cursor-pointer"
         >
           <div className="relative aspect-video overflow-hidden bg-gray-200 mb-2 rounded-lg">
-            <img src={toAssetUrl(tv.imageUrl)} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img loading="lazy" decoding="async" src={toAssetUrl(tv.imageUrl)} alt={tv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             <div className="absolute inset-0 flex items-center justify-center bg-black/20">
               <div className="w-10 h-10 bg-[#F5A623] rounded-full flex items-center justify-center text-black">
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
@@ -3221,7 +3228,7 @@ const TvPage: React.FC = () => (
 const DonatePage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
     <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
-      <img src={toAssetUrl(PAGE_IMAGES.donateHero)} alt="Donate hero" className="absolute inset-0 w-full h-full object-cover" />
+      <img loading="lazy" decoding="async" src={toAssetUrl(PAGE_IMAGES.donateHero)} alt="Donate hero" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-[#081534]/75" />
       <div className="relative z-10">
         <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Donate</h1>
@@ -3248,7 +3255,7 @@ const DonatePage: React.FC = () => (
 const PlayerSponsorPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
     <section className="relative rounded-2xl overflow-hidden border border-[#d9e0ec] bg-[#081534]">
-      <img src={toAssetUrl('/Player Sponsor/winners.jpeg')} alt="Player sponsor" className="absolute inset-0 w-full h-full object-cover opacity-35" />
+      <img loading="lazy" decoding="async" src={toAssetUrl('/Player Sponsor/winners.jpeg')} alt="Player sponsor" className="absolute inset-0 w-full h-full object-cover opacity-35" />
       <div className="absolute inset-0 bg-gradient-to-r from-[#081534]/95 via-[#081534]/80 to-[#081534]/45" />
       <div className="relative z-10 p-8 sm:p-10">
         <p className="text-[#F5A623] text-xs font-black uppercase tracking-[0.28em] mb-2">Sponsor a Player</p>
@@ -3278,7 +3285,7 @@ const PlayerSponsorPage: React.FC = () => (
         { src: '/Player Sponsor/team 1.jpeg', title: 'Team Match Preparation', alt: 'Team match preparation action', badge: 'Team Eagles' }
       ].map((item) => (
         <article key={item.src} className="relative overflow-hidden rounded-2xl border border-[#1f2a44] bg-[#070b16] h-[270px] group shadow-[0_14px_32px_rgba(0,0,0,0.35)]">
-          <img src={toAssetUrl(item.src)} alt={item.alt} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img loading="lazy" decoding="async" src={toAssetUrl(item.src)} alt={item.alt} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_88%_8%,rgba(245,166,35,0.35),transparent_30%)] pointer-events-none" />
           <div className="absolute top-3 left-3 inline-flex items-center rounded-full bg-black/70 border border-white/20 px-2.5 py-1">
@@ -3366,7 +3373,7 @@ const FitnessCenterPage: React.FC = () => {
   return (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
     <section className="relative overflow-hidden rounded-2xl border border-[#1f2e52] bg-[#050a14] text-white">
-      <img src={toAssetUrl('/fitness centre/jasper.jpeg')} alt="Fitness training session" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+      <img loading="lazy" decoding="async" src={toAssetUrl('/fitness centre/jasper.jpeg')} alt="Fitness training session" className="absolute inset-0 w-full h-full object-cover opacity-30" />
       <div className="absolute inset-0 bg-gradient-to-r from-[#040913] via-[#050a14]/92 to-[#050a14]/70" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(245,166,35,0.3),transparent_40%)]" />
       <div className="relative z-10 p-6 sm:p-8 lg:p-10">
@@ -3459,7 +3466,7 @@ const FitnessCenterPage: React.FC = () => {
           { src: '/fitness centre/tyre flip.png', label: 'Tyre Flip' }
         ].map((item) => (
           <article key={item.src} className="relative overflow-hidden rounded-xl border border-[#dce3ef] h-[250px] min-w-[280px] sm:min-w-[320px] lg:min-w-[360px] snap-start group">
-            <img src={toAssetUrl(item.src)} alt={item.label} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            <img loading="lazy" decoding="async" src={toAssetUrl(item.src)} alt={item.label} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
             <p className="absolute bottom-3 left-3 text-white text-lg sm:text-xl font-black uppercase tracking-wide">{item.label}</p>
           </article>
@@ -3475,7 +3482,7 @@ const FitnessCenterPage: React.FC = () => {
 const ProjectsPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
     <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
-      <img src={toAssetUrl(PAGE_IMAGES.projectsHero)} alt="Stands project" className="absolute inset-0 w-full h-full object-cover" />
+      <img loading="lazy" decoding="async" src={toAssetUrl(PAGE_IMAGES.projectsHero)} alt="Stands project" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-[#081534]/75" />
       <div className="relative z-10">
         <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Our Projects</h1>
@@ -3509,7 +3516,7 @@ const ProjectsPage: React.FC = () => (
 const FoundationPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-6">
     <section className="relative rounded-xl overflow-hidden border border-[#e2e7f0] min-h-[300px]">
-      <img src={toAssetUrl(PAGE_IMAGES.foundationHero)} alt="Foundation hero" className="absolute inset-0 w-full h-full object-cover" />
+      <img loading="lazy" decoding="async" src={toAssetUrl(PAGE_IMAGES.foundationHero)} alt="Foundation hero" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/20 p-8 flex flex-col justify-end">
         <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-2 text-white">Our Foundation</h1>
         <p className="text-gray-200 max-w-3xl">{FOUNDATION_CONTENT.mission}</p>
@@ -3585,7 +3592,7 @@ const FoundationPage: React.FC = () => (
 const SponsorUsPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
     <section className="relative text-white rounded-xl p-8 border-t-4 border-[#F5A623] overflow-hidden">
-      <img src={toAssetUrl(PAGE_IMAGES.sponsorUsHero)} alt="Sponsor hero" className="absolute inset-0 w-full h-full object-cover" />
+      <img loading="lazy" decoding="async" src={toAssetUrl(PAGE_IMAGES.sponsorUsHero)} alt="Sponsor hero" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-[#081534]/70" />
       <div className="relative z-10">
         <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter mb-3">Sponsor Us</h1>
@@ -3607,7 +3614,7 @@ const SponsorUsPage: React.FC = () => (
         </div>
       </div>
       <div className="rounded-lg overflow-hidden border border-[#d7deea]">
-        <img src={toAssetUrl('/kit sponsor/kit sponsor.jpeg')} alt="Eagles shirt sponsorship spaces" className="w-full h-[360px] object-contain bg-[#0b1020]" />
+        <img loading="lazy" decoding="async" src={toAssetUrl('/kit sponsor/kit sponsor.jpeg')} alt="Eagles shirt sponsorship spaces" className="w-full h-[360px] object-contain bg-[#0b1020]" />
       </div>
     </section>
 
@@ -3707,6 +3714,7 @@ const ServiceImageCard: React.FC<{
           alt={title}
           className="w-full h-full object-cover"
           loading="eager"
+          decoding="async"
           onError={() => setUseFallback(true)}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent" />
@@ -3725,7 +3733,7 @@ const ServiceImageCard: React.FC<{
 const OtherServicesPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
     <section className="relative overflow-hidden rounded-2xl border border-[#1f2a44] bg-[#050a14] text-white">
-      <img src={toAssetUrl('/other%20services/web%20design.png')} alt="Other services" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+      <img loading="lazy" decoding="async" src={toAssetUrl('/other%20services/web%20design.png')} alt="Other services" className="absolute inset-0 w-full h-full object-cover opacity-30" />
       <div className="absolute inset-0 bg-gradient-to-r from-[#040913] via-[#050a14]/92 to-[#050a14]/70" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_18%,rgba(245,166,35,0.25),transparent_42%)]" />
       <div className="relative z-10 p-6 sm:p-8 lg:p-10">
@@ -3845,7 +3853,7 @@ const OtherServicesPage: React.FC = () => (
 const MembershipPage: React.FC = () => (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
     <section className="relative overflow-hidden rounded-2xl border border-[#1f2a44] bg-[#050a14] text-white">
-      <img src={toAssetUrl(PAGE_IMAGES.sponsorHero)} alt="Eagles membership" className="absolute inset-0 w-full h-full object-cover opacity-35" />
+      <img loading="lazy" decoding="async" src={toAssetUrl(PAGE_IMAGES.sponsorHero)} alt="Eagles membership" className="absolute inset-0 w-full h-full object-cover opacity-35" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,166,35,0.22),transparent_42%)]" />
       <div className="absolute inset-0 bg-gradient-to-r from-[#03060f] via-[#050a14]/95 to-[#050a14]/70" />
       <div className="relative z-10 p-6 sm:p-8 lg:p-10">
@@ -4006,6 +4014,8 @@ const GalleryPage: React.FC = () => {
             className={`group relative overflow-hidden rounded-xl bg-black shadow-sm ${getCardClass(index)}`}
           >
             <img
+              loading="lazy"
+              decoding="async"
               src={toAssetUrl(image.src)}
               alt={image.title}
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -4146,7 +4156,7 @@ const App: React.FC = () => {
       <footer className="mt-16 w-full bg-black text-white">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5">
           <div className="bg-[#111111] min-h-[200px] sm:min-h-[240px] flex items-center justify-center p-6 sm:p-8 border-r border-white/10">
-            <img src={toAssetUrl('/KINTANTE FUN DAY FLYER.png')} alt="Eagles Rugby Club" className="h-20 sm:h-24 w-auto object-contain" />
+            <img loading="lazy" decoding="async" src={toAssetUrl('/KINTANTE FUN DAY FLYER.png')} alt="Eagles Rugby Club" className="h-20 sm:h-24 w-auto object-contain" />
           </div>
 
           <div className="bg-[#141414] min-h-[200px] sm:min-h-[240px] p-6 sm:p-8 border-r border-white/10">
@@ -4210,6 +4220,8 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+
 
 
 
