@@ -71,7 +71,7 @@ export const MOCK_PLAYERS: Player[] = [
   { id: '51', name: 'Kitara Regan', position: 'Full Back', number: '51', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-51/300/400' },
   { id: '52', name: 'Nsubuga Chris', position: 'Winger', number: '52', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-52/300/400' },
   { id: '53', name: 'Karama Rodney', position: 'Inside Centre', number: '53', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-53/300/400' },
-  { id: '54', name: 'Sabunyo Samuel', position: 'Lock', number: '54', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-54/300/400' },
+  { id: '54', name: 'Sabunyo Samyl', position: 'Lock', number: '54', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-54/300/400' },
   { id: '55', name: 'Araptai Willy', position: 'Flanker', number: '55', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-55/300/400' },
   { id: '56', name: 'Ateng Robert', position: 'Prop', number: '56', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-56/300/400' },
   { id: '57', name: 'Masiga Jirch', position: 'Winger', number: '57', gamesPlayed: 0, imageUrl: 'https://picsum.photos/seed/eagles-player-57/300/400' },
