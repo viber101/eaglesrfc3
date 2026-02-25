@@ -1962,13 +1962,13 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       </div>
       <div className="lg:col-span-4 flex flex-col space-y-4">
         <MatchPollWidget fixture={selectedMatch} />
-        <StandingsWidget />
         <div className="bg-white border border-[#e2e7f0] rounded-xl p-4 shadow-sm">
           <p className="text-[10px] uppercase tracking-[0.2em] text-[#F5A623] font-black mb-2">Club Snapshot</p>
           {HOME_CONTENT.highlights.map((line) => (
             <p key={line} className="text-sm text-gray-700 leading-relaxed mb-2 last:mb-0">{line}</p>
           ))}
         </div>
+        <StandingsWidget />
         <PlayerSponsorsSlider onNavigate={onNavigate} />
       </div>
     </section>
