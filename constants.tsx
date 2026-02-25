@@ -87,7 +87,7 @@ export const MOCK_X_PLAYERS: XPlayer[] = [
   { id: 'xp3', name: 'Kasozi Timothy', currentClub: 'Currently working with finance', number: '3', imageUrl: '' },
   { id: 'xp4', name: 'Arshley Sebayiga', currentClub: 'Currently retired due to injury', number: '4', imageUrl: '/our%20x-players/Arshley%20sebayiga.jpeg' },
   { id: 'xp5', name: 'Jordan Sebayiga', currentClub: 'Traveled to Ireland to take up a boxing career', number: '5', imageUrl: '/our%20x-players/Jordan%20sebayiga.jpeg' },
-  { id: 'xp6', name: 'Quentine Wejuli', currentClub: 'An Entrepreneur in Finance, Agric and RealEstate', number: '6', imageUrl: '/our%20x-players/Wejuli%20quinteen.jpeg' },
+  { id: 'xp6', name: 'Quentine Wejuli', currentClub: 'Currently an Entrepreneur in Finance, Agric and RealEstate', number: '6', imageUrl: '/our%20x-players/Wejuli%20quinteen.jpeg' },
   { id: 'xp7', name: 'Felix Kyeyune', currentClub: 'Started a branding and printing business', number: '7', imageUrl: '' },
   { id: 'xp8', name: 'Abel Mark Nabireba', currentClub: 'Currently active', number: '8', imageUrl: '' },
   { id: 'xp9', name: 'Mugisha Keith', currentClub: 'Currently playing at Heathens', number: '9', imageUrl: '/our%20x-players/Mugisha%20keith.jpeg' },
