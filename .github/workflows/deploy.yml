@@ -40,10 +40,13 @@ jobs:
           username: ${{ env.VPS_USER }}
           port: ${{ env.VPS_PORT }}
           password: ${{ secrets.VPS_PASSWORD }}
+          timeout: 120s
           script: |
             DEPLOY_DIR="$HOME/eaglesrfc"
             mkdir -p "$DEPLOY_DIR/dist" "$DEPLOY_DIR/api"
             rm -rf "$DEPLOY_DIR/dist/"*
+            rm -rf "$DEPLOY_DIR/api/"*
+            mkdir -p /var/www/eaglesrfc/dist
 
       - name: Copy files to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -52,7 +55,8 @@ jobs:
           username: ${{ env.VPS_USER }}
           port: ${{ env.VPS_PORT }}
           password: ${{ secrets.VPS_PASSWORD }}
-          source: "dist/,api/,nginx.conf,docker-compose.yml"
+          timeout: 120s
+          source: "dist/,api/,docker-compose.yml"
           target: "~/eaglesrfc"
           strip_components: 0
 
@@ -63,18 +67,16 @@ jobs:
           username: ${{ env.VPS_USER }}
           port: ${{ env.VPS_PORT }}
           password: ${{ secrets.VPS_PASSWORD }}
+          timeout: 120s
           script: |
             DEPLOY_DIR="$HOME/eaglesrfc"
             cd "$DEPLOY_DIR"
-            if docker compose version >/dev/null 2>&1; then
-              DC="docker compose"
-            elif docker-compose version >/dev/null 2>&1; then
-              DC="docker-compose"
-            else
-              echo "Docker Compose is not available on VPS."
-              exit 1
-            fi
-            $DC down || true
-            $DC up -d --build
-            $DC ps
-            docker logs eaglesrfc_web --tail 80 || true
+            cp -a "$DEPLOY_DIR/dist/." /var/www/eaglesrfc/dist/
+            chown -R www-data:www-data /var/www/eaglesrfc/dist
+            nginx -t
+            systemctl reload nginx
+
+            docker rm -f eaglesrfc_api || true
+            docker compose up -d --build api
+            docker compose ps
+            docker logs eaglesrfc_api --tail 80 || true

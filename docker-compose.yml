@@ -3,6 +3,8 @@ services:
     build: ./api
     container_name: eaglesrfc_api
     restart: unless-stopped
+    ports:
+      - "3001:3001"
     volumes:
       - poll_data:/data
     networks:
