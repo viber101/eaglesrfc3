@@ -3916,12 +3916,6 @@ const MembershipPage: React.FC = () => (
     <section className="bg-white border border-[#dce4f1] rounded-xl p-6 sm:p-7">
       <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Partner Network</p>
       <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Discount Partners</h2>
-      <article className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 mb-5">
-        <p className="text-[10px] uppercase tracking-[0.18em] text-[#4d6185] font-black mb-2">Description</p>
-        <p className="text-sm text-[#1f2f4d] leading-relaxed">
-          Kampanis Shoe Repair Services is your trusted destination for quality footwear and expert repair solutions, offering professional shoe repairs including sole replacement, heel fixing, stitching, polishing, and full restoration to keep your shoes looking new and lasting longer. We also repair all kinds of bags such as handbags, backpacks, travel bags, and leather accessories, handling broken zippers, torn straps, damaged linings, and worn handles with precision and care. In addition, we provide professional cleaning services for both shoes and bags to remove dirt and stains while protecting the material, and we sell quality shoes to meet your style and comfort needs. For inquiries or orders, contact us at +256775833585. We also offer a 10% discount for Eagles Membership Card holders.
-        </p>
-      </article>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         <article className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 flex items-center justify-center">
           <img
@@ -3942,6 +3936,12 @@ const MembershipPage: React.FC = () => (
           <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
         </article>
       </div>
+      <article className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 mt-4">
+        <p className="text-[10px] uppercase tracking-[0.18em] text-[#4d6185] font-black mb-2">Description</p>
+        <p className="text-sm text-[#1f2f4d] leading-relaxed">
+          Kampanis Shoe Repair Services is your trusted destination for quality footwear and expert repair solutions, offering professional shoe repairs including sole replacement, heel fixing, stitching, polishing, and full restoration to keep your shoes looking new and lasting longer. We also repair all kinds of bags such as handbags, backpacks, travel bags, and leather accessories, handling broken zippers, torn straps, damaged linings, and worn handles with precision and care. In addition, we provide professional cleaning services for both shoes and bags to remove dirt and stains while protecting the material, and we sell quality shoes to meet your style and comfort needs. For inquiries or orders, contact us at +256775833585. We also offer a 10% discount for Eagles Membership Card holders.
+        </p>
+      </article>
     </section>
 
     <section className="bg-white border border-[#dce4f1] rounded-xl p-6 sm:p-7">
