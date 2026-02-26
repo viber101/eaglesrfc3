@@ -33,6 +33,24 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_POLL_KEY: ${{ secrets.VITE_POLL_KEY }}
 
+      - name: Preflight VPS SSH diagnostics
+        run: |
+          set -euo pipefail
+          echo "Runner public IP:"
+          curl -s https://api.ipify.org || true
+          echo
+          echo "Testing TCP reachability to ${VPS_HOST}:${VPS_PORT}..."
+          for i in 1 2 3; do
+            if timeout 10 bash -c "cat < /dev/null > /dev/tcp/${VPS_HOST}/${VPS_PORT}"; then
+              echo "TCP check passed on attempt ${i}"
+              exit 0
+            fi
+            echo "TCP check failed on attempt ${i}"
+            sleep 2
+          done
+          echo "TCP preflight failed after 3 attempts"
+          exit 1
+
       - name: Prepare VPS directories
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -40,7 +58,8 @@ jobs:
           username: ${{ env.VPS_USER }}
           port: ${{ env.VPS_PORT }}
           password: ${{ secrets.VPS_PASSWORD }}
-          timeout: 120s
+          timeout: 180s
+          debug: true
           script: |
             DEPLOY_DIR="$HOME/eaglesrfc"
             mkdir -p "$DEPLOY_DIR/dist" "$DEPLOY_DIR/api"
@@ -55,7 +74,8 @@ jobs:
           username: ${{ env.VPS_USER }}
           port: ${{ env.VPS_PORT }}
           password: ${{ secrets.VPS_PASSWORD }}
-          timeout: 120s
+          timeout: 180s
+          debug: true
           source: "dist/,api/,docker-compose.yml"
           target: "~/eaglesrfc"
           strip_components: 0
@@ -67,7 +87,8 @@ jobs:
           username: ${{ env.VPS_USER }}
           port: ${{ env.VPS_PORT }}
           password: ${{ secrets.VPS_PASSWORD }}
-          timeout: 120s
+          timeout: 180s
+          debug: true
           script: |
             DEPLOY_DIR="$HOME/eaglesrfc"
             cd "$DEPLOY_DIR"
