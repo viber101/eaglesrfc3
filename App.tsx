@@ -3914,6 +3914,31 @@ const MembershipPage: React.FC = () => (
     </section>
 
     <section className="bg-white border border-[#dce4f1] rounded-xl p-6 sm:p-7">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Partner Network</p>
+      <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Discount Partners</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <article className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 flex items-center justify-center">
+          <img
+            loading="lazy"
+            decoding="async"
+            src={toAssetUrl('/Membership/kampanis logo.png')}
+            alt="Kampanis"
+            className="max-h-16 sm:max-h-20 w-auto object-contain"
+          />
+        </article>
+        <article className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 flex items-center justify-center">
+          <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
+        </article>
+        <article className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 flex items-center justify-center">
+          <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
+        </article>
+        <article className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 flex items-center justify-center">
+          <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
+        </article>
+      </div>
+    </section>
+
+    <section className="bg-white border border-[#dce4f1] rounded-xl p-6 sm:p-7">
       <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Member Value</p>
       <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Why This Membership Works</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
