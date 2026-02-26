@@ -3862,6 +3862,7 @@ const OtherServicesPage: React.FC = () => (
 
 const MembershipPage: React.FC = () => {
   const [activePartner, setActivePartner] = useState<'kampanis' | 'perfectNails'>('kampanis');
+  const partnerLogoScrollRef = useRef<HTMLDivElement | null>(null);
   const partnerDescriptions = {
     kampanis: {
       title: 'Kampanis Shoe Repair Services',
@@ -3875,6 +3876,43 @@ const MembershipPage: React.FC = () => {
     }
   } as const;
   const activePartnerDetails = partnerDescriptions[activePartner];
+  const partnerLogos: Array<{ key: 'kampanis' | 'perfectNails'; image: string; alt: string }> = [
+    { key: 'kampanis', image: '/Membership/kampanis logo.png', alt: 'Kampanis' },
+    { key: 'perfectNails', image: '/Membership/perfect nails.jpeg', alt: 'Perfect Nails Uganda' }
+  ];
+
+  const updateActivePartnerFromCenter = () => {
+    const container = partnerLogoScrollRef.current;
+    if (!container) {
+      return;
+    }
+    const containerCenterX = container.scrollLeft + container.clientWidth / 2;
+    let closestKey: 'kampanis' | 'perfectNails' = activePartner;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    const nodes = container.querySelectorAll<HTMLElement>('[data-partner-key]');
+    nodes.forEach((node) => {
+      const key = node.dataset.partnerKey as 'kampanis' | 'perfectNails' | undefined;
+      if (!key) {
+        return;
+      }
+      const nodeCenterX = node.offsetLeft + node.offsetWidth / 2;
+      const distance = Math.abs(nodeCenterX - containerCenterX);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestKey = key;
+      }
+    });
+
+    setActivePartner((current) => (current === closestKey ? current : closestKey));
+  };
+
+  useEffect(() => {
+    updateActivePartnerFromCenter();
+    const onResize = () => updateActivePartnerFromCenter();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   return (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
@@ -3943,49 +3981,35 @@ const MembershipPage: React.FC = () => {
       <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Partner Network</p>
       <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Discount Partners</h2>
       <p className="text-[11px] text-[#4d6185] font-bold uppercase tracking-[0.14em] mb-2">Swipe left or right to browse partner logos</p>
-      <div className="partner-logos-scroll flex gap-4 overflow-x-auto pb-2 pr-2 snap-x snap-mandatory scrollbar-hide overscroll-x-contain">
-          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
-            <img
-              loading="lazy"
-              decoding="async"
-              src={toAssetUrl('/Membership/kampanis logo.png')}
-              alt="Kampanis"
-              className="max-h-16 sm:max-h-20 w-auto object-contain"
-            />
-          </a>
-          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
-            <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </a>
-          <a href="#partner-description" onClick={() => setActivePartner('perfectNails')} aria-label="Go to Perfect Nails description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
-            <img
-              loading="lazy"
-              decoding="async"
-              src={toAssetUrl('/Membership/perfect nails.jpeg')}
-              alt="Perfect Nails Uganda"
-              className="max-h-16 sm:max-h-20 w-auto object-contain"
-            />
-          </a>
-          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
-            <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </a>
-          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
-            <img
-              loading="lazy"
-              decoding="async"
-              src={toAssetUrl('/Membership/kampanis logo.png')}
-              alt="Kampanis"
-              className="max-h-16 sm:max-h-20 w-auto object-contain"
-            />
-          </a>
-          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
-            <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </a>
-          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
-            <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </a>
-          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
-            <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </a>
+      <div
+        ref={partnerLogoScrollRef}
+        onScroll={updateActivePartnerFromCenter}
+        className="partner-logos-scroll flex gap-4 overflow-x-auto pb-2 pr-2 snap-x snap-mandatory scrollbar-hide overscroll-x-contain"
+      >
+        {partnerLogos.map((partner) => {
+          const isActive = activePartner === partner.key;
+          return (
+            <button
+              type="button"
+              key={partner.key}
+              data-partner-key={partner.key}
+              onClick={() => setActivePartner(partner.key)}
+              className={`rounded-xl border p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-center transition-all duration-300 ${
+                isActive
+                  ? 'border-[#F5A623] bg-white shadow-[0_10px_22px_rgba(8,21,52,0.18)] scale-[1.02]'
+                  : 'border-[#e2e7f0] bg-[#f8fbff]'
+              }`}
+            >
+              <img
+                loading="lazy"
+                decoding="async"
+                src={toAssetUrl(partner.image)}
+                alt={partner.alt}
+                className="max-h-16 sm:max-h-20 w-auto object-contain"
+              />
+            </button>
+          );
+        })}
       </div>
       <div className="mt-4 space-y-3">
         <article id="partner-description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 scroll-mt-32">
