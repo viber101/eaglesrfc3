@@ -4017,7 +4017,7 @@ const MembershipPage: React.FC = () => {
           aria-label="Scroll partner logos left"
           onClick={() => scrollPartnerLogos('left')}
           disabled={!canScrollPartnersLeft}
-          className={`absolute left-1 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full border border-black bg-black text-white flex items-center justify-center transition-opacity ${
+          className={`absolute left-1 top-1/2 -translate-y-1/2 z-10 text-black text-lg sm:text-xl font-black leading-none transition-opacity ${
             canScrollPartnersLeft ? 'opacity-95' : 'opacity-35 cursor-not-allowed'
           }`}
         >
@@ -4028,7 +4028,7 @@ const MembershipPage: React.FC = () => {
           aria-label="Scroll partner logos right"
           onClick={() => scrollPartnerLogos('right')}
           disabled={!canScrollPartnersRight}
-          className={`absolute right-1 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full border border-black bg-black text-white flex items-center justify-center transition-opacity ${
+          className={`absolute right-1 top-1/2 -translate-y-1/2 z-10 text-black text-lg sm:text-xl font-black leading-none transition-opacity ${
             canScrollPartnersRight ? 'opacity-95' : 'opacity-35 cursor-not-allowed'
           }`}
         >
