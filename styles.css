@@ -33,3 +33,8 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.partner-logos-scroll {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+}

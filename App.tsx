@@ -3917,7 +3917,7 @@ const MembershipPage: React.FC = () => (
       <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Partner Network</p>
       <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Discount Partners</h2>
       <p className="text-[11px] text-[#4d6185] font-bold uppercase tracking-[0.14em] mb-2">Swipe left or right to browse partner logos</p>
-      <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+      <div className="partner-logos-scroll flex gap-4 overflow-x-auto pb-2 pr-2 snap-x snap-mandatory scrollbar-hide overscroll-x-contain">
           <a href="#kampanis-description" aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <img
               loading="lazy"
