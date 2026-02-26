@@ -3918,7 +3918,7 @@ const MembershipPage: React.FC = () => (
       <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Discount Partners</h2>
       <div className="relative overflow-hidden">
         <div className="partner-logo-track flex w-max gap-4">
-          <a href="#kampanis-description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
+          <a href="#kampanis-description" aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
             <img
               loading="lazy"
               decoding="async"
@@ -3936,7 +3936,7 @@ const MembershipPage: React.FC = () => (
           <article className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
           </article>
-          <a href="#kampanis-description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
+          <a href="#kampanis-description" aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
             <img
               loading="lazy"
               decoding="async"
@@ -3957,7 +3957,7 @@ const MembershipPage: React.FC = () => (
         </div>
       </div>
       <div className="mt-4 space-y-3">
-        <details id="kampanis-description" className="group rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5" open>
+        <details id="kampanis-description" className="group rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 scroll-mt-32" open>
           <summary className="flex items-center justify-between cursor-pointer list-none">
             <p className="text-sm sm:text-base font-black uppercase tracking-[0.08em] text-[#081534]">Kampanis Shoe Repair Services</p>
             <span className="text-[#4d6185] text-xs font-black uppercase tracking-[0.14em]">More</span>
