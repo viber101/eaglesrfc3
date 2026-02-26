@@ -3872,7 +3872,7 @@ const MembershipPage: React.FC = () => {
     perfectNails: {
       title: 'Perfect Nails Uganda',
       description:
-        'Perfect Nails Uganda is a professional nail care salon dedicated to providing high-quality manicure and pedicure services in a clean, relaxing, and friendly environment. We specialize in nail grooming, shaping, cuticle care, polish application, and detailed finishing to keep your hands and feet looking beautiful and well maintained. Our skilled technicians focus on hygiene, precision, and customer satisfaction, ensuring every client leaves feeling confident and refreshed. Whether you’re preparing for a special occasion or simply treating yourself, Perfect Nails Uganda offers the perfect touch of beauty and care for your nails. For bookings and inquiries, contact +256776623013.'
+        'Perfect Nails Uganda is a professional nail care salon dedicated to providing high-quality manicure and pedicure services in a clean, relaxing, and friendly environment. We specialize in nail grooming, shaping, cuticle care, polish application, and detailed finishing to keep your hands and feet looking beautiful and well maintained. Our skilled technicians focus on hygiene, precision, and customer satisfaction, ensuring every client leaves feeling confident and refreshed. Whether you’re preparing for a special occasion or simply treating yourself, Perfect Nails Uganda offers the perfect touch of beauty and care for your nails. We also offer a 10% discount for Eagles Members Card holders. For bookings and inquiries, contact +256776623013.'
     }
   } as const;
   const activePartnerDetails = partnerDescriptions[activePartner];
