@@ -1,4 +1,4 @@
-ï»¿
+
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
@@ -2031,7 +2031,7 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
       <div className="flex items-end justify-between mb-5">
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] font-black text-[#f39c12]">Scoring Leaders</p>
-          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Performace Bord 2026</h3>
+          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-[#081534]">Performance Board 2026</h3>
         </div>
         <p className="hidden sm:block text-xs font-bold uppercase tracking-wider text-[#5c6e8d]">Swipe to view</p>
       </div>
@@ -3874,7 +3874,7 @@ const MembershipPage: React.FC = () => {
     perfectNails: {
       title: 'Perfect Nails Uganda',
       description:
-        'Perfect Nails Uganda is a professional nail care salon dedicated to providing high-quality manicure and pedicure services in a clean, relaxing, and friendly environment. We specialize in nail grooming, shaping, cuticle care, polish application, and detailed finishing to keep your hands and feet looking beautiful and well maintained. Our skilled technicians focus on hygiene, precision, and customer satisfaction, ensuring every client leaves feeling confident and refreshed. Whether youâ€™re preparing for a special occasion or simply treating yourself, Perfect Nails Uganda offers the perfect touch of beauty and care for your nails. We also offer a 10% discount for Eagles Members Card holders. For bookings and inquiries, contact +256776623013.'
+        'Perfect Nails Uganda is a professional nail care salon dedicated to providing high-quality manicure and pedicure services in a clean, relaxing, and friendly environment. We specialize in nail grooming, shaping, cuticle care, polish application, and detailed finishing to keep your hands and feet looking beautiful and well maintained. Our skilled technicians focus on hygiene, precision, and customer satisfaction, ensuring every client leaves feeling confident and refreshed. Whether you’re preparing for a special occasion or simply treating yourself, Perfect Nails Uganda offers the perfect touch of beauty and care for your nails. We also offer a 10% discount for Eagles Members Card holders. For bookings and inquiries, contact +256776623013.'
     }
   } as const;
   const activePartnerDetails = partnerDescriptions[activePartner];
@@ -4346,7 +4346,7 @@ const App: React.FC = () => {
               aria-label="Close shop popup"
               className="absolute right-3 top-3 h-9 w-9 rounded-full border border-black/10 text-xl leading-none text-black/70 hover:bg-black/5"
             >
-              Ã—
+              ×
             </button>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#B21E23]">Eagles Shop</p>
             <h2 className="mt-2 text-2xl font-extrabold uppercase leading-tight text-black">
@@ -4440,7 +4440,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="border-t border-white/10 px-4 sm:px-6 py-4 text-xs text-white/75 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p>Â© 2026 Eagles Rugby Club. All rights reserved.</p>
+          <p>© 2026 Eagles Rugby Club. All rights reserved.</p>
           <div className="flex items-center gap-3">
             <a href="#" className="hover:text-[#F5A623] transition-colors">Privacy Policy</a>
             <span>|</span>
