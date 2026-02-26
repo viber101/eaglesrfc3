@@ -43,6 +43,7 @@ jobs:
           script: |
             DEPLOY_DIR="$HOME/eaglesrfc"
             mkdir -p "$DEPLOY_DIR/dist" "$DEPLOY_DIR/api"
+            rm -rf "$DEPLOY_DIR/dist/"*
 
       - name: Copy files to VPS
         uses: appleboy/scp-action@v0.1.7
