@@ -2638,6 +2638,7 @@ const SquadPage: React.FC = () => {
         {MOCK_PLAYERS.map((player) => {
           const playerProfile = getPlayerProfile(player.id, player.name);
           const displayName = player.name;
+          const squadPlayerImage = HOME_CURRENT_SQUAD_2026_IMAGE_BY_NAME[displayName] ?? player.imageUrl ?? '/player2.png';
           const isActive = activeSquadPlayerId === player.id;
 
           return (
@@ -2653,7 +2654,16 @@ const SquadPage: React.FC = () => {
               onClick={() => setActiveSquadPlayerId((current) => (current === player.id ? null : player.id))}
             >
               <div className="aspect-[3/4] overflow-hidden rounded-md bg-gray-100 mb-3">
-                <img loading="lazy" decoding="async" src={toAssetUrl('/player2.png')} alt={displayName} className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-105' : 'scale-100'}`} />
+                <img
+                  loading="lazy"
+                  decoding="async"
+                  src={toAssetUrl(squadPlayerImage)}
+                  alt={displayName}
+                  onError={(event) => {
+                    event.currentTarget.src = toAssetUrl('/player2.png');
+                  }}
+                  className={`w-full h-full object-cover transition-transform duration-300 ${isActive ? 'scale-105' : 'scale-100'}`}
+                />
               </div>
               <h3 className="text-sm font-black uppercase tracking-tight">{displayName}</h3>
               <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">{player.position}</p>
