@@ -3916,9 +3916,9 @@ const MembershipPage: React.FC = () => (
     <section className="bg-white border border-[#dce4f1] rounded-xl p-6 sm:p-7">
       <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Partner Network</p>
       <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Discount Partners</h2>
-      <div className="relative overflow-hidden">
-        <div className="partner-logo-track flex w-max gap-4">
-          <a href="#kampanis-description" aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
+      <p className="text-[11px] text-[#4d6185] font-bold uppercase tracking-[0.14em] mb-2">Swipe left or right to browse partner logos</p>
+      <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+          <a href="#kampanis-description" aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <img
               loading="lazy"
               decoding="async"
@@ -3927,16 +3927,16 @@ const MembershipPage: React.FC = () => (
               className="max-h-16 sm:max-h-20 w-auto object-contain"
             />
           </a>
-          <article className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
+          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </article>
-          <article className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
+          </a>
+          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </article>
-          <article className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
+          </a>
+          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </article>
-          <a href="#kampanis-description" aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
+          </a>
+          <a href="#kampanis-description" aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <img
               loading="lazy"
               decoding="async"
@@ -3945,16 +3945,15 @@ const MembershipPage: React.FC = () => (
               className="max-h-16 sm:max-h-20 w-auto object-contain"
             />
           </a>
-          <article className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
+          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </article>
-          <article className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
+          </a>
+          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </article>
-          <article className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0">
+          </a>
+          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
-          </article>
-        </div>
+          </a>
       </div>
       <div className="mt-4 space-y-3">
         <details id="kampanis-description" className="group rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 scroll-mt-32" open>

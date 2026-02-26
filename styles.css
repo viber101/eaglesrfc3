@@ -33,16 +33,3 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
-@keyframes partnerLogosRight {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-.partner-logo-track {
-  animation: partnerLogosRight 30s linear infinite;
-}
