@@ -4272,7 +4272,7 @@ const App: React.FC = () => {
 
   const goToShopFromPopup = () => {
     closeShopPopup();
-    navigateToPage('shop');
+    navigateToPage('shop#shop-footwear');
   };
 
   useEffect(() => {
@@ -4359,7 +4359,7 @@ const App: React.FC = () => {
               <button
                 type="button"
                 onClick={goToShopFromPopup}
-                className="flex-1 rounded-lg bg-black px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white hover:bg-[#B21E23] transition-colors"
+                className="flex-1 rounded-lg bg-black px-4 py-3 text-sm font-semibold uppercase tracking-wide text-[#F5A623] hover:bg-[#1a1a1a] transition-colors"
               >
                 Enter Shop
               </button>
