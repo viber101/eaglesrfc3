@@ -3850,7 +3850,23 @@ const OtherServicesPage: React.FC = () => (
   </div>
 );
 
-const MembershipPage: React.FC = () => (
+const MembershipPage: React.FC = () => {
+  const [activePartner, setActivePartner] = useState<'kampanis' | 'perfectNails'>('kampanis');
+  const partnerDescriptions = {
+    kampanis: {
+      title: 'Kampanis Shoe Repair Services',
+      description:
+        'Kampanis Shoe Repair Services is your trusted destination for quality footwear and expert repair solutions, offering professional shoe repairs including sole replacement, heel fixing, stitching, polishing, and full restoration to keep your shoes looking new and lasting longer. We also repair all kinds of bags such as handbags, backpacks, travel bags, and leather accessories, handling broken zippers, torn straps, damaged linings, and worn handles with precision and care. In addition, we provide professional cleaning services for both shoes and bags to remove dirt and stains while protecting the material, and we sell quality shoes to meet your style and comfort needs. For inquiries or orders, contact us at +256775833585. We also offer a 10% discount for Eagles Membership Card holders.'
+    },
+    perfectNails: {
+      title: 'Perfect Nails Uganda',
+      description:
+        'Perfect Nails Uganda is a professional nail care salon dedicated to providing high-quality manicure and pedicure services in a clean, relaxing, and friendly environment. We specialize in nail grooming, shaping, cuticle care, polish application, and detailed finishing to keep your hands and feet looking beautiful and well maintained. Our skilled technicians focus on hygiene, precision, and customer satisfaction, ensuring every client leaves feeling confident and refreshed. Whether you’re preparing for a special occasion or simply treating yourself, Perfect Nails Uganda offers the perfect touch of beauty and care for your nails. For bookings and inquiries, contact +256776623013.'
+    }
+  } as const;
+  const activePartnerDetails = partnerDescriptions[activePartner];
+
+  return (
   <div className="max-w-7xl mx-auto py-12 px-4 animate-in fade-in duration-700 space-y-8">
     <section className="relative overflow-hidden rounded-2xl border border-[#1f2a44] bg-[#050a14] text-white">
       <img loading="lazy" decoding="async" src={toAssetUrl(PAGE_IMAGES.sponsorHero)} alt="Eagles membership" className="absolute inset-0 w-full h-full object-cover opacity-35" />
@@ -3918,7 +3934,7 @@ const MembershipPage: React.FC = () => (
       <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Discount Partners</h2>
       <p className="text-[11px] text-[#4d6185] font-bold uppercase tracking-[0.14em] mb-2">Swipe left or right to browse partner logos</p>
       <div className="partner-logos-scroll flex gap-4 overflow-x-auto pb-2 pr-2 snap-x snap-mandatory scrollbar-hide overscroll-x-contain">
-          <a href="#kampanis-description" aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
+          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <img
               loading="lazy"
               decoding="async"
@@ -3927,10 +3943,10 @@ const MembershipPage: React.FC = () => (
               className="max-h-16 sm:max-h-20 w-auto object-contain"
             />
           </a>
-          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
+          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
           </a>
-          <a href="#perfect-nails-description" aria-label="Go to Perfect Nails description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
+          <a href="#partner-description" onClick={() => setActivePartner('perfectNails')} aria-label="Go to Perfect Nails description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <img
               loading="lazy"
               decoding="async"
@@ -3939,10 +3955,10 @@ const MembershipPage: React.FC = () => (
               className="max-h-16 sm:max-h-20 w-auto object-contain"
             />
           </a>
-          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
+          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
           </a>
-          <a href="#kampanis-description" aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
+          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to Kampanis description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <img
               loading="lazy"
               decoding="async"
@@ -3951,33 +3967,24 @@ const MembershipPage: React.FC = () => (
               className="max-h-16 sm:max-h-20 w-auto object-contain"
             />
           </a>
-          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
+          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
           </a>
-          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
+          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
           </a>
-          <a href="#kampanis-description" aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
+          <a href="#partner-description" onClick={() => setActivePartner('kampanis')} aria-label="Go to partner description" className="rounded-xl border border-dashed border-[#d5deee] bg-[#f8fbff] p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-start">
             <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.16em] text-[#7788a8]">Partner Logo</p>
           </a>
       </div>
       <div className="mt-4 space-y-3">
-        <details id="kampanis-description" className="group rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 scroll-mt-32" open>
+        <details id="partner-description" className="group rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 scroll-mt-32" open>
           <summary className="flex items-center justify-between cursor-pointer list-none">
-            <p className="text-sm sm:text-base font-black uppercase tracking-[0.08em] text-[#081534]">Kampanis Shoe Repair Services</p>
+            <p className="text-sm sm:text-base font-black uppercase tracking-[0.08em] text-[#081534]">{activePartnerDetails.title}</p>
             <span className="text-[#4d6185] text-xs font-black uppercase tracking-[0.14em]">More</span>
           </summary>
           <p className="text-sm text-[#1f2f4d] leading-relaxed mt-3">
-            Kampanis Shoe Repair Services is your trusted destination for quality footwear and expert repair solutions, offering professional shoe repairs including sole replacement, heel fixing, stitching, polishing, and full restoration to keep your shoes looking new and lasting longer. We also repair all kinds of bags such as handbags, backpacks, travel bags, and leather accessories, handling broken zippers, torn straps, damaged linings, and worn handles with precision and care. In addition, we provide professional cleaning services for both shoes and bags to remove dirt and stains while protecting the material, and we sell quality shoes to meet your style and comfort needs. For inquiries or orders, contact us at +256775833585. We also offer a 10% discount for Eagles Membership Card holders.
-          </p>
-        </details>
-        <details id="perfect-nails-description" className="group rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 scroll-mt-32">
-          <summary className="flex items-center justify-between cursor-pointer list-none">
-            <p className="text-sm sm:text-base font-black uppercase tracking-[0.08em] text-[#081534]">Perfect Nails Uganda</p>
-            <span className="text-[#4d6185] text-xs font-black uppercase tracking-[0.14em]">More</span>
-          </summary>
-          <p className="text-sm text-[#1f2f4d] leading-relaxed mt-3">
-            Perfect Nails Uganda is a professional nail care salon dedicated to providing high-quality manicure and pedicure services in a clean, relaxing, and friendly environment. We specialize in nail grooming, shaping, cuticle care, polish application, and detailed finishing to keep your hands and feet looking beautiful and well maintained. Our skilled technicians focus on hygiene, precision, and customer satisfaction, ensuring every client leaves feeling confident and refreshed. Whether you’re preparing for a special occasion or simply treating yourself, Perfect Nails Uganda offers the perfect touch of beauty and care for your nails. For bookings and inquiries, contact +256776623013.
+            {activePartnerDetails.description}
           </p>
         </details>
       </div>
@@ -4037,7 +4044,8 @@ const MembershipPage: React.FC = () => (
       </a>
     </section>
   </div>
-);
+  );
+};
 
 const GalleryPage: React.FC = () => {
   const galleryImages = [
