@@ -3978,15 +3978,12 @@ const MembershipPage: React.FC = () => {
           </a>
       </div>
       <div className="mt-4 space-y-3">
-        <details id="partner-description" className="group rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 scroll-mt-32" open>
-          <summary className="flex items-center justify-between cursor-pointer list-none">
-            <p className="text-sm sm:text-base font-black uppercase tracking-[0.08em] text-[#081534]">{activePartnerDetails.title}</p>
-            <span className="text-[#4d6185] text-xs font-black uppercase tracking-[0.14em]">More</span>
-          </summary>
+        <article id="partner-description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 scroll-mt-32">
+          <p className="text-sm sm:text-base font-black uppercase tracking-[0.08em] text-[#081534]">{activePartnerDetails.title}</p>
           <p className="text-sm text-[#1f2f4d] leading-relaxed mt-3">
             {activePartnerDetails.description}
           </p>
-        </details>
+        </article>
       </div>
     </section>
 
