@@ -3862,6 +3862,8 @@ const OtherServicesPage: React.FC = () => (
 
 const MembershipPage: React.FC = () => {
   const [activePartner, setActivePartner] = useState<'kampanis' | 'perfectNails'>('kampanis');
+  const [canScrollPartnersLeft, setCanScrollPartnersLeft] = useState(false);
+  const [canScrollPartnersRight, setCanScrollPartnersRight] = useState(true);
   const partnerLogoScrollRef = useRef<HTMLDivElement | null>(null);
   const partnerDescriptions = {
     kampanis: {
@@ -3907,8 +3909,36 @@ const MembershipPage: React.FC = () => {
     setActivePartner((current) => (current === closestKey ? current : closestKey));
   };
 
+  const updatePartnerScrollState = () => {
+    const container = partnerLogoScrollRef.current;
+    if (!container) {
+      return;
+    }
+    const maxScrollLeft = container.scrollWidth - container.clientWidth;
+    setCanScrollPartnersLeft(container.scrollLeft > 2);
+    setCanScrollPartnersRight(container.scrollLeft < maxScrollLeft - 2);
+  };
+
+  const handlePartnerScroll = () => {
+    updateActivePartnerFromCenter();
+    updatePartnerScrollState();
+  };
+
+  const scrollPartnerLogos = (direction: 'left' | 'right') => {
+    const container = partnerLogoScrollRef.current;
+    if (!container) {
+      return;
+    }
+    const delta = container.clientWidth * 0.72;
+    container.scrollBy({
+      left: direction === 'left' ? -delta : delta,
+      behavior: 'smooth'
+    });
+  };
+
   useEffect(() => {
     updateActivePartnerFromCenter();
+    updatePartnerScrollState();
     const onResize = () => updateActivePartnerFromCenter();
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
@@ -3981,35 +4011,59 @@ const MembershipPage: React.FC = () => {
       <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Partner Network</p>
       <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Discount Partners</h2>
       <p className="text-[11px] text-[#4d6185] font-bold uppercase tracking-[0.14em] mb-2">Swipe left or right to browse partner logos</p>
-      <div
-        ref={partnerLogoScrollRef}
-        onScroll={updateActivePartnerFromCenter}
-        className="partner-logos-scroll flex gap-4 overflow-x-auto pb-2 pr-2 snap-x snap-mandatory scrollbar-hide overscroll-x-contain"
-      >
-        {partnerLogos.map((partner) => {
-          const isActive = activePartner === partner.key;
-          return (
-            <button
-              type="button"
-              key={partner.key}
-              data-partner-key={partner.key}
-              onClick={() => setActivePartner(partner.key)}
-              className={`rounded-xl border p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-center transition-all duration-300 ${
-                isActive
-                  ? 'border-[#F5A623] bg-white shadow-[0_10px_22px_rgba(8,21,52,0.18)] scale-[1.02]'
-                  : 'border-[#e2e7f0] bg-[#f8fbff]'
-              }`}
-            >
-              <img
-                loading="lazy"
-                decoding="async"
-                src={toAssetUrl(partner.image)}
-                alt={partner.alt}
-                className="max-h-16 sm:max-h-20 w-auto object-contain"
-              />
-            </button>
-          );
-        })}
+      <div className="relative">
+        <button
+          type="button"
+          aria-label="Scroll partner logos left"
+          onClick={() => scrollPartnerLogos('left')}
+          disabled={!canScrollPartnersLeft}
+          className={`absolute left-1 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full border border-black bg-black text-white flex items-center justify-center transition-opacity ${
+            canScrollPartnersLeft ? 'opacity-95' : 'opacity-35 cursor-not-allowed'
+          }`}
+        >
+          &#8592;
+        </button>
+        <button
+          type="button"
+          aria-label="Scroll partner logos right"
+          onClick={() => scrollPartnerLogos('right')}
+          disabled={!canScrollPartnersRight}
+          className={`absolute right-1 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full border border-black bg-black text-white flex items-center justify-center transition-opacity ${
+            canScrollPartnersRight ? 'opacity-95' : 'opacity-35 cursor-not-allowed'
+          }`}
+        >
+          &#8594;
+        </button>
+        <div
+          ref={partnerLogoScrollRef}
+          onScroll={handlePartnerScroll}
+          className="partner-logos-scroll flex gap-4 overflow-x-auto px-11 pb-2 pr-2 snap-x snap-mandatory scrollbar-hide overscroll-x-contain"
+        >
+          {partnerLogos.map((partner) => {
+            const isActive = activePartner === partner.key;
+            return (
+              <button
+                type="button"
+                key={partner.key}
+                data-partner-key={partner.key}
+                onClick={() => setActivePartner(partner.key)}
+                className={`rounded-xl border p-4 h-24 sm:h-28 w-[220px] flex items-center justify-center shrink-0 snap-center transition-all duration-300 ${
+                  isActive
+                    ? 'border-[#F5A623] bg-white shadow-[0_10px_22px_rgba(8,21,52,0.18)] scale-[1.02]'
+                    : 'border-[#e2e7f0] bg-[#f8fbff]'
+                }`}
+              >
+                <img
+                  loading="lazy"
+                  decoding="async"
+                  src={toAssetUrl(partner.image)}
+                  alt={partner.alt}
+                  className="max-h-16 sm:max-h-20 w-auto object-contain"
+                />
+              </button>
+            );
+          })}
+        </div>
       </div>
       <div className="mt-4 space-y-3">
         <article id="partner-description" className="rounded-xl border border-[#e2e7f0] bg-[#f8fbff] p-4 sm:p-5 scroll-mt-32">
