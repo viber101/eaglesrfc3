@@ -4075,6 +4075,16 @@ const MembershipPage: React.FC = () => {
       </div>
     </section>
 
+    <section className="bg-white border border-[#dce4f1] rounded-xl p-4 sm:p-6">
+      <img
+        loading="lazy"
+        decoding="async"
+        src={toAssetUrl('/Membership/Membership Card.jpeg')}
+        alt="Eagles Membership card"
+        className="w-full rounded-lg object-cover max-h-[520px]"
+      />
+    </section>
+
     <section className="bg-white border border-[#dce4f1] rounded-xl p-6 sm:p-7">
       <p className="text-[10px] uppercase tracking-[0.2em] text-[#4d6185] font-black mb-2">Member Value</p>
       <h2 className="text-3xl sm:text-4xl font-black uppercase italic tracking-tighter text-[#081534] mb-5">Why This Membership Works</h2>
@@ -4230,6 +4240,17 @@ const App: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPage = PATH_PAGES[normalizePathname(location.pathname)] ?? 'home';
+  const [showShopPopup, setShowShopPopup] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const popupDismissed = window.sessionStorage.getItem('eagles_shop_popup_dismissed');
+    if (!popupDismissed) {
+      setShowShopPopup(true);
+    }
+  }, []);
 
   const navigateToPage = (target: string) => {
     const [page, sectionId] = target.split('#');
@@ -4240,6 +4261,18 @@ const App: React.FC = () => {
       return;
     }
     navigate(nextLocation);
+  };
+
+  const closeShopPopup = () => {
+    setShowShopPopup(false);
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem('eagles_shop_popup_dismissed', 'true');
+    }
+  };
+
+  const goToShopFromPopup = () => {
+    closeShopPopup();
+    navigateToPage('shop');
   };
 
   useEffect(() => {
@@ -4302,6 +4335,45 @@ const App: React.FC = () => {
         {currentPage === 'membership' ? <MembershipPage /> : null}
         {currentPage === 'gallery' ? <GalleryPage /> : null}
       </main>
+
+      {currentPage === 'home' && showShopPopup ? (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black/70" onClick={closeShopPopup} aria-hidden="true" />
+          <div className="relative w-full max-w-md rounded-2xl bg-white p-6 sm:p-7 shadow-2xl">
+            <button
+              type="button"
+              onClick={closeShopPopup}
+              aria-label="Close shop popup"
+              className="absolute right-3 top-3 h-9 w-9 rounded-full border border-black/10 text-xl leading-none text-black/70 hover:bg-black/5"
+            >
+              ×
+            </button>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#B21E23]">Eagles Shop</p>
+            <h2 className="mt-2 text-2xl font-extrabold uppercase leading-tight text-black">
+              New merchandise now available
+            </h2>
+            <p className="mt-3 text-sm text-black/70">
+              Check out official Eagles Rugby products before they sell out.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={goToShopFromPopup}
+                className="flex-1 rounded-lg bg-black px-4 py-3 text-sm font-semibold uppercase tracking-wide text-white hover:bg-[#B21E23] transition-colors"
+              >
+                Enter Shop
+              </button>
+              <button
+                type="button"
+                onClick={closeShopPopup}
+                className="flex-1 rounded-lg border border-black/20 px-4 py-3 text-sm font-semibold uppercase tracking-wide text-black hover:bg-black/5 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <a
         href="https://wa.me/256773207919"
