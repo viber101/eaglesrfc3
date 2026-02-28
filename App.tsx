@@ -3989,21 +3989,12 @@ const MembershipPage: React.FC = () => {
       <article className="rounded-xl border border-[#d9a74a] bg-[linear-gradient(180deg,#161616_0%,#0a0a0a_100%)] text-white p-6 sm:p-7 flex flex-col">
         <p className="text-[#F5A623] text-[10px] uppercase tracking-[0.2em] font-black mb-2">Membership Plan</p>
         <h3 className="text-3xl font-black uppercase tracking-tight mb-1">Investor Card</h3>
-        <p className="text-[#d8e1f0] text-sm mb-5">Annual card designed for personal value and long-term social impact.</p>
-        <p className="text-5xl font-black leading-none mb-4">100,000<span className="text-base align-top ml-1 text-[#a4b2cb]">UGX / Year</span></p>
-        <div className="space-y-2 text-sm text-[#dbe5f5] mb-6">
-          <p className="flex items-start gap-2"><span className="text-[#F5A623] font-black">+</span><span>Club and fitness discounts</span></p>
-          <p className="flex items-start gap-2"><span className="text-[#F5A623] font-black">+</span><span>Contribution to player and youth development</span></p>
-          <p className="flex items-start gap-2"><span className="text-[#F5A623] font-black">+</span><span>Direct support for education continuity programs</span></p>
-        </div>
-        <a
-          href="https://wa.me/256773207919"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-auto inline-flex items-center justify-center rounded-md bg-[#F5A623] text-black px-5 py-3 text-xs font-black uppercase tracking-[0.16em] hover:bg-[#d4921a] transition-colors"
-        >
-          Join via WhatsApp
-        </a>
+        <img
+          src="/Membership/Membership%20Card.jpeg"
+          alt="Membership Card"
+          className="mt-3 w-full h-auto rounded-lg border border-[#d9a74a]/40"
+          loading="lazy"
+        />
       </article>
     </section>
 
@@ -4455,6 +4446,9 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+
+
 
 
 
