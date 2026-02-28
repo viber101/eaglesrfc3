@@ -3980,7 +3980,7 @@ const MembershipPage: React.FC = () => {
         <ul className="space-y-3 text-sm sm:text-base text-[#1f2f4d] list-disc pl-5 marker:text-[#F5A623]">
           <li>Up to 20% discount from our discount partners.</li>
           <li>Up to 20% discount on selected club programs and activities.</li>
-          <li>20% discount whenever you train at the Eagles Fitness Centre.</li>
+          <li>Free training sessions every Tuesday and Thursday with Eagles Rugby at Kitante Primary School, 5:00 PM to 7:00 PM.</li>
           <li>Priority access to selected club events and initiatives.</li>
           <li>Recognition as an active supporter of youth and community development.</li>
           <li>A professional and structured environment for affordable training.</li>
@@ -4455,6 +4455,7 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 
 
 
