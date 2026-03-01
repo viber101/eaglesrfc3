@@ -297,11 +297,11 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
   {
     id: 'top-try',
     label: 'Top Try Scorer',
-    player: 'To Be Announced',
+    player: 'Bogere Francis',
     statLabel: 'Tries',
-    statValue: '--',
-    note: 'Official top try scorer will be published soon.',
-    imageUrl: '/player2.png'
+    statValue: '4',
+    note: 'Leading try scorer for the 2026 season.',
+    imageUrl: '/players/bogere-francis.jpg'
   },
   {
     id: 'top-points',
