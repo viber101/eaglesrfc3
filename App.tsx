@@ -47,8 +47,8 @@ const POLL_STORAGE_PREFIX = 'eagles-poll';
 
 const FIXTURE_SCORE_OVERRIDES: Record<string, FixtureScore> = {
   '1-eagles-golden badgers': {
-    home: 0,
-    away: 0,
+    home: 84,
+    away: 3,
     halfTimeHome: 38,
     halfTimeAway: 0,
     status: 'completed'
