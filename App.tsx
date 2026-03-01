@@ -337,6 +337,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     player: 'To Be Announced',
     statLabel: 'Award',
     statValue: '--',
+    games: '--',
     note: 'Impact player winner will be announced soon.',
     imageUrl: '/player2.png'
   },
@@ -346,6 +347,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     player: 'To Be Announced',
     statLabel: 'Award',
     statValue: '--',
+    games: '--',
     note: 'Best try of the month will be announced soon.',
     imageUrl: '/player2.png'
   },
@@ -355,6 +357,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     player: 'To Be Announced',
     statLabel: 'Award',
     statValue: '--',
+    games: '--',
     note: 'Training warrior winner will be announced soon.',
     imageUrl: '/player2.png'
   },
@@ -364,6 +367,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     player: 'To Be Announced',
     statLabel: 'Award',
     statValue: '--',
+    games: '--',
     note: 'Full 80 performer will be announced soon.',
     imageUrl: '/player2.png'
   },
@@ -373,6 +377,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     player: 'To Be Announced',
     statLabel: 'Award',
     statValue: '--',
+    games: '--',
     note: 'Consistent performer winner will be announced soon.',
     imageUrl: '/player2.png'
   },
@@ -382,6 +387,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     player: 'To Be Announced',
     statLabel: 'Award',
     statValue: '--',
+    games: '--',
     note: 'Defensive beast winner will be announced soon.',
     imageUrl: '/player2.png'
   },
@@ -391,6 +397,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     player: 'To Be Announced',
     statLabel: 'Award',
     statValue: '--',
+    games: '--',
     note: 'Turnover king winner will be announced soon.',
     imageUrl: '/player2.png'
   },
@@ -400,6 +407,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
     player: 'To Be Announced',
     statLabel: 'Award',
     statValue: '--',
+    games: '--',
     note: 'Try creator winner will be announced soon.',
     imageUrl: '/player2.png'
   }
