@@ -1118,7 +1118,7 @@ const CalendarSection: React.FC = () => {
                             <div className="space-y-2 text-[#35507f] text-xs sm:text-sm font-bold">
                               <p className="flex items-center gap-2">
                                 <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" /></svg>
-                                {FIXTURE_MOTM_OVERRIDES[toFixtureKey(fixture)] ? `Man of the Match - ${FIXTURE_MOTM_OVERRIDES[toFixtureKey(fixture)]?.name}` : 'Man of the Match TBC'}
+                                {FIXTURE_MOTM_OVERRIDES[toFixtureKey(fixture)] ? `MOTM ${FIXTURE_MOTM_OVERRIDES[toFixtureKey(fixture)]?.name}` : 'Man of the Match TBC'}
                               </p>
                               <p className="flex items-center gap-2">
                                 <svg className="w-4 h-4 text-[#7788a8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657 13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" /></svg>
