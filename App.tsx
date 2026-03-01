@@ -2075,19 +2075,13 @@ const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate })
                 <img loading="lazy" decoding="async" src={toAssetUrl(item.imageUrl)} alt={`${item.label} preview`} className="w-full h-full object-cover" />
               </div>
               <div className="mb-3 rounded-lg border border-dashed border-[#355da4] bg-[#0b1d45] px-3 py-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Name</p>
-                <p className="mt-1 text-sm font-semibold text-white">________________</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Games Played</p>
+                <p className="mt-1 text-sm font-semibold text-white">{item.games || '1'}</p>
               </div>
               <div className="flex items-end justify-between gap-4">
                 <p className="text-[#F5A623] text-4xl sm:text-6xl font-black leading-none">{item.statValue}</p>
                 <p className="text-[#d7e2f6] text-xs sm:text-base font-black uppercase tracking-wider">{item.statLabel}</p>
               </div>
-              {item.games && (
-                <div className="mt-3 flex items-end justify-between gap-4">
-                  <p className="text-[#F5A623] text-2xl sm:text-3xl font-black leading-none">{item.games}</p>
-                  <p className="text-[#d7e2f6] text-xs sm:text-base font-black uppercase tracking-wider">Games</p>
-                </div>
-              )}
               <div className="mt-3 rounded-lg border border-[#355da4] bg-[#0b1d45] px-3 py-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#89a9e4]">Sponsored By</p>
                 <a
