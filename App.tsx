@@ -297,7 +297,7 @@ const HOME_SCORER_SPOTLIGHT: ScorerSpotlight[] = [
   {
     id: 'top-try',
     label: 'Top Try Scorer',
-    player: 'Bogere Francis',
+    player: 'Man of the Match - Bogere Francis',
     statLabel: 'Tries',
     statValue: '4',
     note: 'Leading try scorer for the 2026 season.',
